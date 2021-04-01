@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WebApp.Server</name>
+    </assembly>
+    <members>
+        <member name="T:RecipeBook.Presentation.WebApp.Server.Pages.ErrorModel">
+            <summary>
+            Model for the error-page.
+            </summary>
+        </member>
+        <member name="P:RecipeBook.Presentation.WebApp.Server.Pages.ErrorModel.RequestId">
+            <summary>
+            ID of the request that caused the error.
+            </summary>
+        </member>
+        <member name="P:RecipeBook.Presentation.WebApp.Server.Pages.ErrorModel.ShowRequestId">
+            <summary>
+            Whether or not to show the ID.
+            </summary>
+        </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Pages.ErrorModel.#ctor(Microsoft.Extensions.Logging.ILogger{RecipeBook.Presentation.WebApp.Server.Pages.ErrorModel})">
+            <summary>
+            Instantiates a new <see cref="T:RecipeBook.Presentation.WebApp.Server.Pages.ErrorModel"/>.
+            </summary>
+            <param name="logger">Dependency injected.</param>
+        </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Pages.ErrorModel.OnGet">
+            <summary>
+            Called when a GET-request is sent for the Error-page.
+            </summary>
+        </member>
+    </members>
+</doc>
