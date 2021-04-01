@@ -26,6 +26,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InfrastructureTests", "Infr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PresentationTests", "PresentationTests", "{2780DC5F-162E-480D-803B-245F80EEBBAA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.WebApp.Server", "tests\Tests.WebApp.Server\Tests.WebApp.Server.csproj", "{A24BFE05-F313-4115-9D18-13CAA1FE24A1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,7 @@ Global
 		{5C24AB2F-EAEE-4359-A2FD-E634F5EF630A} = {4B404C00-7EDB-4347-8777-59315F546BBB}
 		{0A803DF3-2FB9-4D64-A027-904F4752CBC5} = {4B404C00-7EDB-4347-8777-59315F546BBB}
 		{2780DC5F-162E-480D-803B-245F80EEBBAA} = {4B404C00-7EDB-4347-8777-59315F546BBB}
+		{A24BFE05-F313-4115-9D18-13CAA1FE24A1} = {2780DC5F-162E-480D-803B-245F80EEBBAA}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{92CB9AC1-55B0-4F7F-BA73-32EC86635CA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -65,5 +68,9 @@ Global
 		{3D31C817-08FC-4194-A0B4-A83F7548E4AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D31C817-08FC-4194-A0B4-A83F7548E4AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D31C817-08FC-4194-A0B4-A83F7548E4AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A24BFE05-F313-4115-9D18-13CAA1FE24A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A24BFE05-F313-4115-9D18-13CAA1FE24A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A24BFE05-F313-4115-9D18-13CAA1FE24A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A24BFE05-F313-4115-9D18-13CAA1FE24A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

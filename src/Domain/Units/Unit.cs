@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace RecipeBook.Core.Domain.Units
+﻿namespace RecipeBook.Core.Domain.Units
 {
     public record Unit(double Value)
     {
