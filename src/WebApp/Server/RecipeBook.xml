@@ -4,6 +4,31 @@
         <name>WebApp.Server</name>
     </assembly>
     <members>
+        <member name="T:RecipeBook.Presentation.WebApp.Server.Controllers.BaseApiController`1">
+            <summary>
+            Contains all the common components of the api controllers.
+            </summary>
+        </member>
+        <member name="F:RecipeBook.Presentation.WebApp.Server.Controllers.BaseApiController`1.Logger">
+            <summary>
+            Interface for logging errors and information.
+            </summary>
+        </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.BaseApiController`1.#ctor(Microsoft.Extensions.Logging.ILogger{`0})">
+            <summary>
+            Injects logger.
+            </summary>
+        </member>
+        <member name="T:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipeController">
+            <summary>
+            Endpoint for CRUD of recipes.
+            </summary>
+        </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipeController.#ctor(Microsoft.Extensions.Logging.ILogger{RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipeController})">
+            <summary>
+            Injects logger.
+            </summary>
+        </member>
         <member name="T:RecipeBook.Presentation.WebApp.Server.Pages.ErrorModel">
             <summary>
             Model for the error-page.
