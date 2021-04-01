@@ -18,7 +18,10 @@ namespace RecipeBook.Infrastructure.Persistence
         
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            options.UseNpgsql("Host=localhost;Database=RecipeBookDB;Username=postgres;Password=password");
+            string connectionString = Environment.GetEnvironmentVariable("RecipeBookDBConnectionString") ?? throw
+                new Exception("Could not locate RecipeBookDBConnectionString environment variable.");
+            
+            options.UseNpgsql(connectionString);
         }
 
         protected override void OnModelCreating(ModelBuilder builder)

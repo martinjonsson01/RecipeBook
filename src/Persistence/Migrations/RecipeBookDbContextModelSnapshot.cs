@@ -15,16 +15,16 @@ namespace RecipeBook.Infrastructure.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .UseIdentityByDefaultColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "5.0.4")
-                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                .HasAnnotation("ProductVersion", "5.0.4");
 
             modelBuilder.Entity("RecipeBook.Core.Domain.Recipes.Ingredient", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .UseIdentityByDefaultColumn();
 
                     b.Property<int?>("AmountId")
                         .HasColumnType("integer");
@@ -50,7 +50,7 @@ namespace RecipeBook.Infrastructure.Persistence.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .UseIdentityByDefaultColumn();
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -66,7 +66,7 @@ namespace RecipeBook.Infrastructure.Persistence.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .UseIdentityByDefaultColumn();
 
                     b.Property<string>("Instruction")
                         .IsRequired()
@@ -112,7 +112,7 @@ namespace RecipeBook.Infrastructure.Persistence.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .UseIdentityByDefaultColumn();
 
                     b.Property<double>("Value")
                         .HasColumnType("double precision");
