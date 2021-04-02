@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -31,6 +34,16 @@ namespace RecipeBook.Infrastructure.Persistence
             builder.Entity<UsedOccasion>().HasKey(usedOccasion => usedOccasion.When);
             builder.Entity<Mass>().ToTable("Masses");
             builder.Entity<Volume>().ToTable("Volumes");
+        }
+
+        public async Task<Recipe?> FetchRecipe(int id)
+        {
+            return await Recipes.FindAsync(id);
+        }
+
+        public async Task<IEnumerable<Recipe>> FetchAllRecipes()
+        {
+            return await Recipes.ToListAsync();
         }
     }
 }

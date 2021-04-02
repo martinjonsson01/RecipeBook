@@ -22,6 +22,14 @@
             <response code="200">Returns the matching Recipe</response>
             <response code="404">If no recipe with matching ID is found</response>  
         </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipeController.GetAllRecipes">
+            <summary>
+            Gets all recipes
+            </summary>
+            <returns>All recipes</returns>
+            <response code="200">Returns the recipes</response>
+            <response code="204">If there are no recipes</response>  
+        </member>
         <member name="T:RecipeBook.Presentation.WebApp.Server.Pages.ErrorModel">
             <summary>
             Model for the error-page.

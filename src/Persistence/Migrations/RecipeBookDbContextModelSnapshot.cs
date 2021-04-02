@@ -2,9 +2,6 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using RecipeBook.Infrastructure.Persistence;
 
 namespace RecipeBook.Infrastructure.Persistence.Migrations
 {
@@ -17,7 +14,7 @@ namespace RecipeBook.Infrastructure.Persistence.Migrations
             modelBuilder
                 .UseIdentityByDefaultColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "5.0.4");
+                .HasAnnotation("ProductVersion", "5.0.2");
 
             modelBuilder.Entity("RecipeBook.Core.Domain.Recipes.Ingredient", b =>
                 {
@@ -55,6 +52,9 @@ namespace RecipeBook.Infrastructure.Persistence.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int?>("Rating")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
