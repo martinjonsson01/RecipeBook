@@ -2,7 +2,7 @@
 
 namespace RecipeBook.Core.Domain.Recipes
 {
-    public class Recipe : BaseEntity
+    public class Recipe
     {
         public string                    Name          { get; set; } = string.Empty;
         public int?                      Rating        { get; set; } = null;

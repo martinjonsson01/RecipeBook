@@ -31,19 +31,26 @@ namespace RecipeBook.Infrastructure.Persistence
         {
             base.OnModelCreating(builder);
 
+            builder.Entity<Recipe>().HasKey(recipe => recipe.Name);
             builder.Entity<UsedOccasion>().HasKey(usedOccasion => usedOccasion.When);
             builder.Entity<Mass>().ToTable("Masses");
             builder.Entity<Volume>().ToTable("Volumes");
         }
 
-        public async Task<Recipe?> FetchRecipe(int id)
+        public async Task<Recipe?> FetchAsync(string name)
         {
-            return await Recipes.FindAsync(id);
+            return await Recipes.FindAsync(name);
         }
 
-        public async Task<IEnumerable<Recipe>> FetchAllRecipes()
+        public async Task<IEnumerable<Recipe>> FetchAllAsync()
         {
             return await Recipes.ToListAsync();
+        }
+
+        public Task StoreAsync(Recipe recipe)
+        {
+            Recipes.Add(recipe);
+            return SaveChangesAsync();
         }
     }
 }

@@ -28,17 +28,18 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         }
 
         /// <summary>
-        /// Gets a Recipe by ID.
+        /// Gets a recipe by name.
         /// </summary>
-        /// <returns>A Recipe with matching ID</returns>
-        /// <response code="200">Returns the matching Recipe</response>
-        /// <response code="404">If no recipe with matching ID is found</response>  
-        [HttpGet("{id}")]
+        /// <param name="name">The name of the recipe</param>
+        /// <returns>A Recipe with matching name</returns>
+        /// <response code="200">Returns the matching recipe</response>
+        /// <response code="404">If no recipe with matching name is found</response>
+        [HttpGet("{name}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetRecipe(int id)
+        public async Task<ActionResult<Recipe>> GetRecipe(string name)
         {
-            Recipe? recipe = await _repo.FetchRecipe(id);
+            Recipe? recipe = await _repo.FetchAsync(name);
             if (recipe is null) return NotFound();
             return Ok(recipe);
         }

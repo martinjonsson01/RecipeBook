@@ -7,7 +7,8 @@ namespace RecipeBook.Core.Application
 {
     public interface IRecipeRepository
     {
-        public Task<Recipe?>             FetchRecipe(int id);
-        public Task<IEnumerable<Recipe>> FetchAllRecipes();
+        public Task<Recipe?>             FetchAsync(string name);
+        public Task<IEnumerable<Recipe>> FetchAllAsync();
+        public Task              StoreAsync(Recipe recipe);
     }
 }
