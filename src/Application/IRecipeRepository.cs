@@ -9,6 +9,8 @@ namespace RecipeBook.Core.Application
     {
         public Task<Recipe?>             FetchAsync(string name);
         public Task<IEnumerable<Recipe>> FetchAllAsync();
-        public Task              StoreAsync(Recipe recipe);
+        public Task                      StoreAsync(Recipe  recipe);
+        public Task                      DeleteAsync(string name);
+        public Task                      UpdateAsync(Recipe recipe);
     }
 }

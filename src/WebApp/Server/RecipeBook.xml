@@ -14,21 +14,74 @@
             Endpoints for CRUD of recipes.
             </summary>
         </member>
-        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipeController.GetRecipe(System.Int32)">
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipeController.GetRecipe(System.String)">
             <summary>
-            Gets a Recipe by ID.
+            Gets a recipe by name.
             </summary>
-            <returns>A Recipe with matching ID</returns>
-            <response code="200">Returns the matching Recipe</response>
-            <response code="404">If no recipe with matching ID is found</response>  
+            <param name="name">The name of the recipe</param>
+            <returns>A Recipe with matching name</returns>
+            <response code="200">Returns the matching recipe</response>
+            <response code="404">If no recipe with matching name is found</response>
         </member>
         <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipeController.GetAllRecipes">
             <summary>
-            Gets all recipes
+            Gets all recipes.
             </summary>
             <returns>All recipes</returns>
             <response code="200">Returns the recipes</response>
             <response code="204">If there are no recipes</response>  
+        </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipeController.PostRecipe(RecipeBook.Core.Domain.Recipes.Recipe)">
+             <summary>
+             Creates a new recipe in the database.
+             </summary>
+             <remarks>
+             Example body:
+            
+                 POST /
+                 {
+                     "name": "Test Recipe",
+                     "rating": 10,
+                     "usedOccasions": [],
+                     "steps": [],
+                     "ingredients": []
+                 }
+             </remarks>
+             <returns>The location of the created recipe</returns>
+             <response code="201">Returns the created recipe</response>
+             <response code="409">If a recipe with provided name already exists</response>  
+        </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipeController.DeleteRecipe(System.String)">
+            <summary>
+            Deletes a recipe by name.
+            </summary>
+            <param name="name">The name of the recipe</param>
+            <response code="200">The recipe was deleted</response>
+            <response code="404">The recipe does not exist</response>
+        </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipeController.PatchRecipe(System.String,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{RecipeBook.Core.Domain.Recipes.Recipe})">
+             <summary>
+             Updates an existing recipe in the database.
+             </summary>
+             <remarks>
+             Example body:
+            
+                 PATCH /
+                 [
+                   {
+                     "op": "replace",
+                     "path": "/rating",
+                     "value": 5
+                   },
+                   {
+                     "op": "remove",
+                     "path": "/rating"
+                   }
+                 ]
+             </remarks>
+             <response code="204">Recipe was successfully updated</response>
+             <response code="400">Patch caused invalid state</response>
+             <response code="404">Recipe does not exist</response>
         </member>
         <member name="T:RecipeBook.Presentation.WebApp.Server.Pages.ErrorModel">
             <summary>

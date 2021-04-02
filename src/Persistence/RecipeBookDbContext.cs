@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
@@ -51,6 +52,21 @@ namespace RecipeBook.Infrastructure.Persistence
         {
             Recipes.Add(recipe);
             return SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(string name)
+        {
+            Recipe recipe = await Recipes.FindAsync(name);
+            if (recipe is null) return;
+            
+            Recipes.Remove(recipe);
+            await SaveChangesAsync();
+        }
+
+        public async Task UpdateAsync(Recipe recipe)
+        {
+            // Nothing to be done, the DbContext is already tracking any updates.
+            await SaveChangesAsync();
         }
     }
 }

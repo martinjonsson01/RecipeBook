@@ -2,6 +2,9 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using RecipeBook.Infrastructure.Persistence;
 
 namespace RecipeBook.Infrastructure.Persistence.Migrations
 {
@@ -30,33 +33,27 @@ namespace RecipeBook.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("RecipeId")
-                        .HasColumnType("integer");
+                    b.Property<string>("RecipeName")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AmountId");
 
-                    b.HasIndex("RecipeId");
+                    b.HasIndex("RecipeName");
 
                     b.ToTable("Ingredients");
                 });
 
             modelBuilder.Entity("RecipeBook.Core.Domain.Recipes.Recipe", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .UseIdentityByDefaultColumn();
-
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int?>("Rating")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id");
+                    b.HasKey("Name");
 
                     b.ToTable("Recipes");
                 });
@@ -75,12 +72,12 @@ namespace RecipeBook.Infrastructure.Persistence.Migrations
                     b.Property<int>("Number")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("RecipeId")
-                        .HasColumnType("integer");
+                    b.Property<string>("RecipeName")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RecipeId");
+                    b.HasIndex("RecipeName");
 
                     b.ToTable("Steps");
                 });
@@ -97,12 +94,12 @@ namespace RecipeBook.Infrastructure.Persistence.Migrations
                     b.Property<TimeSpan>("Duration")
                         .HasColumnType("interval");
 
-                    b.Property<int?>("RecipeId")
-                        .HasColumnType("integer");
+                    b.Property<string>("RecipeName")
+                        .HasColumnType("text");
 
                     b.HasKey("When");
 
-                    b.HasIndex("RecipeId");
+                    b.HasIndex("RecipeName");
 
                     b.ToTable("UsedOccasions");
                 });
@@ -150,7 +147,7 @@ namespace RecipeBook.Infrastructure.Persistence.Migrations
 
                     b.HasOne("RecipeBook.Core.Domain.Recipes.Recipe", null)
                         .WithMany("Ingredients")
-                        .HasForeignKey("RecipeId");
+                        .HasForeignKey("RecipeName");
 
                     b.Navigation("Amount");
                 });
@@ -159,14 +156,14 @@ namespace RecipeBook.Infrastructure.Persistence.Migrations
                 {
                     b.HasOne("RecipeBook.Core.Domain.Recipes.Recipe", null)
                         .WithMany("Steps")
-                        .HasForeignKey("RecipeId");
+                        .HasForeignKey("RecipeName");
                 });
 
             modelBuilder.Entity("RecipeBook.Core.Domain.Recipes.UsedOccasion", b =>
                 {
                     b.HasOne("RecipeBook.Core.Domain.Recipes.Recipe", null)
                         .WithMany("UsedOccasions")
-                        .HasForeignKey("RecipeId");
+                        .HasForeignKey("RecipeName");
                 });
 
             modelBuilder.Entity("RecipeBook.Core.Domain.Units.Mass", b =>

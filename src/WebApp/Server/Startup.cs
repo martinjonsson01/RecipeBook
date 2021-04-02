@@ -35,14 +35,21 @@ namespace RecipeBook.Presentation.WebApp.Server
             
             services.AddPersistence();
 
+            services.AddVersionedApiExplorer(options =>
+            {
+                options.GroupNameFormat = "'v'VVV";
+                options.SubstituteApiVersionInUrl = true;
+            });
             services.AddApiVersioning(config =>
             {
-                config.DefaultApiVersion = ApiVersion.Default;
+                config.DefaultApiVersion = new ApiVersion(1, 0);
                 config.AssumeDefaultVersionWhenUnspecified = true;
                 config.ReportApiVersions = true;
             });
-            
-            services.AddControllersWithViews();
+
+            services
+                .AddControllersWithViews()
+                .AddNewtonsoftJson();
             services.AddRazorPages();
         }
 
