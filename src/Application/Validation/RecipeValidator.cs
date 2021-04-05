@@ -15,6 +15,12 @@ namespace RecipeBook.Core.Application.Validation
             RuleFor(recipe => recipe.Rating)
                 .InclusiveBetween(MinRating, MaxRating)
                 .WithMessage($"Betyget måste vara från {MinRating}-{MaxRating}.");
+            RuleForEach(recipe => recipe.UsedOccasions)
+                .SetValidator(new UsedOccasionValidator());
+            RuleFor(recipe => recipe.Steps)
+                .SetValidator(new StepsValidator());
+            RuleForEach(recipe => recipe.Ingredients)
+                .SetValidator(new IngredientValidator());
         }
 
         private const int MaxNameLength = 100;
