@@ -8,9 +8,6 @@ namespace RecipeBook.Core.Application.Validation
 {
     public class UsedOccasionValidator : AbstractValidator<UsedOccasion>
     {
-        private static readonly TimeSpan MinDuration      = TimeSpan.Zero;
-        private static readonly TimeSpan MaxDuration      = TimeSpan.FromDays(1);
-        private const           int      MaxCommentLength = 500;
         public UsedOccasionValidator()
         {
             RuleFor(occasion => occasion.Duration)
@@ -20,5 +17,9 @@ namespace RecipeBook.Core.Application.Validation
                 .MaximumLength(MaxCommentLength)
                 .WithMessage($"Kommentaren måste vara kortare än {MaxCommentLength} karaktärer.");
         }
+
+        private static readonly TimeSpan MinDuration      = TimeSpan.Zero;
+        private static readonly TimeSpan MaxDuration      = TimeSpan.FromDays(1);
+        private const           int      MaxCommentLength = 500;
     }
 }

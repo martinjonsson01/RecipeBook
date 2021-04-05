@@ -6,8 +6,6 @@ namespace RecipeBook.Core.Application.Validation
 {
     public class StepValidator : AbstractValidator<Step>
     {
-        private const int MaxInstructionLength = 500;
-
         public StepValidator()
         {
             RuleFor(step => step.Number)
@@ -22,5 +20,7 @@ namespace RecipeBook.Core.Application.Validation
                 .MaximumLength(MaxInstructionLength)
                 .WithMessage($"Instruktionen måste vara kortare än {MaxInstructionLength} karaktärer.");
         }
+
+        private const int MaxInstructionLength = 500;
     }
 }
