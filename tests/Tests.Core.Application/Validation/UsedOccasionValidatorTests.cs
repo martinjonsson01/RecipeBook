@@ -1,17 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 using FluentAssertions;
 
 using FluentValidation.Results;
 
-using RecipeBook.Core.Application;
+using RecipeBook.Core.Application.Validation;
 using RecipeBook.Core.Domain.Recipes;
 
 using Xunit;
 
-namespace Tests.Core.Application
+namespace Tests.Core.Application.Validation
 {
     public class UsedOccasionValidatorTests
     {
@@ -29,7 +27,10 @@ namespace Tests.Core.Application
 
         public static TheoryData<TimeSpan> ValidDurations => new()
         {
-            TimeSpan.FromHours(1)
+            TimeSpan.FromSeconds(12),
+            TimeSpan.FromMinutes(10),
+            TimeSpan.FromHours(1),
+            TimeSpan.FromDays(0.9f)
         };
 
         [Theory]

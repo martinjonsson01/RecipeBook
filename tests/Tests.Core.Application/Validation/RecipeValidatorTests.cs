@@ -1,16 +1,13 @@
-using System.Collections.Generic;
-using System.Linq;
-
 using FluentAssertions;
 
 using FluentValidation.Results;
 
-using RecipeBook.Core.Application;
+using RecipeBook.Core.Application.Validation;
 using RecipeBook.Core.Domain.Recipes;
 
 using Xunit;
 
-namespace Tests.Core.Application
+namespace Tests.Core.Application.Validation
 {
     public class RecipeValidatorTests
     {
