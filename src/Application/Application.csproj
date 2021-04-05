@@ -14,4 +14,19 @@
       <PackageReference Include="FluentValidation" Version="9.5.3" />
     </ItemGroup>
 
+    <ItemGroup>
+      <EmbeddedResource Update="Resources\RecipeBook.se.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>RecipeBook.se.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Resources\RecipeBook.se.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>RecipeBook.se.resx</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
 </Project>
