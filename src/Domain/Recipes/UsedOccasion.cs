@@ -6,6 +6,6 @@ namespace RecipeBook.Core.Domain.Recipes
     {
         public DateTime When     { get; set; } = DateTime.MinValue;
         public TimeSpan Duration { get; set; } = TimeSpan.Zero;
-        public string   Comment  { get; set; } = string.Empty;
+        public string?  Comment  { get; set; }
     }
 }
