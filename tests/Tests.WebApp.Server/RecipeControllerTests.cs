@@ -11,8 +11,6 @@ using Microsoft.Extensions.Logging;
 
 using Moq;
 
-using Newtonsoft.Json.Serialization;
-
 using RecipeBook.Core.Application;
 using RecipeBook.Core.Domain.Recipes;
 using RecipeBook.Presentation.WebApp.Server.Controllers.v1;
