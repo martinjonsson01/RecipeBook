@@ -38,9 +38,7 @@ namespace Tests.Core.Application
             ValidationResult result = new RecipeValidator().Validate(_invalidRecipe);
 
             // Assert
-            result.Errors
-                  .All(failure => failure.PropertyName.Equals(nameof(Recipe.Name)))
-                  .Should().BeFalse();
+            result.Errors.Should().NotContain(nameof(Recipe.Name));
         }
 
         [Theory]
@@ -56,8 +54,8 @@ namespace Tests.Core.Application
 
             // Assert
             result.Errors
-                  .Any(failure => failure.PropertyName.Equals(nameof(Recipe.Name)))
-                  .Should().BeTrue();
+                  .Should()
+                  .ContainSingle(failure => failure.PropertyName.Equals(nameof(Recipe.Name)));
         }
 
         [Theory]
@@ -76,8 +74,8 @@ namespace Tests.Core.Application
 
             // Assert
             result.Errors
-                  .All(failure => failure.PropertyName.Equals(nameof(Recipe.Rating)))
-                  .Should().BeFalse();
+                  .Should()
+                  .NotContain(failure => failure.PropertyName.Equals(nameof(Recipe.Rating)));
         }
 
         [Theory]
@@ -96,8 +94,8 @@ namespace Tests.Core.Application
 
             // Assert
             result.Errors
-                  .Any(failure => failure.PropertyName.Equals(nameof(Recipe.Name)))
-                  .Should().BeTrue();
+                  .Should()
+                  .ContainSingle(failure => failure.PropertyName.Equals(nameof(Recipe.Rating)));
         }
     }
 }
