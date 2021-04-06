@@ -1,12 +1,16 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
-
 Welcome to your new app.
 
 @code {
-    #nullable enable
+#nullable enable
 
-    public string Test { get; set; } = "Testing";
+    [CascadingParameter]
+    protected ITitleable? Titleable { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Titleable?.SetTitle("Ugnspannkaka med bacon och gurka");
+    }
 
 }

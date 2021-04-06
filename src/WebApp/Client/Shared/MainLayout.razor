@@ -1,17 +1,30 @@
 @inherits LayoutComponentBase
+@implements ITitleable
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<TitleBar PageTitle="@_pageTitle"/>
 
-    <div class="main">
-        <div class="top-row px-4">
-            <a href="http://blazor.net" target="_blank" class="ml-md-auto">About</a>
+<main class="container">
+    <div class="row">
+        <div class="col-sm-3">
+            <NavBar />
         </div>
-
-        <div class="content px-4">
-            @Body
+        <div class="col-sm-9">
+            <CascadingValue Value="this">
+                @Body
+            </CascadingValue>
         </div>
     </div>
-</div>
+</main>
+
+@code
+{
+    #nullable enable
+
+    public void SetTitle(string title)
+    {
+        _pageTitle = title;
+        StateHasChanged();
+    }
+
+    private string _pageTitle = string.Empty;
+}
