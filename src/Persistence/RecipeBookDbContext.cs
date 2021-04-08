@@ -31,7 +31,6 @@ namespace RecipeBook.Infrastructure.Persistence
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<UsedOccasion>().HasKey(usedOccasion => usedOccasion.When);
             builder.Entity<Mass>().ToTable("Masses");
             builder.Entity<Volume>().ToTable("Volumes");
         }
