@@ -33,7 +33,7 @@
     
     protected override async Task OnInitializedAsync()
     {
-        HttpResponseMessage response = await Http.GetAsync("/api/v1/recipe");
+        HttpResponseMessage response = await Http.GetAsync("/api/v1/recipes");
         if (response.StatusCode == HttpStatusCode.OK)
         {
             _recipes = await response.Content.ReadFromJsonAsync<IEnumerable<Recipe>>();

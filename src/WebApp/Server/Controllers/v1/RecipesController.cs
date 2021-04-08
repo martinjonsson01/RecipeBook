@@ -16,12 +16,12 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
     /// Endpoints for CRUD of recipes.
     /// </summary>
     [ApiVersion("1.0")]
-    public class RecipeController : BaseApiController<RecipeController>
+    public class RecipesController : BaseApiController<RecipesController>
     {
         private readonly IRecipeRepository _repo;
 
-        public RecipeController(
-            ILogger<RecipeController> logger,
+        public RecipesController(
+            ILogger<RecipesController> logger,
             IRecipeRepository         repo)
             : base(logger)
         {

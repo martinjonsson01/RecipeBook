@@ -19,21 +19,21 @@ using Xunit;
 
 namespace Tests.WebApp.Server
 {
-    public class RecipeControllerTests
+    public class RecipesControllerTests
     {
-        private readonly RecipeController        _controller;
+        private readonly RecipesController        _controller;
         private readonly Mock<IRecipeRepository> _mockRepo;
         private readonly Recipe                  _mockRecipe;
 
-        public RecipeControllerTests()
+        public RecipesControllerTests()
         {
             _mockRecipe = new Recipe
             {
                 Name = "Test Recipe"
             };
             _mockRepo = new Mock<IRecipeRepository>();
-            var mockLogger = new Mock<ILogger<RecipeController>>();
-            _controller = new RecipeController(mockLogger.Object, _mockRepo.Object);
+            var mockLogger = new Mock<ILogger<RecipesController>>();
+            _controller = new RecipesController(mockLogger.Object, _mockRepo.Object);
         }
 
         [Fact]

@@ -9,12 +9,12 @@
             Contains all the common components of the api controllers.
             </summary>
         </member>
-        <member name="T:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipeController">
+        <member name="T:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipesController">
             <summary>
             Endpoints for CRUD of recipes.
             </summary>
         </member>
-        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipeController.GetRecipe(System.String)">
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipesController.GetRecipe(System.String)">
             <summary>
             Gets a recipe by name.
             </summary>
@@ -23,7 +23,7 @@
             <response code="200">Returns the matching recipe</response>
             <response code="404">If no recipe with matching name is found</response>
         </member>
-        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipeController.GetAllRecipes">
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipesController.GetAllRecipes">
             <summary>
             Gets all recipes.
             </summary>
@@ -31,7 +31,7 @@
             <response code="200">Returns the recipes</response>
             <response code="204">If there are no recipes</response>  
         </member>
-        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipeController.PostRecipe(RecipeBook.Core.Domain.Recipes.Recipe)">
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipesController.PostRecipe(RecipeBook.Core.Domain.Recipes.Recipe)">
              <summary>
              Creates a new recipe in the database.
              </summary>
@@ -51,7 +51,7 @@
              <response code="201">Returns the created recipe</response>
              <response code="409">If a recipe with provided name already exists</response>  
         </member>
-        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipeController.DeleteRecipe(System.String)">
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipesController.DeleteRecipe(System.String)">
             <summary>
             Deletes a recipe by name.
             </summary>
@@ -59,7 +59,7 @@
             <response code="200">The recipe was deleted</response>
             <response code="404">The recipe does not exist</response>
         </member>
-        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipeController.PatchRecipe(System.String,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{RecipeBook.Core.Domain.Recipes.Recipe})">
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipesController.PatchRecipe(System.String,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{RecipeBook.Core.Domain.Recipes.Recipe})">
              <summary>
              Updates an existing recipe in the database.
              </summary>
