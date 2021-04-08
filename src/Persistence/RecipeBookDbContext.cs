@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
@@ -30,7 +31,6 @@ namespace RecipeBook.Infrastructure.Persistence
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<Recipe>().HasKey(recipe => recipe.Name);
             builder.Entity<UsedOccasion>().HasKey(usedOccasion => usedOccasion.When);
             builder.Entity<Mass>().ToTable("Masses");
             builder.Entity<Volume>().ToTable("Volumes");
@@ -38,7 +38,8 @@ namespace RecipeBook.Infrastructure.Persistence
 
         public async Task<Recipe?> FetchAsync(string name)
         {
-            return await Recipes.FindAsync(name);
+            List<Recipe> recipes = await Recipes.Where(recipe => recipe.Name.Equals(name)).ToListAsync();
+            return recipes.FirstOrDefault();
         }
 
         public async Task<IEnumerable<Recipe>> FetchAllAsync()
