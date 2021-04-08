@@ -1,0 +1,23 @@
+﻿@using RecipeBook.Core.Domain.Recipes
+<li class="item d-flex">
+    <img class="picture" src="@Recipe.ImagePath" alt="@Recipe.Name"/>
+    <div class="p-2">
+        <h3 class="mb-0" style="text-decoration: none;">@Recipe.Name</h3>
+        @if (Recipe.Rating is not null)
+        {
+            <p>Betyg: @(Recipe.Rating)/10</p>   
+        }
+        else
+        {
+            <p>Inget betyg</p>
+        }
+    </div>
+</li>
+
+@code {
+#nullable enable
+
+    [Parameter]
+    public Recipe Recipe { get; set; } = null!;
+
+}

@@ -2,6 +2,9 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using RecipeBook.Infrastructure.Persistence;
 
 namespace RecipeBook.Infrastructure.Persistence.Migrations
 {
@@ -45,6 +48,9 @@ namespace RecipeBook.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("RecipeBook.Core.Domain.Recipes.Recipe", b =>
                 {
                     b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ImagePath")
                         .HasColumnType("text");
 
                     b.Property<int?>("Rating")

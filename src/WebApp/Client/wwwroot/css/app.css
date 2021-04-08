@@ -4,6 +4,10 @@ a, .btn-link {
     color: #0366d6;
 }
 
+a.no-underline {
+    text-decoration: none !important;
+}
+
 .btn-primary {
     color: #fff;
     background-color: #1b6ec2;

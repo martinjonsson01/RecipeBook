@@ -1,0 +1,22 @@
+﻿li.item {
+    transition: all 0.1s;
+    opacity: 0.5;
+    hyphens: auto;
+}
+
+li.item:hover {
+    opacity: 1;
+}
+
+.active li {
+    background-color: var(--bs-light);
+    opacity: 1;
+}
+
+img.picture {
+    width: 6rem;
+    height: 6rem;
+    margin: 0.25rem;
+    object-fit: cover;
+    border-radius: 10rem;
+}

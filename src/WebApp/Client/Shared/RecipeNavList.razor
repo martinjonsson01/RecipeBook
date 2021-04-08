@@ -1,0 +1,49 @@
+﻿@using RecipeBook.Core.Domain.Recipes
+@using System.Net
+
+@inject HttpClient Http
+
+<nav class="nav flex-column">
+    @if (_recipes is not null)
+    {
+        foreach (Recipe recipe in _recipes)
+        {
+            <NavLink class="no-underline"
+                     href="@ToUrlSafe(recipe.Name)"
+                     Match="NavLinkMatch.All">
+                <RecipeItem Recipe="@recipe"/>
+            </NavLink>
+        }
+    } else if (_responseStatus is null)
+    {
+        <h3>Laddar...</h3>
+    } else if (_responseStatus == HttpStatusCode.NoContent)
+    {
+        <h3>Finns inga recept</h3>
+    }
+</nav>
+
+@code
+{
+    #nullable enable
+    
+    private IEnumerable<Recipe>? _recipes;
+
+    private HttpStatusCode? _responseStatus;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        HttpResponseMessage response = await Http.GetAsync("/api/v1/recipe");
+        if (response.StatusCode == HttpStatusCode.OK)
+        {
+            _recipes = await response.Content.ReadFromJsonAsync<IEnumerable<Recipe>>();
+            return;
+        }
+        _responseStatus = response.StatusCode;
+    }
+
+    private string ToUrlSafe(string name)
+    {
+        return Uri.EscapeUriString(name).Replace("%20", "-");
+    } 
+}

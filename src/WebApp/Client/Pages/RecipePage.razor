@@ -1,0 +1,14 @@
+﻿@page "/{recipeName}"
+<div class="p-3 bg-light">
+    <h1 class="display-4">@RecipeName</h1>
+    <h2>me is subtitle</h2>
+    <p>Me is paragraf</p>
+</div>
+
+@code {
+    #nullable enable
+
+    [Parameter]
+    public string RecipeName { get; set; } = string.Empty;
+
+}
