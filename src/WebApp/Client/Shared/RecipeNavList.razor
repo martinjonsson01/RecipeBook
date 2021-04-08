@@ -9,7 +9,7 @@
         foreach (Recipe recipe in _recipes)
         {
             <NavLink class="no-underline"
-                     href="@ToUrlSafe(recipe.Name)"
+                     href="@recipe.ToUrlSafeName()"
                      Match="NavLinkMatch.All">
                 <RecipeItem Recipe="@recipe"/>
             </NavLink>
@@ -41,9 +41,4 @@
         }
         _responseStatus = response.StatusCode;
     }
-
-    private string ToUrlSafe(string name)
-    {
-        return Uri.EscapeUriString(name).Replace("%20", "-");
-    } 
 }

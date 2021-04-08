@@ -40,7 +40,8 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Recipe>> GetRecipe(string name)
         {
-            Recipe? recipe = await _repo.FetchAsync(name);
+            string  actualName = Recipe.FromUrlSafeNameToOrdinaryName(name);
+            Recipe? recipe     = await _repo.FetchAsync(actualName);
             if (recipe is null) return NotFound();
             return Ok(recipe);
         }
@@ -103,10 +104,11 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteRecipe(string name)
         {
-            if (await _repo.FetchAsync(name) is null)
+            string actualName = Recipe.FromUrlSafeNameToOrdinaryName(name);
+            if (await _repo.FetchAsync(actualName) is null)
                 return NotFound();
 
-            await _repo.DeleteAsync(name);
+            await _repo.DeleteAsync(actualName);
             return Ok();
         }
 
@@ -138,7 +140,8 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         [ProducesResponseType(StatusCodes.Status404NotFound)] 
         public async Task<IActionResult> PatchRecipe(string name, [FromBody] JsonPatchDocument<Recipe> patch)
         {
-            Recipe? recipe = await _repo.FetchAsync(name);
+            string  actualName = Recipe.FromUrlSafeNameToOrdinaryName(name);
+            Recipe? recipe     = await _repo.FetchAsync(actualName);
             if (recipe is null) return NotFound();
 
             patch.ApplyTo(recipe, ModelState);

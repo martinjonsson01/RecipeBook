@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace RecipeBook.Core.Domain.Recipes
 {
@@ -10,5 +11,16 @@ namespace RecipeBook.Core.Domain.Recipes
         public IList<UsedOccasion> UsedOccasions { get; set; } = new List<UsedOccasion>();
         public IList<Step>         Steps         { get; set; } = new List<Step>();
         public IList<Ingredient>   Ingredients   { get; set; } = new List<Ingredient>();
+        
+        public string ToUrlSafeName()
+        {
+            return Uri.EscapeUriString(Name).Replace("%20", "-");
+        }
+
+        public static string FromUrlSafeNameToOrdinaryName(string urlSafeName)
+        {
+            string escapedString = urlSafeName.Replace("-", "%20");
+            return Uri.UnescapeDataString(escapedString);
+        }
     }
 }
