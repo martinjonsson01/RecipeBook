@@ -31,6 +31,7 @@ namespace RecipeBook.Infrastructure.Persistence
         {
             base.OnModelCreating(builder);
 
+            builder.Entity<Recipe>().HasIndex(recipe => recipe.Name).IsUnique();
             builder.Entity<Mass>().ToTable("Masses");
             builder.Entity<Volume>().ToTable("Volumes");
         }
