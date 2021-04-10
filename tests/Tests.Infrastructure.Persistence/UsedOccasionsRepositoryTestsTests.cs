@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-using RecipeBook.Core.Domain.Recipes;
+﻿using RecipeBook.Core.Domain.Recipes;
 using RecipeBook.Infrastructure.Persistence;
 
 namespace Tests.Infrastructure.Persistence

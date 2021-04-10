@@ -1,7 +1,5 @@
 ﻿using System.Linq;
 
-using RecipeBook.Infrastructure.Persistence;
-
 namespace Tests.Infrastructure.Persistence
 {
     public abstract class IntegerKeyRepositoryTestsBase<

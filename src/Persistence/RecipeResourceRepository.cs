@@ -16,8 +16,7 @@ using RecipeBook.Core.Application.Repository;
 namespace RecipeBook.Infrastructure.Persistence
 {
     public abstract class RecipeResourceRepository<TSelf, TResource, TKey>
-        : DatabaseConnected<TSelf>,
-          IResourcesRepository<TResource, TKey>
+        : DatabaseConnected<TSelf>, IResourcesRepository<TResource, TKey>
         where TResource : class
         where TSelf : class
     {
