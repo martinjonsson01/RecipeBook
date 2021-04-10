@@ -20,11 +20,9 @@ namespace Tests.Infrastructure.Persistence
 {
     [Collection("RepositoryTests")]
     public abstract class RecipeResourceRepositoryTestBase<
-        TRecipeResourceRepository,
         TRepository,
         TResource,
         TKey> : IClassFixture<DatabaseFixture>
-        where TRecipeResourceRepository : RecipeResourceRepository<TRepository, TResource, TKey>
         where TResource : class, new()
         where TRepository : class
     {
@@ -38,14 +36,15 @@ namespace Tests.Infrastructure.Persistence
             DatabaseFixture.Checkpoint.Reset(fixture.Db).Wait();
         }
 
-        protected          TRecipeResourceRepository  Repo = null!; // Has to be set by subtype constructor
+        protected RecipeResourceRepository<TRepository, TResource, TKey> Repo = null!; // Has to be set by subtype constructor
+
         protected readonly Mock<ILogger<TRepository>> MockLogger;
         protected readonly DatabaseFixture            Fixture;
         protected readonly IDbConnection              Db;
         protected readonly Faker                      Faker;
 
 
-        protected abstract TKey?   GetKey(dynamic o);
+        protected abstract TKey?  GetKey(dynamic o);
         protected abstract TKey   MockKey();
         protected abstract TKey[] MockKeys(int count);
 
@@ -125,7 +124,7 @@ namespace Tests.Infrastructure.Persistence
             // Arrange
             string    recipeName       = Faker.Lorem.Sentence();
             TResource expectedResource = await MockResourceInDatabaseAsync(recipeName);
-            TKey      expectedKey      = GetKey(expectedResource);
+            TKey?      expectedKey      = GetKey(expectedResource);
 
             // Act
             TResource? actualResource = await Repo.GetAsync(recipeName, expectedKey);
@@ -141,7 +140,7 @@ namespace Tests.Infrastructure.Persistence
             // Arrange
             string    recipeName       = Faker.Lorem.Sentence();
             TResource expectedResource = MockResource();
-            TKey      expectedKey      = GetKey(expectedResource);
+            TKey?      expectedKey      = GetKey(expectedResource);
 
             // Act
             TResource? actualResource = await Repo.GetAsync(recipeName, expectedKey);
@@ -203,7 +202,7 @@ namespace Tests.Infrastructure.Persistence
         public async void CreateOrUpdate_ReturnsResource_WhenResourceExists()
         {
             // Arrange
-            string recipeName = Faker.Lorem.Sentence();
+            string    recipeName       = Faker.Lorem.Sentence();
             TResource expectedResource = await MockResourceInDatabaseAsync(recipeName);
 
             // Act

@@ -11,7 +11,6 @@ namespace Tests.Infrastructure.Persistence
 {
     public class RecipesRepositoryTests
         : RecipeResourceRepositoryTestBase<
-            RecipeResourceRepository<RecipesRepository, Recipe, string>,
             RecipesRepository,
             Recipe,
             string>

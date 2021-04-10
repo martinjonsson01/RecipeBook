@@ -8,7 +8,6 @@ namespace Tests.Infrastructure.Persistence
             TRepository,
             TResource>
         : RecipeResourceRepositoryTestBase<
-            RecipeResourceRepository<TRepository, TResource, int?>,
             TRepository,
             TResource,
             int?>
