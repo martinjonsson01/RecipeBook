@@ -1,10 +1,4 @@
-﻿using System.Threading.Tasks;
-
-using Dapper;
-
-using Microsoft.Extensions.Logging;
-
-using Npgsql;
+﻿using Microsoft.Extensions.Logging;
 
 using RecipeBook.Core.Domain.Recipes;
 
@@ -28,18 +22,13 @@ namespace RecipeBook.Infrastructure.Persistence
                      WHERE name = :key; 
             ";
 
-        public override async Task<bool> ExistsAsync(string _, string recipeName)
-        {
-            await using var db = new NpgsqlConnection(ConnectionString);
-
-            return await db.QuerySingleAsync<bool>(@"
+        protected override string ExistsSql => @"
                     SELECT EXISTS(
                         SELECT *
                           FROM recipes R
-                         WHERE R.name = :recipeName
+                         WHERE R.name = :key
                     ); 
-            ", new { recipeName });
-        }
+            ";
 
         protected override string CreateOrUpdateSql(string idQuery, int recipeId, Recipe? entity) => $@"
                         INSERT
@@ -54,22 +43,18 @@ namespace RecipeBook.Infrastructure.Persistence
                          WHERE recipes.id = :Id
                      RETURNING id;
                 ";
-        
+
+        protected override string DeleteSql => @"
+                DELETE 
+                  FROM recipes
+                 WHERE name = :key
+            ";
+
         protected override string? GetEntityKey(dynamic entity) => entity.Name;
 
         protected override void SetEntityKey(dynamic entity, string key) => entity.Id = int.Parse(key);
 
         protected override bool EntityKeyIsNull(dynamic entity) => entity.Id is null;
         
-        public override async Task DeleteAsync(string _, string recipeName)
-        {
-            await using var db = new NpgsqlConnection(ConnectionString);
-
-            await db.ExecuteAsync(@"
-                DELETE 
-                  FROM recipes
-                 WHERE name = :recipeName
-            ", new { recipeName });
-        }
     }
 }
