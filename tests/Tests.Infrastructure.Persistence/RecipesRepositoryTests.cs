@@ -21,7 +21,7 @@ namespace Tests.Infrastructure.Persistence
             Repo = new RecipesRepository(MockLogger.Object, fixture.ConnectionString);
         }
 
-        protected override string GetKey(Recipe resource) => resource.Name;
+        protected override string GetKey(dynamic resource) => resource.Name;
 
         protected override string MockKey() => Faker.Lorem.Sentence();
 

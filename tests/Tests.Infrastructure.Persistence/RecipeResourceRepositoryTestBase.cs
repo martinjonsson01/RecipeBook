@@ -45,7 +45,7 @@ namespace Tests.Infrastructure.Persistence
         protected readonly Faker                      Faker;
 
 
-        protected abstract TKey   GetKey(TResource resource);
+        protected abstract TKey?   GetKey(dynamic o);
         protected abstract TKey   MockKey();
         protected abstract TKey[] MockKeys(int count);
 

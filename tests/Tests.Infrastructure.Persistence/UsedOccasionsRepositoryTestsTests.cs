@@ -5,25 +5,14 @@ using RecipeBook.Infrastructure.Persistence;
 
 namespace Tests.Infrastructure.Persistence
 {
-    public class UsedOccasionsRepositoryTests
-        : RecipeResourceRepositoryTestBase<
-            RecipeResourceRepository<UsedOccasionsRepository, UsedOccasion, int?>,
-            UsedOccasionsRepository,
-            UsedOccasion,
-            int?>
+    public class UsedOccasionsRepositoryTestsTests 
+        : IntegerKeyRepositoryTestsBase<UsedOccasionsRepository, UsedOccasion>
     {
-        public UsedOccasionsRepositoryTests(DatabaseFixture fixture) : base(fixture)
+        public UsedOccasionsRepositoryTestsTests(DatabaseFixture fixture) : base(fixture)
         {
             Repo = new UsedOccasionsRepository(MockLogger.Object, fixture.ConnectionString);
         }
 
-        protected override int? GetKey(UsedOccasion resource) => resource.Id;
-
-        protected override int? MockKey() => 1;
-
-        protected override int?[] MockKeys(int count) =>
-            Enumerable.Range(0, count).Select(i => (int?) i).ToArray();
-        
         protected override string InsertResourceSql(int recipeId) => $@"
             INSERT INTO usedoccasions (id, comment, date, duration, recipeid)
                 VALUES (:Id, :Comment, :Date, :Duration, {recipeId})  RETURNING *;
