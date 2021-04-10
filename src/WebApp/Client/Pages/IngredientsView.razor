@@ -1,0 +1,19 @@
+﻿@using RecipeBook.Core.Domain.Recipes
+
+<div class="bg-white p-2">
+    <h2>Ingredienser</h2>
+    <ul>
+        @foreach (Ingredient ingredient in Recipe.Ingredients)
+        {
+            <li>@ingredient.Name</li>
+        }
+    </ul>
+</div>
+
+@code {
+#nullable enable
+
+    [Parameter]
+    public Recipe Recipe { get; set; } = null!;
+
+}

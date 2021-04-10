@@ -1,0 +1,25 @@
+﻿@using RecipeBook.Core.Domain.Recipes
+
+<div class="ms-5">
+    <h2>Steg</h2>
+    <ol>
+        @foreach (Step step in Recipe.Steps)
+        {
+            <li>
+                <p>@step.Instruction</p>
+                @if (step is TimeStep timeStep)
+                {
+                    <h3>i am a timer @timeStep.Duration</h3>   
+                }
+            </li>
+        }
+    </ol>
+</div>
+
+@code {
+#nullable enable
+
+    [Parameter]
+    public Recipe Recipe { get; set; } = null!;
+
+}

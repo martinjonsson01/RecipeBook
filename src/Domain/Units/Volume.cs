@@ -1,6 +1,6 @@
 ﻿namespace RecipeBook.Core.Domain.Units
 {
-    public record Volume(double Liters) : Unit(Liters)
+    public class Volume : Unit
     {
         private const string Liter      = "l";
         private const string Deciliter  = "dl";
@@ -17,7 +17,14 @@
         private const double DecilitersPerLiter  = 1.0d / LitersPerDeciliter;
         private const double CentilitersPerLiter = 1.0d / LitersPerCentiliter;
         private const double MillilitersPerLiter = 1.0d / LitersPerMilliliter;
-        
+
+        public Volume() { }
+
+        public Volume(double liters)
+        {
+            Value = liters;
+        }
+
         public static Volume FromTableSpoons(int tableSpoons)
         {
             return new(tableSpoons * LitersPerTableSpoon);

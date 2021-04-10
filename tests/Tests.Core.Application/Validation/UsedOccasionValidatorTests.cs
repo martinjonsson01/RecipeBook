@@ -19,7 +19,7 @@ namespace Tests.Core.Application.Validation
         {
             _invalidUsedOccasion = new UsedOccasion
             {
-                When = DateTime.MinValue,
+                Date = DateTime.MinValue,
                 Duration = TimeSpan.FromDays(2),
                 Comment = new string('T', 501)
             };

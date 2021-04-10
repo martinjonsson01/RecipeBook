@@ -1,155 +1,101 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-using RecipeBook.Core.Application;
+using RecipeBook.Core.Application.Repository;
 using RecipeBook.Core.Domain.Recipes;
 
 namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
 {
-    /// <summary>
-    /// Endpoints for CRUD of recipes.
-    /// </summary>
+    /**
+     * Note: Since this controller is top-level but still has to implement
+     * RecipeResourceController (which assumes that the controller is a subset of /Recipes/)
+     * all parameters requiring a recipeName will be replaced with string.empty.
+     */
     [ApiVersion("1.0")]
-    public class RecipesController : BaseApiController<RecipesController>
+    [Route("api/v{version:apiVersion}/[Controller]")]
+    public class RecipesController : RecipeResourceController<RecipesController, Recipe, string>
     {
-        private readonly IRecipeRepository _repo;
-
         public RecipesController(
-            ILogger<RecipesController> logger,
-            IRecipeRepository         repo)
-            : base(logger)
+            ILogger<RecipesController>       logger,
+            IResourcesRepository<Recipe, string> repo)
+            : base(logger, repo)
         {
-            _repo = repo;
         }
 
-        /// <summary>
-        /// Gets a recipe by name.
-        /// </summary>
-        /// <param name="name">The name of the recipe</param>
-        /// <returns>A Recipe with matching name</returns>
-        /// <response code="200">Returns the matching recipe</response>
-        /// <response code="404">If no recipe with matching name is found</response>
-        [HttpGet("{name}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Recipe>> GetRecipe(string name)
-        {
-            string  actualName = Recipe.FromUrlSafeNameToOrdinaryName(name);
-            Recipe? recipe     = await _repo.FetchAsync(actualName);
-            if (recipe is null) return NotFound();
-            return Ok(recipe);
-        }
-
+        protected override string GetKey(Recipe entity) => entity.Name;
+        
         /// <summary>
         /// Gets all recipes.
         /// </summary>
         /// <returns>All recipes</returns>
+        /// <param name="unused">Has no effect on response</param>
         /// <response code="200">Returns the recipes</response>
         /// <response code="204">If there are no recipes</response>  
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<ActionResult<IEnumerable<Recipe>>> GetAllRecipes()
+        [ApiExplorerSettings(IgnoreApi = false)]
+        public override Task<ActionResult<IEnumerable<Recipe>>> GetAll(string? unused)
         {
-            IEnumerable<Recipe> recipes = await _repo.FetchAllAsync();
-            if (!recipes.Any()) return NoContent();
-            return Ok(recipes);
+            return base.GetAll(unused ?? string.Empty);
         }
 
         /// <summary>
-        /// Creates a new recipe in the database.
+        /// Gets a recipe by name.
         /// </summary>
-        /// <remarks>
-        /// Example body:
-        ///
-        ///     POST /
-        ///     {
-        ///         "name": "Test Recipe",
-        ///         "rating": 10,
-        ///         "usedOccasions": [],
-        ///         "steps": [],
-        ///         "ingredients": []
-        ///     }
-        /// </remarks>
-        /// <returns>The location of the created recipe</returns>
-        /// <response code="201">Returns the created recipe</response>
-        /// <response code="409">If a recipe with provided name already exists</response>  
-        [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<Recipe>> PostRecipe(Recipe recipe)
+        /// <param name="unused">Has no effect on response</param>
+        /// <param name="id">The name of the recipe</param>
+        /// <returns>A recipe with matching name</returns>
+        /// <response code="200">Returns the matching recipe</response>
+        /// <response code="404">If no recipe with matching name is found</response>
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ApiExplorerSettings(IgnoreApi = false)]
+        public override Task<ActionResult<Recipe>> Get(string? unused, string id)
         {
-            if (await _repo.FetchAsync(recipe.Name) is not null)
-                return Conflict();
+            return base.Get(unused ?? string.Empty, id);
+        }
 
-            await _repo.StoreAsync(recipe);
-
-            return CreatedAtAction(nameof(GetRecipe), new { name = recipe.Name }, recipe);
+        /// <summary>
+        /// Creates a new or updates an existing recipe.
+        /// </summary>
+        /// <param name="unused">Has no effect on response</param>
+        /// <param name="recipe">The recipe to create or update</param>
+        /// <returns>A created or updated recipe</returns>
+        /// <response code="201">If a new recipe was created</response>
+        /// <response code="200">If an existing recipe was updated</response>
+        /// <response code="400">If recipe name is already taken</response>
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ApiExplorerSettings(IgnoreApi = false)]
+        public override Task<ActionResult<Recipe>> CreateOrUpdate(string? unused, Recipe recipe)
+        {
+            return base.CreateOrUpdate(unused ?? string.Empty, recipe);
         }
 
         /// <summary>
         /// Deletes a recipe by name.
         /// </summary>
-        /// <param name="name">The name of the recipe</param>
+        /// <param name="unused">Has no effect on response</param>
+        /// <param name="id">The name of the recipe</param>
         /// <response code="200">The recipe was deleted</response>
         /// <response code="404">The recipe does not exist</response>
-        [HttpDelete("{name}")]
+        /// <response code="500">The server failed to delete the recipe</response>
+        [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteRecipe(string name)
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ApiExplorerSettings(IgnoreApi = false)]
+        public override Task<ActionResult> Delete(string? unused, string id)
         {
-            string actualName = Recipe.FromUrlSafeNameToOrdinaryName(name);
-            if (await _repo.FetchAsync(actualName) is null)
-                return NotFound();
-
-            await _repo.DeleteAsync(actualName);
-            return Ok();
-        }
-
-        /// <summary>
-        /// Updates an existing recipe in the database.
-        /// </summary>
-        /// <remarks>
-        /// Example body:
-        ///
-        ///     PATCH /
-        ///     [
-        ///       {
-        ///         "op": "replace",
-        ///         "path": "/rating",
-        ///         "value": 5
-        ///       },
-        ///       {
-        ///         "op": "remove",
-        ///         "path": "/rating"
-        ///       }
-        ///     ]
-        /// </remarks>
-        /// <response code="204">Recipe was successfully updated</response>
-        /// <response code="400">Patch caused invalid state</response>
-        /// <response code="404">Recipe does not exist</response>
-        [HttpPatch("{name}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)] 
-        public async Task<IActionResult> PatchRecipe(string name, [FromBody] JsonPatchDocument<Recipe> patch)
-        {
-            string  actualName = Recipe.FromUrlSafeNameToOrdinaryName(name);
-            Recipe? recipe     = await _repo.FetchAsync(actualName);
-            if (recipe is null) return NotFound();
-
-            patch.ApplyTo(recipe, ModelState);
-
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-            
-            await _repo.UpdateAsync(recipe);
-            return NoContent();
+            return base.Delete(unused ?? string.Empty, id);
         }
     }
 }

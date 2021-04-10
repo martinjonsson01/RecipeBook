@@ -5,6 +5,6 @@ namespace RecipeBook.Core.Domain.Recipes
     public class Ingredient : BaseEntity
     {
         public string Name   { get; set; } = string.Empty;
-        public Unit   Amount { get; set; } = Unit.Zero;
+        public Unit   Amount { get; set; } = new Mass(0);
     }
 }

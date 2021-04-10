@@ -1,0 +1,10 @@
+﻿@using RecipeBook.Core.Domain.Recipes
+<h1 class="display-4">@Recipe.FromUrlSafeNameToOrdinaryName(RecipeNameUrlSafe)</h1>
+
+@code {
+#nullable enable
+
+    [Parameter]
+    public string RecipeNameUrlSafe { get; set; } = "Does-not-exist";
+
+}

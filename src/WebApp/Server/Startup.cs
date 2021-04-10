@@ -6,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
+using Newtonsoft.Json;
+
 using RecipeBook.Infrastructure.Persistence; // ONLY for dependency injection!
 
 namespace RecipeBook.Presentation.WebApp.Server
@@ -49,7 +51,10 @@ namespace RecipeBook.Presentation.WebApp.Server
 
             services
                 .AddControllersWithViews()
-                .AddNewtonsoftJson();
+                .AddNewtonsoftJson(opts =>
+                {
+                    opts.SerializerSettings.TypeNameHandling = TypeNameHandling.Auto;
+                });
             services.AddRazorPages();
         }
 

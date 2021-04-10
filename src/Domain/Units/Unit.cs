@@ -1,9 +1,7 @@
 ﻿namespace RecipeBook.Core.Domain.Units
 {
-    public record Unit(double Value)
+    public abstract class Unit : BaseEntity
     {
-        public int Id { get; set; }
-
-        public static readonly Unit Zero = new(0);
+        public double Value { get; set; }
     }
 }

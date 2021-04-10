@@ -1,14 +1,54 @@
-﻿@page "/{recipeName}"
+﻿@page "/{recipeNameUrlSafe}"
+
+@using RecipeBook.Core.Domain.Recipes
+@using System.Net
+@using Newtonsoft.Json
+
+@inject HttpClient Http
+
 <div class="p-3 bg-light">
-    <h1 class="display-4">@RecipeName</h1>
-    <h2>me is subtitle</h2>
-    <p>Me is paragraf</p>
+    @if (_recipe is not null)
+    {
+        <RecipeView Recipe="@_recipe" />
+    }
+    else if (_responseStatus is null)
+    {
+        <RecipePlaceholder RecipeNameUrlSafe="@RecipeNameUrlSafe"/>
+    }
+    else if (_responseStatus == HttpStatusCode.NotFound)
+    {
+        <h2>Kunde inte hitta receptet</h2>
+    }
 </div>
 
 @code {
-    #nullable enable
+#nullable enable
 
     [Parameter]
-    public string RecipeName { get; set; } = string.Empty;
+    public string RecipeNameUrlSafe { get; set; } = "Does-not-exist";
+
+    private Recipe? _recipe;
+
+    private HttpStatusCode? _responseStatus;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _recipe = null;
+        _responseStatus = null;
+
+        HttpResponseMessage response = await Http.GetAsync($"/api/v1/recipes/{RecipeNameUrlSafe}");
+        if (response.StatusCode == HttpStatusCode.OK)
+        {
+            var serializerOptions = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto
+            };
+            
+            _recipe = JsonConvert.DeserializeObject<Recipe>(response.Content.ToString() ?? "{}", serializerOptions);
+            
+            return;
+        }
+        _responseStatus = response.StatusCode;
+    }
 
 }

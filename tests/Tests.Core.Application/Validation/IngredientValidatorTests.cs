@@ -26,7 +26,7 @@ namespace Tests.Core.Application.Validation
         private void Validate_Accepts_ValidNames(string name)
         {
             // Arrange
-            var ingredient = new Ingredient { Name = name, Amount = Unit.Zero };
+            var ingredient = new Ingredient { Name = name, Amount = new Mass(0) };
 
             // Act
             ValidationResult result = new IngredientValidator().Validate(ingredient);
@@ -48,7 +48,7 @@ namespace Tests.Core.Application.Validation
         private void Validate_Denies_InvalidNames(string name)
         {
             // Arrange
-            var ingredient = new Ingredient { Name = name, Amount = Unit.Zero };
+            var ingredient = new Ingredient { Name = name, Amount = new Mass(0) };
 
             // Act
             ValidationResult result = new IngredientValidator().Validate(ingredient);
@@ -67,7 +67,7 @@ namespace Tests.Core.Application.Validation
         private void Validate_Accepts_ValidUnitAmounts(double amount)
         {
             // Arrange
-            var ingredient = new Ingredient { Name = "name", Amount = new Unit(amount) };
+            var ingredient = new Ingredient { Name = "name", Amount = new Mass(amount) };
 
             // Act
             ValidationResult result = new IngredientValidator().Validate(ingredient);
@@ -86,7 +86,7 @@ namespace Tests.Core.Application.Validation
         private void Validate_Denies_InvalidUnitAmount(double amount)
         {
             // Arrange
-            var ingredient = new Ingredient { Name = "name", Amount = new Unit(amount) };
+            var ingredient = new Ingredient { Name = "name", Amount = new Mass(amount) };
 
             // Act
             ValidationResult result = new IngredientValidator().Validate(ingredient);

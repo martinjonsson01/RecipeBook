@@ -3,14 +3,14 @@ using System.Threading.Tasks;
 
 using RecipeBook.Core.Domain.Recipes;
 
-namespace RecipeBook.Core.Application
+namespace RecipeBook.Core.Application.Repository
 {
-    public interface IRecipeRepository
+    public interface IRecipesRepository
     {
         public Task<Recipe?>             FetchAsync(string name);
         public Task<IEnumerable<Recipe>> FetchAllAsync();
-        public Task                      StoreAsync(Recipe  recipe);
+        public Task<Recipe>              StoreAsync(Recipe  recipe);
         public Task                      DeleteAsync(string name);
-        public Task                      UpdateAsync(Recipe recipe);
+        public Task<Recipe>              UpdateAsync(Recipe recipe);
     }
 }

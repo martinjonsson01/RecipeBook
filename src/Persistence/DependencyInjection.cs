@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-using RecipeBook.Core.Application;
+using RecipeBook.Core.Application.Repository;
+using RecipeBook.Core.Domain.Recipes;
 
 namespace RecipeBook.Infrastructure.Persistence
 {
@@ -8,7 +9,8 @@ namespace RecipeBook.Infrastructure.Persistence
     {
         public static void AddPersistence(this IServiceCollection services)
         {
-            services.AddDbContext<IRecipeRepository, RecipeBookDbContext>();
+            services.AddTransient<IResourcesRepository<Recipe, string>, RecipesRepository>();
+            services.AddTransient<IResourcesRepository<UsedOccasion, int?>, UsedOccasionsRepository>();
         }
     }
 }

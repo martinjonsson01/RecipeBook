@@ -9,79 +9,135 @@
             Contains all the common components of the api controllers.
             </summary>
         </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipeResourceController`3.GetAll(System.String)">
+            <summary>
+            Gets all resources.
+            </summary>
+            <param name="recipeName">The name of the recipe containing these resources</param>
+            <returns>All resources</returns>
+            <response code="200">Returns the resources</response>
+            <response code="204">If there are no resources</response>
+        </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipeResourceController`3.Get(System.String,`2)">
+            <summary>
+            Gets a resource by key.
+            </summary>
+            <param name="recipeName">The name of the recipe containing this resource</param>
+            <param name="id">The key of the resource</param>
+            <returns>A resource with matching key</returns>
+            <response code="200">Returns the matching resource</response>
+            <response code="404">If no resource with matching key is found</response>
+        </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipeResourceController`3.CreateOrUpdate(System.String,`1)">
+            <summary>
+            Creates a new or updates an existing resource.
+            </summary>
+            <param name="recipeName">The name of the recipe containing this resource</param>
+            <param name="entity">The resource to create or update</param>
+            <returns>A created or updated resource</returns>
+            <response code="201">If a new resource was created</response>
+            <response code="200">If an existing resource was updated</response>
+            <response code="400">If a provided entity is wrong</response>
+        </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipeResourceController`3.Delete(System.String,`2)">
+            <summary>
+            Deletes a resource by key.
+            </summary>
+            <param name="recipeName">The name of the recipe containing this resource</param>
+            <param name="id">The key of the resource</param>
+            <response code="200">The resource was deleted</response>
+            <response code="404">The resource does not exist</response>
+            <response code="500">The server failed to delete the resource</response>
+        </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipeResourceController`3.GetKey(`1)">
+            <summary>
+            Gets the key of a given entity.
+            </summary>
+        </member>
         <member name="T:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipesController">
-            <summary>
-            Endpoints for CRUD of recipes.
-            </summary>
+            Note: Since this controller is top-level but still has to implement
+            RecipeResourceController (which assumes that the controller is a subset of /Recipes/)
+            all parameters requiring a recipeName will be replaced with string.empty.
         </member>
-        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipesController.GetRecipe(System.String)">
-            <summary>
-            Gets a recipe by name.
-            </summary>
-            <param name="name">The name of the recipe</param>
-            <returns>A Recipe with matching name</returns>
-            <response code="200">Returns the matching recipe</response>
-            <response code="404">If no recipe with matching name is found</response>
-        </member>
-        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipesController.GetAllRecipes">
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipesController.GetAll(System.String)">
             <summary>
             Gets all recipes.
             </summary>
             <returns>All recipes</returns>
+            <param name="unused">Has no effect on response</param>
             <response code="200">Returns the recipes</response>
             <response code="204">If there are no recipes</response>  
         </member>
-        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipesController.PostRecipe(RecipeBook.Core.Domain.Recipes.Recipe)">
-             <summary>
-             Creates a new recipe in the database.
-             </summary>
-             <remarks>
-             Example body:
-            
-                 POST /
-                 {
-                     "name": "Test Recipe",
-                     "rating": 10,
-                     "usedOccasions": [],
-                     "steps": [],
-                     "ingredients": []
-                 }
-             </remarks>
-             <returns>The location of the created recipe</returns>
-             <response code="201">Returns the created recipe</response>
-             <response code="409">If a recipe with provided name already exists</response>  
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipesController.Get(System.String,System.String)">
+            <summary>
+            Gets a recipe by name.
+            </summary>
+            <param name="unused">Has no effect on response</param>
+            <param name="id">The name of the recipe</param>
+            <returns>A recipe with matching name</returns>
+            <response code="200">Returns the matching recipe</response>
+            <response code="404">If no recipe with matching name is found</response>
         </member>
-        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipesController.DeleteRecipe(System.String)">
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipesController.CreateOrUpdate(System.String,RecipeBook.Core.Domain.Recipes.Recipe)">
+            <summary>
+            Creates a new or updates an existing recipe.
+            </summary>
+            <param name="unused">Has no effect on response</param>
+            <param name="recipe">The recipe to create or update</param>
+            <returns>A created or updated recipe</returns>
+            <response code="201">If a new recipe was created</response>
+            <response code="200">If an existing recipe was updated</response>
+            <response code="400">If recipe name is already taken</response>
+        </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipesController.Delete(System.String,System.String)">
             <summary>
             Deletes a recipe by name.
             </summary>
-            <param name="name">The name of the recipe</param>
+            <param name="unused">Has no effect on response</param>
+            <param name="id">The name of the recipe</param>
             <response code="200">The recipe was deleted</response>
             <response code="404">The recipe does not exist</response>
+            <response code="500">The server failed to delete the recipe</response>
         </member>
-        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipesController.PatchRecipe(System.String,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{RecipeBook.Core.Domain.Recipes.Recipe})">
-             <summary>
-             Updates an existing recipe in the database.
-             </summary>
-             <remarks>
-             Example body:
-            
-                 PATCH /
-                 [
-                   {
-                     "op": "replace",
-                     "path": "/rating",
-                     "value": 5
-                   },
-                   {
-                     "op": "remove",
-                     "path": "/rating"
-                   }
-                 ]
-             </remarks>
-             <response code="204">Recipe was successfully updated</response>
-             <response code="400">Patch caused invalid state</response>
-             <response code="404">Recipe does not exist</response>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.UsedOccasionsController.GetAll(System.String)">
+            <summary>
+            Gets all used occasions.
+            </summary>
+            <param name="recipeName">The name of the recipe containing the used occasions</param>
+            <returns>All used occasions</returns>
+            <response code="200">Returns the used occasions</response>
+            <response code="204">If there are no used occasions</response>  
+        </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.UsedOccasionsController.Get(System.String,System.Nullable{System.Int32})">
+            <summary>
+            Gets a used occasion by Id.
+            </summary>
+            <param name="recipeName">The name of the recipe containing this used occasion</param>
+            <param name="id">The Id of the used occasion</param>
+            <returns>A used occasion with matching Id</returns>
+            <response code="200">Returns the matching used occasion</response>
+            <response code="404">If no used occasion with matching Id is found</response>
+        </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.UsedOccasionsController.CreateOrUpdate(System.String,RecipeBook.Core.Domain.Recipes.UsedOccasion)">
+            <summary>
+            Creates a new or updates an existing used occasion.
+            </summary>
+            <param name="recipeName">The name of the recipe containing this resource</param>
+            <param name="usedOccasion">The used occasion to create or update</param>
+            <returns>A created or updated used occasion</returns>
+            <response code="201">If a new used occasion was created</response>
+            <response code="200">If an existing used occasion was updated</response>
+            <response code="400">If a provided used occasion is wrong</response>
+        </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.UsedOccasionsController.Delete(System.String,System.Nullable{System.Int32})">
+            <summary>
+            Deletes a used occasion by Id.
+            </summary>
+            <param name="recipeName">The name of the recipe containing this used occasion</param>
+            <param name="id">The key of the used occasion</param>
+            <response code="200">The used occasion was deleted</response>
+            <response code="404">The used occasion does not exist</response>
+            <response code="500">The server failed to delete the used occasion</response>
         </member>
         <member name="T:RecipeBook.Presentation.WebApp.Server.Pages.ErrorModel">
             <summary>
