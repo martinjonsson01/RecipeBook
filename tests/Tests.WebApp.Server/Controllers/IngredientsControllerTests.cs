@@ -27,14 +27,15 @@ namespace Tests.WebApp.Server.Controllers
 
         protected override Ingredient MockResource(string recipeName, int? key = default)
         {
-            return new()
+            key ??= MockKey();
+            return new Ingredient
             {
-                Id = key ?? MockKey(),
+                Id = key,
                 Name = Faker.Lorem.Sentence(),
                 Amount = Faker.PickRandom<Unit>(
-                    new Mass(Faker.Random.Double(10)),
-                    new Volume(Faker.Random.Double(10)
-                    ))
+                    new Mass { Id = key, Value = Faker.Random.Double(10) },
+                    new Volume { Id = key, Value = Faker.Random.Double(10) }
+                )
             };
         }
     }

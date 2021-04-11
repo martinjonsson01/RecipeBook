@@ -47,11 +47,11 @@ namespace Tests.Infrastructure.Persistence.Repositories
 
         protected abstract TKey?      GetKey(dynamic o);
 
-        protected virtual async Task<TKey?> MockKey() => await Db.QuerySingleAsync<TKey>($@"
+        protected virtual async Task<TKey> MockKey() => await Db.QuerySingleAsync<TKey>($@"
             SELECT nextval('public.{typeof(TResource).Name.ToLowerInvariant()}s_id_seq');
         ");
 
-        protected virtual TKey?[] MockKeys(int count) =>
+        protected virtual TKey[] MockKeys(int count) =>
             Enumerable.Range(0, count).Select(_ => MockKey().Result).ToArray();
 
         protected virtual string InsertOrGetParentRecipeSql => @"
@@ -76,7 +76,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
             return await StoreInDatabase(recipeName, mockedResource);
         }
 
-        protected async Task<TResource> StoreInDatabase(string recipeName, TResource mockedResource)
+        protected virtual async Task<TResource> StoreInDatabase(string recipeName, TResource mockedResource)
         {
             var recipeId = await Db.QuerySingleAsync<int>(InsertOrGetParentRecipeSql, new { recipeName });
             return await Db.QuerySingleAsync<TResource>(InsertResourceSql(recipeId), mockedResource);
