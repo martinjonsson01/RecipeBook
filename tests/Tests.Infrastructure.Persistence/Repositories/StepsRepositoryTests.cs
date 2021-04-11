@@ -3,9 +3,9 @@ using RecipeBook.Infrastructure.Persistence.Repositories;
 
 namespace Tests.Infrastructure.Persistence.Repositories
 {
-    public class StepsRepositoryTestsTests : IntegerKeyRepositoryTestsBase<StepsRepository, Step>
+    public class StepsRepositoryTests : IntegerKeyRepositoryTestsBase<StepsRepository, Step>
     {
-        public StepsRepositoryTestsTests(DatabaseFixture fixture) : base(fixture)
+        public StepsRepositoryTests(DatabaseFixture fixture) : base(fixture)
         {
             Repo = new StepsRepository(MockLogger.Object, fixture.ConnectionString);
         }
@@ -23,6 +23,8 @@ namespace Tests.Infrastructure.Persistence.Repositories
             return new()
             {
                 Id = key ?? MockKey(),
+                Number = Faker.Random.Int(1, 10),
+                Instruction = Faker.Lorem.Sentences(2)
             };
         }
     }
