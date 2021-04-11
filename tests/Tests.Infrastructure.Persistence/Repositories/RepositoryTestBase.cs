@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -13,6 +14,8 @@ using Microsoft.Extensions.Logging;
 
 using Moq;
 
+using Npgsql;
+
 using RecipeBook.Infrastructure.Persistence.Repositories;
 
 using Xunit;
@@ -27,20 +30,18 @@ namespace Tests.Infrastructure.Persistence.Repositories
         where TResource : class, new()
         where TRepository : class
     {
-        protected RepositoryTestBase(DatabaseFixture fixture)
+        protected RepositoryTestBase(NpgsqlConnection db)
         {
             MockLogger = new Mock<ILogger<TRepository>>();
-            Fixture = fixture;
-            Db = fixture.Db;
+            Db = db;
             Faker = new Faker("sv");
 
-            DatabaseFixture.Checkpoint.Reset(fixture.Db).Wait();
+            DatabaseFixture.Checkpoint.Reset(db).Wait();
         }
 
         protected RepositoryBase<TRepository, TResource, TKey> Repo = null!; // Has to be set by subtype constructor
 
         protected readonly Mock<ILogger<TRepository>> MockLogger;
-        protected readonly DatabaseFixture            Fixture;
         protected readonly IDbConnection              Db;
         protected readonly Faker                      Faker;
 
@@ -88,7 +89,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
             return await MockResourcesInDatabase(recipeName, keys);
         }
 
-        protected async Task<IEnumerable<TResource>> MockResourcesInDatabase(
+        private async Task<IEnumerable<TResource>> MockResourcesInDatabase(
             string        recipeName,
             params TKey[] ids)
         {
@@ -101,7 +102,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
             return mockedResources;
         }
 
-        protected async Task<bool> ExistsInDatabase(TKey key)
+        private async Task<bool> ExistsInDatabase(TKey key)
         {
             var existsInDatabase = await Db.QuerySingleAsync<bool>(ResourceExistsSql, new { key });
             return existsInDatabase;
@@ -133,6 +134,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
             TKey?      expectedKey      = GetKey(expectedResource);
 
             // Act
+            if (expectedKey is null) throw new Exception("Key should not be null");
             TResource? actualResource = await Repo.GetAsync(recipeName, expectedKey);
 
             // Assert
@@ -149,6 +151,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
             TKey?      expectedKey      = GetKey(expectedResource);
 
             // Act
+            if (expectedKey is null) throw new Exception("Key should not be null");
             TResource? actualResource = await Repo.GetAsync(recipeName, expectedKey);
 
             // Assert
@@ -164,6 +167,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
             TKey      expectedKey      = GetKey(expectedResource);
 
             // Act
+            if (expectedKey is null) throw new Exception("Key should not be null");
             bool exists = await Repo.ExistsAsync(recipeName, expectedKey);
 
             // Assert
@@ -179,6 +183,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
             TKey      expectedKey      = GetKey(expectedResource);
 
             // Act
+            if (expectedKey is null) throw new Exception("Key should not be null");
             bool exists = await Repo.ExistsAsync(recipeName, expectedKey);
 
             // Assert
@@ -201,6 +206,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
             // Assert
             actualResource.Should().NotBeNull();
             TKey key = GetKey(actualResource!);
+            if (key is null) throw new Exception("Key should not be null");
             (await ExistsInDatabase(key)).Should().BeTrue();
         }
 
@@ -227,6 +233,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
             TKey      expectedKey      = GetKey(expectedResource);
 
             // Assert
+            if (expectedKey is null) throw new Exception("Key should not be null");
             (await ExistsInDatabase(expectedKey)).Should().BeTrue();
             // Act 
             await Repo.DeleteAsync(recipeName, expectedKey);
@@ -243,6 +250,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
             TKey      expectedKey      = GetKey(expectedResource);
 
             // Assert
+            if (expectedKey is null) throw new Exception("Key should not be null");
             (await ExistsInDatabase(expectedKey)).Should().BeFalse();
             // Act
             await Repo.DeleteAsync(recipeName, expectedKey);
