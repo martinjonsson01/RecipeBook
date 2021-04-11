@@ -39,6 +39,8 @@ namespace Tests.Infrastructure.Persistence.Repositories
             return new()
             {
                 Name = key ?? MockKey(),
+                Rating = Faker.Random.Int(1, 10),
+                ImagePath = Faker.Internet.Avatar()
             };
         }
 
