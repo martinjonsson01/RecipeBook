@@ -46,7 +46,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
         }
 
         [Fact]
-        public async void CreateOrUpdate_ReturnsNull_WhenRecipeWithSameNameButDifferentId()
+        public async Task CreateOrUpdate_ReturnsNull_WhenRecipeWithSameNameButDifferentId()
         {
             // Arrange
             string unused         = Faker.Lorem.Sentence();

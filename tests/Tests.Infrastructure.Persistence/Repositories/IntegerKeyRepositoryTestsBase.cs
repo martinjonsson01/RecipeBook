@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using System.Threading.Tasks;
+
+using FluentAssertions;
 
 using Npgsql;
 
@@ -23,7 +25,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
         protected override int? GetKey(dynamic resource) => resource.Id;
 
         [Fact]
-        public async void CreateOrUpdate_ThrowsException_WhenInvalidDataIsInput()
+        public async Task CreateOrUpdate_ThrowsException_WhenInvalidDataIsInput()
         {
             // Arrange
             string     unused          = Faker.Lorem.Sentence();

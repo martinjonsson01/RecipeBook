@@ -71,7 +71,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
         [InlineData(1)]
         [InlineData(2)]
         [InlineData(3)]
-        public async void GetAll_IncludesTimeSteps_WhenNResourcesContainingOneTimeStepExist(int n)
+        public async Task GetAll_IncludesTimeSteps_WhenNResourcesContainingOneTimeStepExist(int n)
         {
             // Arrange
             string     recipeName       = Faker.Lorem.Sentence();
@@ -88,7 +88,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
         }
         
         [Fact]
-        public async void Get_ReturnsTimeStep_WhenTimeStepExists()
+        public async Task Get_ReturnsTimeStep_WhenTimeStepExists()
         {
             // Arrange
             string    recipeName       = Faker.Lorem.Sentence();

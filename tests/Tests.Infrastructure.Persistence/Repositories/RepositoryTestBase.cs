@@ -111,7 +111,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
         [InlineData(0)]
         [InlineData(1)]
         [InlineData(2)]
-        public async void GetAll_ReturnsAll_WhenNResourcesExist(int n)
+        public async Task GetAll_ReturnsAll_WhenNResourcesExist(int n)
         {
             // Arrange
             string                 recipeName        = Faker.Lorem.Sentence();
@@ -125,7 +125,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
         }
 
         [Fact]
-        public async void Get_ReturnsResource_WhenResourceExists()
+        public async Task Get_ReturnsResource_WhenResourceExists()
         {
             // Arrange
             string    recipeName       = Faker.Lorem.Sentence();
@@ -141,7 +141,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
         }
 
         [Fact]
-        public async void Get_ReturnsNull_WhenNoResourceExists()
+        public async Task Get_ReturnsNull_WhenNoResourceExists()
         {
             // Arrange
             string    recipeName       = Faker.Lorem.Sentence();
@@ -156,7 +156,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
         }
 
         [Fact]
-        public async void Exists_ReturnsTrue_WhenResourceExists()
+        public async Task Exists_ReturnsTrue_WhenResourceExists()
         {
             // Arrange
             string    recipeName       = Faker.Lorem.Sentence();
@@ -171,7 +171,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
         }
 
         [Fact]
-        public async void Exists_ReturnsFalse_WhenNoResourceExists()
+        public async Task Exists_ReturnsFalse_WhenNoResourceExists()
         {
             // Arrange
             string    recipeName       = Faker.Lorem.Sentence();
@@ -186,7 +186,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
         }
 
         [Fact]
-        public async void CreateOrUpdate_CreatesNewResource_WhenNoResourceExists()
+        public async Task CreateOrUpdate_CreatesNewResource_WhenNoResourceExists()
         {
             // Arrange
             string recipeName = Faker.Lorem.Sentence();
@@ -205,7 +205,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
         }
 
         [Fact]
-        public async void CreateOrUpdate_ReturnsResource_WhenResourceExists()
+        public async Task CreateOrUpdate_ReturnsResource_WhenResourceExists()
         {
             // Arrange
             string    recipeName       = Faker.Lorem.Sentence();
@@ -219,7 +219,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
         }
 
         [Fact]
-        public async void Delete_DeletesResource_WhenResourceExists()
+        public async Task Delete_DeletesResource_WhenResourceExists()
         {
             // Arrange
             string    recipeName       = Faker.Lorem.Sentence();
@@ -235,7 +235,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
         }
 
         [Fact]
-        public async void Delete_DoesNothing_WhenNoResourceExists()
+        public async Task Delete_DoesNothing_WhenNoResourceExists()
         {
             // Arrange
             string    recipeName       = Faker.Lorem.Sentence();
