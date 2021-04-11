@@ -14,10 +14,12 @@
                 <RecipeItem Recipe="@recipe"/>
             </NavLink>
         }
-    } else if (_responseStatus is null)
+    }
+    else if (_responseStatus is null)
     {
         <h3>Laddar...</h3>
-    } else if (_responseStatus == HttpStatusCode.NoContent)
+    }
+    else if (_responseStatus == HttpStatusCode.NoContent)
     {
         <h3>Finns inga recept</h3>
     }
@@ -25,12 +27,12 @@
 
 @code
 {
-    #nullable enable
-    
+#nullable enable
+
     private IEnumerable<Recipe>? _recipes;
 
     private HttpStatusCode? _responseStatus;
-    
+
     protected override async Task OnInitializedAsync()
     {
         HttpResponseMessage response = await Http.GetAsync("/api/v1/recipes");
