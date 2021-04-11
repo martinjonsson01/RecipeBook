@@ -9,6 +9,50 @@
             Contains all the common components of the api controllers.
             </summary>
         </member>
+        <member name="T:RecipeBook.Presentation.WebApp.Server.Controllers.v1.IngredientsController">
+            This subclass of ResourceController is merely a facade with documentation applied.
+            The actual implementation is in the base class.
+        </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.IngredientsController.GetAll(System.String)">
+            <summary>
+            Gets all ingredients.
+            </summary>
+            <param name="recipeName">The name of the recipe containing the ingredients</param>
+            <returns>All ingredients</returns>
+            <response code="200">Returns the ingredients</response>
+            <response code="204">If there are no ingredients</response>  
+        </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.IngredientsController.Get(System.String,System.Nullable{System.Int32})">
+            <summary>
+            Gets an ingredient by Id.
+            </summary>
+            <param name="recipeName">The name of the recipe containing this ingredient</param>
+            <param name="id">The Id of the ingredient</param>
+            <returns>A ingredient with matching Id</returns>
+            <response code="200">Returns the matching ingredient</response>
+            <response code="404">If no ingredient with matching Id is found</response>
+        </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.IngredientsController.CreateOrUpdate(System.String,RecipeBook.Core.Domain.Recipes.Ingredient)">
+            <summary>
+            Creates a new or updates an existing ingredient.
+            </summary>
+            <param name="recipeName">The name of the recipe containing this resource</param>
+            <param name="ingredient">The ingredient to create or update</param>
+            <returns>A created or updated ingredient</returns>
+            <response code="201">If a new ingredient was created</response>
+            <response code="200">If an existing ingredient was updated</response>
+            <response code="400">If a provided ingredient is wrong</response>
+        </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.IngredientsController.Delete(System.String,System.Nullable{System.Int32})">
+            <summary>
+            Deletes an ingredient by Id.
+            </summary>
+            <param name="recipeName">The name of the recipe containing this ingredient</param>
+            <param name="id">The key of the ingredient</param>
+            <response code="200">The ingredient was deleted</response>
+            <response code="404">The ingredient does not exist</response>
+            <response code="500">The server failed to delete the ingredient</response>
+        </member>
         <member name="T:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipesController">
             Note: Since this controller is top-level but still has to implement
             ResourceController (which assumes that the controller is a subset of /Recipes/)
