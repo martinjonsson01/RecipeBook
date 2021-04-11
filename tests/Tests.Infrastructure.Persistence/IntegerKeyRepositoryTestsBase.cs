@@ -1,5 +1,11 @@
 ﻿using System.Linq;
 
+using FluentAssertions;
+
+using Npgsql;
+
+using Xunit;
+
 namespace Tests.Infrastructure.Persistence
 {
     public abstract class IntegerKeyRepositoryTestsBase<
@@ -23,5 +29,16 @@ namespace Tests.Infrastructure.Persistence
         protected override int?[] MockKeys(int count) =>
             Enumerable.Range(0, count).Select(i => (int?) i).ToArray();
 
+        [Fact]
+        public void CreateOrUpdate_ThrowsException_WhenInvalidDataIsInput()
+        {
+            // Arrange
+            string     unused          = Faker.Lorem.Sentence();
+            TResource? invalidResource = MockResource(-1);
+            
+            // Act/Assert
+            Repo.Invoking(async repo => await repo.CreateOrUpdateAsync(unused, invalidResource))
+                .Should().Throw<NpgsqlException>();
+        }
     }
 }
