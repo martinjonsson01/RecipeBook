@@ -18,7 +18,7 @@ using Xunit;
 
 namespace Tests.WebApp.Server.Controllers
 {
-    public abstract class RecipeResourceControllerTestBase<
+    public abstract class ResourceControllerTestBase<
         TRecipeResourceController,
         TController,
         TResource,
@@ -27,7 +27,7 @@ namespace Tests.WebApp.Server.Controllers
         where TResource : class, new()
         where TController : class
     {
-        protected RecipeResourceControllerTestBase()
+        protected ResourceControllerTestBase()
         {
             MockRepo = new Mock<IResourcesRepository<TResource, TKey>>();
             MockLogger = new Mock<ILogger<TController>>();

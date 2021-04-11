@@ -6,7 +6,7 @@ using RecipeBook.Presentation.WebApp.Server.Controllers.v1;
 namespace Tests.WebApp.Server.Controllers
 {
     public class RecipesControllerTests
-        : RecipeResourceControllerTestBase<
+        : ResourceControllerTestBase<
             ResourceController<RecipesController, Recipe, string>,
             RecipesController,
             Recipe,

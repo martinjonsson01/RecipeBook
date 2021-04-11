@@ -6,7 +6,7 @@ using RecipeBook.Presentation.WebApp.Server.Controllers.v1;
 namespace Tests.WebApp.Server.Controllers
 {
     public class UsedOccasionsControllerTests
-        : RecipeResourceControllerTestBase<
+        : ResourceControllerTestBase<
             ResourceController<UsedOccasionsController, UsedOccasion, int?>,
             UsedOccasionsController,
             UsedOccasion,
