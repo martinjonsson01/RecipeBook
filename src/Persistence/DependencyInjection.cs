@@ -12,6 +12,8 @@ namespace RecipeBook.Infrastructure.Persistence
         {
             services.AddTransient<IResourcesRepository<Recipe, string>, RecipesRepository>();
             services.AddTransient<IResourcesRepository<UsedOccasion, int?>, UsedOccasionsRepository>();
+            services.AddTransient<IResourcesRepository<Step, int?>, StepsRepository>();
+            services.AddTransient<IResourcesRepository<Ingredient, int?>, IngredientsRepository>();
         }
     }
 }
