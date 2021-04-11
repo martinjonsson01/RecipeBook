@@ -149,7 +149,6 @@ namespace RecipeBook.Infrastructure.Persistence
             await db.ExecuteAsync(DeleteSql, new { key, recipeId });
         }
 
-        protected virtual TKey? GetEntityKey(dynamic entity)           => entity.Id;
         protected virtual void  SetEntityKey(dynamic entity, TKey key) => entity.Id = key!;
 
         private static Task<int> GetRecipeId(string recipeName, IDbConnection db)

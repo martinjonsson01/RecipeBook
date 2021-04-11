@@ -50,8 +50,6 @@ namespace RecipeBook.Infrastructure.Persistence
                  WHERE name = :key
             ";
 
-        protected override string? GetEntityKey(dynamic entity) => entity.Name;
-
         protected override void SetEntityKey(dynamic entity, string key) => entity.Id = int.Parse(key);
 
         protected override bool EntityKeyIsNull(dynamic entity) => entity.Id is null;
