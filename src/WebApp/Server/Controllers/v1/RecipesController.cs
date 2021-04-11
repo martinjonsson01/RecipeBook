@@ -12,12 +12,12 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
 {
     /**
      * Note: Since this controller is top-level but still has to implement
-     * RecipeResourceController (which assumes that the controller is a subset of /Recipes/)
+     * ResourceController (which assumes that the controller is a subset of /Recipes/)
      * all parameters requiring a recipeName will be replaced with string.empty.
      */
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[Controller]")]
-    public class RecipesController : RecipeResourceController<RecipesController, Recipe, string>
+    public class RecipesController : ResourceController<RecipesController, Recipe, string>
     {
         public RecipesController(
             ILogger<RecipesController>       logger,

@@ -7,7 +7,7 @@ namespace Tests.WebApp.Server
 {
     public class UsedOccasionsControllerTests
         : RecipeResourceControllerTestBase<
-            RecipeResourceController<UsedOccasionsController, UsedOccasion, int?>,
+            ResourceController<UsedOccasionsController, UsedOccasion, int?>,
             UsedOccasionsController,
             UsedOccasion,
             int?>

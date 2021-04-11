@@ -11,12 +11,12 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
 {
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/Recipes/{recipeName}/[Controller]")]
-    public abstract class RecipeResourceController<TController, TResource, TResourceKey>
+    public abstract class ResourceController<TController, TResource, TResourceKey>
         : BaseApiController<TController>
         where TResource : class
         where TController : class
     {
-        public RecipeResourceController(
+        public ResourceController(
             ILogger<TController>                          logger,
             IResourcesRepository<TResource, TResourceKey> repo)
             : base(logger)

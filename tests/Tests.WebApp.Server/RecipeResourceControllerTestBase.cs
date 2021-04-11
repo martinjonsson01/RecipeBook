@@ -23,7 +23,7 @@ namespace Tests.WebApp.Server
         TController,
         TResource,
         TKey>
-        where TRecipeResourceController : RecipeResourceController<TController, TResource, TKey>
+        where TRecipeResourceController : ResourceController<TController, TResource, TKey>
         where TResource : class, new()
         where TController : class
     {

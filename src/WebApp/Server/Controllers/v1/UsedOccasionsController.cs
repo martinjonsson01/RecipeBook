@@ -11,7 +11,7 @@ using RecipeBook.Core.Domain.Recipes;
 namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
 {
     [ApiVersion("1.0")]
-    public class UsedOccasionsController : RecipeResourceController<UsedOccasionsController, UsedOccasion, int?>
+    public class UsedOccasionsController : ResourceController<UsedOccasionsController, UsedOccasion, int?>
     {
         public UsedOccasionsController(
             ILogger<UsedOccasionsController>       logger,
