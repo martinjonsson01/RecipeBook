@@ -31,19 +31,19 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
             _table = tableName ?? $"{typeof(TResource).Name.ToLowerInvariant()}s";
             _keyColumn = keyColumn;
             _keyPropertyName = keyPropertyName;
-            _entityProperties = GetEntityPropertyNames();
-            _columnNames = GetColumnNamesString();
-            _propertyNames = GetPropertyNamesString();
-            _setColumnsToPropertyNames = GetColumnsToPropertyNamesString();
+            ExcludedPropertyNames = new List<string> { _keyPropertyName };
+            LoadEntityProperties();
         }
 
-        private readonly string              _table;
-        private readonly string              _keyColumn;
-        private readonly string              _keyPropertyName;
-        private readonly string              _columnNames;
-        private readonly string              _propertyNames;
-        private readonly string              _setColumnsToPropertyNames;
-        private readonly IEnumerable<string> _entityProperties;
+        private readonly   string              _table;
+        private readonly   string              _keyColumn;
+        private readonly   string              _keyPropertyName;
+        private            string              _columnNames;
+        private            string              _propertyNames;
+        private            string              _setColumnsToPropertyNames;
+        protected readonly IList<string>       ExcludedPropertyNames;
+        private            IEnumerable<string> _entityProperties;
+
 
         protected virtual string GetAllSql => $@"
                     SELECT * 
@@ -67,7 +67,7 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
                     ); 
             ";
 
-        protected virtual string CreateOrUpdateSql(string idQuery, int recipeId, TResource key) => $@"
+        protected virtual string CreateOrUpdateSql(string idQuery, int recipeId, TResource resource) => $@"
                     INSERT
                       INTO {_table}
                            ({_keyColumn}, recipeid{_columnNames})
@@ -87,7 +87,11 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
             ";
 
         protected virtual bool EntityKeyIsNull(dynamic entity) => entity.Id is null;
-        
+
+        protected virtual void AddTypeHandlers()
+        {
+        }
+
         public virtual async Task<IEnumerable<TResource>> GetAllAsync(string recipeName)
         {
             await using var db = new NpgsqlConnection(ConnectionString);
@@ -123,9 +127,13 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
 
             try
             {
-                string idQuery   = EntityKeyIsNull(entity) ? "default" : $":{_keyPropertyName}";
+                string idQuery = EntityKeyIsNull(entity) ? "default" : $":{_keyPropertyName}";
 
-                var insertedKey = await db.QuerySingleAsync<TKey>(CreateOrUpdateSql(idQuery, recipeId, entity), entity);
+                AddTypeHandlers();
+
+                var insertedKey = await db.QuerySingleAsync<TKey>(
+                    CreateOrUpdateSql(idQuery, recipeId, entity),
+                    entity);
 
                 SetEntityKey(entity, insertedKey);
 
@@ -149,7 +157,7 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
             await db.ExecuteAsync(DeleteSql, new { key, recipeId });
         }
 
-        protected virtual void  SetEntityKey(dynamic entity, TKey key) => entity.Id = key!;
+        protected virtual void SetEntityKey(dynamic entity, TKey key) => entity.Id = key!;
 
         private static Task<int> GetRecipeId(string recipeName, IDbConnection db)
         {
@@ -159,12 +167,20 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
                  WHERE name = :recipeName
             ", new { recipeName });
         }
-
+        
+        protected void LoadEntityProperties()
+        {
+            _entityProperties = GetEntityPropertyNames();
+            _columnNames = GetColumnNamesString();
+            _propertyNames = GetPropertyNamesString();
+            _setColumnsToPropertyNames = GetColumnsToPropertyNamesString();
+        }
+        
         private IEnumerable<string> GetEntityPropertyNames()
         {
             PropertyInfo[] propertyInfos = typeof(TResource).GetProperties();
             return propertyInfos
-                   .Where(propertyInfo => !propertyInfo.Name.Equals(_keyPropertyName))
+                   .Where(propertyInfo => !ExcludedPropertyNames.Contains(propertyInfo.Name))
                    .Select(propertyInfo => propertyInfo.Name);
         }
 
