@@ -43,8 +43,9 @@
             {
                 TypeNameHandling = TypeNameHandling.Auto
             };
-            
-            _recipe = JsonConvert.DeserializeObject<Recipe>(response.Content.ToString() ?? "{}", serializerOptions);
+
+            string json = await response.Content.ReadAsStringAsync();
+            _recipe = JsonConvert.DeserializeObject<Recipe>(json, serializerOptions);
             
             return;
         }
