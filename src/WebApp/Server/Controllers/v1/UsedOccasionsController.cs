@@ -10,6 +10,10 @@ using RecipeBook.Core.Domain.Recipes;
 
 namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
 {
+    /**
+     * This subclass of ResourceController is merely a facade with documentation applied.
+     * The actual implementation is in the base class.
+     */
     [ApiVersion("1.0")]
     public class UsedOccasionsController : ResourceController<UsedOccasionsController, UsedOccasion, int?>
     {
