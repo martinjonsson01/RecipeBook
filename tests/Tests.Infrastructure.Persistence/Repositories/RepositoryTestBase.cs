@@ -13,7 +13,6 @@ using Microsoft.Extensions.Logging;
 
 using Moq;
 
-using RecipeBook.Core.Domain.Recipes;
 using RecipeBook.Infrastructure.Persistence.Repositories;
 
 using Xunit;

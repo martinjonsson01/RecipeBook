@@ -1,9 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-
-using Dapper;
-
-using FluentAssertions;
+﻿using FluentAssertions;
 
 using Npgsql;
 
