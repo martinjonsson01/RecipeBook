@@ -1,4 +1,6 @@
-﻿namespace RecipeBook.Core.Domain.Units
+﻿using System;
+
+namespace RecipeBook.Core.Domain.Units
 {
     public class Volume : Unit
     {
@@ -40,15 +42,20 @@
             return new(milliliters * LitersPerMilliliter);
         }
 
+        // Kryddmått
+        public static Volume FromKrm(int krm)
+        {
+            return FromMilliliters(krm);
+        }
+
         public override string ToString()
         {
-            return Value switch
-            {
-                < LitersPerCentiliter => $"{Value * MillilitersPerLiter} {Milliliter}",
-                < LitersPerDeciliter  => $"{Value * CentilitersPerLiter} {Centiliter}",
-                < LitersPerLiter      => $"{Value * DecilitersPerLiter} {Deciliter}",
-                _                     => $"{Value} {Liter}"
-            };
+            double roundedValue = Math.Round(Value, 3, MidpointRounding.AwayFromZero);
+            double ml           = roundedValue * 1000;
+            if (ml % (MillilitersPerLiter / 1) == 0) return $"{roundedValue:#.##} {Liter}";
+            if (ml % (MillilitersPerLiter / 10) == 0) return $"{(roundedValue * DecilitersPerLiter):#.##} {Deciliter}";
+            if (ml % (MillilitersPerLiter / 100) == 0) return $"{(roundedValue * CentilitersPerLiter):#.##} {Centiliter}";
+            return $"{roundedValue * MillilitersPerLiter} {Milliliter}";
         }
     }
 }
