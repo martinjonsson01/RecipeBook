@@ -16,7 +16,7 @@ using RecipeBook.Presentation.WebApp.Server.Controllers.v1;
 
 using Xunit;
 
-namespace Tests.WebApp.Server
+namespace Tests.WebApp.Server.Controllers
 {
     public abstract class RecipeResourceControllerTestBase<
         TRecipeResourceController,
