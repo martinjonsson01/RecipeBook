@@ -47,7 +47,10 @@ namespace Tests.Infrastructure.Persistence.Repositories
 
 
         protected abstract TKey?      GetKey(dynamic o);
-        protected abstract Task<TKey> MockKey();
+
+        protected virtual async Task<TKey?> MockKey() => await Db.QuerySingleAsync<TKey>($@"
+            SELECT nextval('public.{typeof(TResource).Name.ToLowerInvariant()}s_id_seq');
+        ");
 
         protected virtual TKey?[] MockKeys(int count) =>
             Enumerable.Range(0, count).Select(_ => MockKey().Result).ToArray();

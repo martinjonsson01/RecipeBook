@@ -25,16 +25,6 @@ namespace Tests.Infrastructure.Persistence.Repositories
                 VALUES (:Id, :Number, :Instruction, {recipeId})  RETURNING *;
         ";
         
-        /*
-          protected override string InsertResourceSql(int recipeId) => $@"
-                INSERT INTO steps (id, number, instruction, recipeid)
-                     VALUES (:Id, :Number, :Instruction, {recipeId})
-                ON CONFLICT (id) 
-                         DO UPDATE SET id = :Id 
-                  RETURNING *;
-        ";
-         */
-
         private static string InsertTimeStepSql => @"
             INSERT INTO timesteps (id, duration)
                 VALUES (:Id, :Duration)  RETURNING *;

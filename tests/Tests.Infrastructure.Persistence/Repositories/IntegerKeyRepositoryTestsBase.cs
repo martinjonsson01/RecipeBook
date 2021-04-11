@@ -27,10 +27,6 @@ namespace Tests.Infrastructure.Persistence.Repositories
 
         protected override int? GetKey(dynamic resource) => resource.Id;
 
-        protected override async Task<int?> MockKey() => await Db.QuerySingleAsync<int>($@"
-            SELECT nextval('public.{typeof(TResource).Name.ToLowerInvariant()}s_id_seq');
-        ");
-
         [Fact]
         public async void CreateOrUpdate_ThrowsException_WhenInvalidDataIsInput()
         {
