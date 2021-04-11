@@ -9,54 +9,9 @@
             Contains all the common components of the api controllers.
             </summary>
         </member>
-        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipeResourceController`3.GetAll(System.String)">
-            <summary>
-            Gets all resources.
-            </summary>
-            <param name="recipeName">The name of the recipe containing these resources</param>
-            <returns>All resources</returns>
-            <response code="200">Returns the resources</response>
-            <response code="204">If there are no resources</response>
-        </member>
-        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipeResourceController`3.Get(System.String,`2)">
-            <summary>
-            Gets a resource by key.
-            </summary>
-            <param name="recipeName">The name of the recipe containing this resource</param>
-            <param name="id">The key of the resource</param>
-            <returns>A resource with matching key</returns>
-            <response code="200">Returns the matching resource</response>
-            <response code="404">If no resource with matching key is found</response>
-        </member>
-        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipeResourceController`3.CreateOrUpdate(System.String,`1)">
-            <summary>
-            Creates a new or updates an existing resource.
-            </summary>
-            <param name="recipeName">The name of the recipe containing this resource</param>
-            <param name="entity">The resource to create or update</param>
-            <returns>A created or updated resource</returns>
-            <response code="201">If a new resource was created</response>
-            <response code="200">If an existing resource was updated</response>
-            <response code="400">If a provided entity is wrong</response>
-        </member>
-        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipeResourceController`3.Delete(System.String,`2)">
-            <summary>
-            Deletes a resource by key.
-            </summary>
-            <param name="recipeName">The name of the recipe containing this resource</param>
-            <param name="id">The key of the resource</param>
-            <response code="200">The resource was deleted</response>
-            <response code="404">The resource does not exist</response>
-            <response code="500">The server failed to delete the resource</response>
-        </member>
-        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipeResourceController`3.GetKey(`1)">
-            <summary>
-            Gets the key of a given entity.
-            </summary>
-        </member>
         <member name="T:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipesController">
             Note: Since this controller is top-level but still has to implement
-            RecipeResourceController (which assumes that the controller is a subset of /Recipes/)
+            ResourceController (which assumes that the controller is a subset of /Recipes/)
             all parameters requiring a recipeName will be replaced with string.empty.
         </member>
         <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipesController.GetAll(System.String)">
@@ -98,6 +53,99 @@
             <response code="200">The recipe was deleted</response>
             <response code="404">The recipe does not exist</response>
             <response code="500">The server failed to delete the recipe</response>
+        </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.ResourceController`3.GetAll(System.String)">
+            <summary>
+            Gets all resources.
+            </summary>
+            <param name="recipeName">The name of the recipe containing these resources</param>
+            <returns>All resources</returns>
+            <response code="200">Returns the resources</response>
+            <response code="204">If there are no resources</response>
+        </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.ResourceController`3.Get(System.String,`2)">
+            <summary>
+            Gets a resource by key.
+            </summary>
+            <param name="recipeName">The name of the recipe containing this resource</param>
+            <param name="id">The key of the resource</param>
+            <returns>A resource with matching key</returns>
+            <response code="200">Returns the matching resource</response>
+            <response code="404">If no resource with matching key is found</response>
+        </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.ResourceController`3.CreateOrUpdate(System.String,`1)">
+            <summary>
+            Creates a new or updates an existing resource.
+            </summary>
+            <param name="recipeName">The name of the recipe containing this resource</param>
+            <param name="entity">The resource to create or update</param>
+            <returns>A created or updated resource</returns>
+            <response code="201">If a new resource was created</response>
+            <response code="200">If an existing resource was updated</response>
+            <response code="400">If a provided entity is wrong</response>
+        </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.ResourceController`3.Delete(System.String,`2)">
+            <summary>
+            Deletes a resource by key.
+            </summary>
+            <param name="recipeName">The name of the recipe containing this resource</param>
+            <param name="id">The key of the resource</param>
+            <response code="200">The resource was deleted</response>
+            <response code="404">The resource does not exist</response>
+            <response code="500">The server failed to delete the resource</response>
+        </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.ResourceController`3.GetKey(`1)">
+            <summary>
+            Gets the key of a given entity.
+            </summary>
+        </member>
+        <member name="T:RecipeBook.Presentation.WebApp.Server.Controllers.v1.StepsController">
+            This subclass of ResourceController is merely a facade with documentation applied.
+            The actual implementation is in the base class.
+        </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.StepsController.GetAll(System.String)">
+            <summary>
+            Gets all steps.
+            </summary>
+            <param name="recipeName">The name of the recipe containing the steps</param>
+            <returns>All steps</returns>
+            <response code="200">Returns the steps</response>
+            <response code="204">If there are no steps</response>  
+        </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.StepsController.Get(System.String,System.Nullable{System.Int32})">
+            <summary>
+            Gets a step by Id.
+            </summary>
+            <param name="recipeName">The name of the recipe containing this step</param>
+            <param name="id">The Id of the step</param>
+            <returns>A step with matching Id</returns>
+            <response code="200">Returns the matching step</response>
+            <response code="404">If no step with matching Id is found</response>
+        </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.StepsController.CreateOrUpdate(System.String,RecipeBook.Core.Domain.Recipes.Step)">
+            <summary>
+            Creates a new or updates an existing step.
+            </summary>
+            <param name="recipeName">The name of the recipe containing this resource</param>
+            <param name="step">The step to create or update</param>
+            <returns>A created or updated step</returns>
+            <response code="201">If a new step was created</response>
+            <response code="200">If an existing step was updated</response>
+            <response code="400">If a provided step is wrong</response>
+        </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.StepsController.Delete(System.String,System.Nullable{System.Int32})">
+            <summary>
+            Deletes a step by Id.
+            </summary>
+            <param name="recipeName">The name of the recipe containing this step</param>
+            <param name="id">The key of the step</param>
+            <response code="200">The step was deleted</response>
+            <response code="404">The step does not exist</response>
+            <response code="500">The server failed to delete the step</response>
+        </member>
+        <member name="T:RecipeBook.Presentation.WebApp.Server.Controllers.v1.UsedOccasionsController">
+            This subclass of ResourceController is merely a facade with documentation applied.
+            The actual implementation is in the base class.
         </member>
         <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.UsedOccasionsController.GetAll(System.String)">
             <summary>
