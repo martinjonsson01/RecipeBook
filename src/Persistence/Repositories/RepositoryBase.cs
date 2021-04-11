@@ -159,7 +159,7 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
 
         protected virtual void SetEntityKey(dynamic entity, TKey key) => entity.Id = key!;
 
-        private static Task<int> GetRecipeId(string recipeName, IDbConnection db)
+        protected static Task<int> GetRecipeId(string recipeName, IDbConnection db)
         {
             return db.QuerySingleOrDefaultAsync<int>(@"
                 SELECT id

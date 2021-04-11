@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Bogus;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Logging;
 
 using Moq;
 
+using RecipeBook.Core.Domain.Recipes;
 using RecipeBook.Infrastructure.Persistence.Repositories;
 
 using Xunit;
@@ -44,9 +46,11 @@ namespace Tests.Infrastructure.Persistence.Repositories
         protected readonly Faker                      Faker;
 
 
-        protected abstract TKey?  GetKey(dynamic o);
-        protected abstract TKey   MockKey();
-        protected abstract TKey[] MockKeys(int count);
+        protected abstract TKey?      GetKey(dynamic o);
+        protected abstract Task<TKey> MockKey();
+
+        protected virtual TKey?[] MockKeys(int count) =>
+            Enumerable.Range(0, count).Select(_ => MockKey().Result).ToArray();
 
         protected virtual string InsertOrGetParentRecipeSql => @"
             INSERT INTO recipes (id, name) VALUES (DEFAULT, :recipeName)
@@ -57,15 +61,15 @@ namespace Tests.Infrastructure.Persistence.Repositories
         protected abstract string InsertResourceSql(int recipeId);
         protected abstract string ResourceExistsSql { get; }
 
-        protected abstract TResource MockResource(TKey key = default);
+        protected abstract Task<TResource> MockResource(TKey key = default);
 
         protected async Task<TResource> MockResourceInDatabaseAsync(string recipeName, TKey key = default)
         {
             if (key == null || key.Equals(default))
             {
-                key = MockKey();
+                key = await MockKey();
             }
-            TResource mockedResource = MockResource(key);
+            TResource mockedResource = await MockResource(key);
 
             return await StoreInDatabase(recipeName, mockedResource);
         }
@@ -139,7 +143,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
         {
             // Arrange
             string    recipeName       = Faker.Lorem.Sentence();
-            TResource expectedResource = MockResource();
+            TResource expectedResource = await MockResource();
             TKey?      expectedKey      = GetKey(expectedResource);
 
             // Act
@@ -169,7 +173,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
         {
             // Arrange
             string    recipeName       = Faker.Lorem.Sentence();
-            TResource expectedResource = MockResource();
+            TResource expectedResource = await MockResource();
             TKey      expectedKey      = GetKey(expectedResource);
 
             // Act
@@ -187,7 +191,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
             // Mock unused resource so that parent recipe is created.
             await MockResourceInDatabaseAsync(recipeName);
 
-            TResource expectedResource = MockResource();
+            TResource expectedResource = await MockResource();
 
             // Act
             TResource? actualResource = await Repo.CreateOrUpdateAsync(recipeName, expectedResource);
@@ -233,7 +237,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
         {
             // Arrange
             string    recipeName       = Faker.Lorem.Sentence();
-            TResource expectedResource = MockResource();
+            TResource expectedResource = await MockResource();
             TKey      expectedKey      = GetKey(expectedResource);
 
             // Assert

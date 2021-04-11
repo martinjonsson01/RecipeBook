@@ -1,4 +1,12 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+using Dapper;
+
+using Microsoft.Extensions.Logging;
+
+using Npgsql;
 
 using RecipeBook.Core.Domain.Recipes;
 
@@ -11,6 +19,47 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
             string                   connectionString = "")
             : base(logger, connectionString: connectionString)
         {
+        }
+
+        protected override string GetAllSql => @"
+                    SELECT * 
+                      FROM steps
+                 LEFT JOIN timesteps on steps.id = timesteps.id
+                     WHERE recipeid = :recipeId; 
+            ";
+
+        protected override string GetSql => @"
+                    SELECT * 
+                      FROM steps
+                 LEFT JOIN timesteps on steps.id = timesteps.id
+                     WHERE steps.id = :key
+                       AND recipeid = :recipeId;
+            ";
+
+        public override async Task<IEnumerable<Step>> GetAllAsync(string recipeName)
+        {
+            await using var db = new NpgsqlConnection(ConnectionString);
+
+            int recipeId = await GetRecipeId(recipeName, db);
+
+            return await db.QueryAsync<Step, TimeStep, Step>(
+                sql: GetAllSql,
+                map: (step, timeStep) => timeStep ?? step,
+                param: new { recipeId });
+        }
+
+        public override async Task<Step?> GetAsync(string recipeName, int? key)
+        {
+            await using var db = new NpgsqlConnection(ConnectionString);
+
+            int recipeId = await GetRecipeId(recipeName, db);
+
+            IEnumerable<Step> result = await db.QueryAsync<Step, TimeStep, Step>(
+                sql: GetSql,
+                map: (step, timeStep) => timeStep ?? step,
+                param: new { key, recipeId });
+
+            return result.FirstOrDefault();
         }
     }
 }

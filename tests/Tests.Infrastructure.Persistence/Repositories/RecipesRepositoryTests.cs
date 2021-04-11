@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 
 using FluentAssertions;
 
@@ -22,10 +23,10 @@ namespace Tests.Infrastructure.Persistence.Repositories
 
         protected override string GetKey(dynamic resource) => resource.Name;
 
-        protected override string MockKey() => Faker.Lorem.Sentence();
+        protected override Task<string> MockKey() => Task.FromResult(Faker.Lorem.Sentence());
 
         protected override string[] MockKeys(int count) =>
-            Enumerable.Range(0, count).Select(_ => MockKey()).ToArray();
+            Enumerable.Range(0, count).Select(_ => MockKey().Result).ToArray();
 
         protected override string InsertOrGetParentRecipeSql => "SELECT 1;"; // no need for empty recipes
         protected override string InsertResourceSql(int recipeId) => @"
@@ -34,11 +35,11 @@ namespace Tests.Infrastructure.Persistence.Repositories
         protected override string ResourceExistsSql => 
             "SELECT EXISTS(SELECT 1 FROM recipes WHERE name = :key)";
 
-        protected override Recipe MockResource(string? key = default)
+        protected override async Task<Recipe> MockResource(string? key = default)
         {
             return new()
             {
-                Name = key ?? MockKey(),
+                Name = key ?? await MockKey(),
                 Rating = Faker.Random.Int(1, 10),
                 ImagePath = Faker.Internet.Avatar()
             };

@@ -1,4 +1,6 @@
-﻿using RecipeBook.Core.Domain.Recipes;
+﻿using System.Threading.Tasks;
+
+using RecipeBook.Core.Domain.Recipes;
 using RecipeBook.Infrastructure.Persistence.Repositories;
 
 namespace Tests.Infrastructure.Persistence.Repositories
@@ -18,11 +20,11 @@ namespace Tests.Infrastructure.Persistence.Repositories
         protected override string ResourceExistsSql =>
             "SELECT EXISTS(SELECT 1 FROM usedoccasions WHERE id = :key)";
         
-        protected override UsedOccasion MockResource(int? key = default)
+        protected override async Task<UsedOccasion> MockResource(int? key = default)
         {
             return new()
             {
-                Id = key ?? MockKey(),
+                Id = key ?? await MockKey(),
                 Comment = Faker.Lorem.Sentence(),
                 Date = Faker.Date.Recent(),
                 Duration = Faker.Date.Timespan()

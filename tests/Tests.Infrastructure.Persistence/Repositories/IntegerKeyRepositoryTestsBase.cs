@@ -1,4 +1,7 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
+
+using Dapper;
 
 using FluentAssertions;
 
@@ -24,17 +27,16 @@ namespace Tests.Infrastructure.Persistence.Repositories
 
         protected override int? GetKey(dynamic resource) => resource.Id;
 
-        protected override int? MockKey() => 1;
-
-        protected override int?[] MockKeys(int count) =>
-            Enumerable.Range(0, count).Select(i => (int?) i).ToArray();
+        protected override async Task<int?> MockKey() => await Db.QuerySingleAsync<int>($@"
+            SELECT nextval('public.{typeof(TResource).Name.ToLowerInvariant()}s_id_seq');
+        ");
 
         [Fact]
-        public void CreateOrUpdate_ThrowsException_WhenInvalidDataIsInput()
+        public async void CreateOrUpdate_ThrowsException_WhenInvalidDataIsInput()
         {
             // Arrange
             string     unused          = Faker.Lorem.Sentence();
-            TResource? invalidResource = MockResource(-1);
+            TResource? invalidResource = await MockResource(-1);
             
             // Act/Assert
             Repo.Invoking(async repo => await repo.CreateOrUpdateAsync(unused, invalidResource))
