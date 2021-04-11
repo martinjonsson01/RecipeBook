@@ -1,7 +1,14 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
+
+using FluentAssertions;
+
+using Microsoft.AspNetCore.Mvc;
 
 using RecipeBook.Core.Domain.Recipes;
 using RecipeBook.Presentation.WebApp.Server.Controllers.v1;
+
+using Xunit;
 
 namespace Tests.WebApp.Server.Controllers
 {
@@ -32,6 +39,26 @@ namespace Tests.WebApp.Server.Controllers
                 Rating = Faker.Random.Number(1, 10),
                 ImagePath = Faker.Internet.Avatar()
             };
+        }
+
+        [Fact]
+        public async Task Get_WithUrlSafeName_ReturnsRecipe()
+        {
+            // Arrange
+            Recipe recipe      = MockResourceInRepository(string.Empty, Faker.Lorem.Sentence());
+            string urlSafeName = recipe.ToUrlSafeName();
+            
+            // Act
+            ActionResult<Recipe> response = await Controller.Get(string.Empty, urlSafeName);
+
+            // Assert
+            response.Result.Should().BeAssignableTo<ObjectResult>();
+            var objectResult = (ObjectResult) response.Result;
+
+            objectResult.Value.Should().BeOfType<Recipe>();
+            var retrievedResource = (Recipe) objectResult.Value;
+
+            retrievedResource.Should().BeEquivalentTo(recipe);
         }
     }
 }

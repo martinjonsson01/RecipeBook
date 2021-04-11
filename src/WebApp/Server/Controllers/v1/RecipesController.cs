@@ -58,7 +58,7 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         [ApiExplorerSettings(IgnoreApi = false)]
         public override Task<ActionResult<Recipe>> Get(string? unused, string id)
         {
-            return base.Get(unused ?? string.Empty, id);
+            return base.Get(unused ?? string.Empty, Recipe.FromUrlSafeNameToOrdinaryName(id));
         }
 
         /// <summary>
