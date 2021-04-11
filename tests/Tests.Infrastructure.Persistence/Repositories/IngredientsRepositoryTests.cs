@@ -1,4 +1,5 @@
 ﻿using RecipeBook.Core.Domain.Recipes;
+using RecipeBook.Core.Domain.Units;
 using RecipeBook.Infrastructure.Persistence.Repositories;
 
 namespace Tests.Infrastructure.Persistence.Repositories
@@ -24,6 +25,11 @@ namespace Tests.Infrastructure.Persistence.Repositories
             return new()
             {
                 Id = key ?? MockKey(),
+                Name = Faker.Lorem.Sentence(),
+                Amount = Faker.PickRandom<Unit>(
+                    new Mass(Faker.Random.Double(10)), 
+                    new Volume(Faker.Random.Double(10)
+                ))
             };
         }
     }
