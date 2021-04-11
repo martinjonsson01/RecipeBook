@@ -8,7 +8,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
     public class UsedOccasionsRepositoryTests 
         : IntegerKeyRepositoryTestsBase<UsedOccasionsRepository, UsedOccasion>
     {
-        public UsedOccasionsRepositoryTests(DatabaseFixture fixture) : base(fixture)
+        public UsedOccasionsRepositoryTests(DatabaseFixture fixture) : base(fixture.Db)
         {
             Repo = new UsedOccasionsRepository(MockLogger.Object, fixture.ConnectionString);
         }

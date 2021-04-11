@@ -16,7 +16,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
             Recipe,
             string>
     {
-        public RecipesRepositoryTests(DatabaseFixture fixture) : base(fixture)
+        public RecipesRepositoryTests(DatabaseFixture fixture) : base(fixture.Db)
         {
             Repo = new RecipesRepository(MockLogger.Object, fixture.ConnectionString);
         }

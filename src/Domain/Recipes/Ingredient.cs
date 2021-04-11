@@ -1,6 +1,4 @@
-﻿using System;
-
-using RecipeBook.Core.Domain.Units;
+﻿using RecipeBook.Core.Domain.Units;
 
 namespace RecipeBook.Core.Domain.Recipes
 {

@@ -18,7 +18,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
         where TResource : class, new()
         where TRepository : class
     {
-        protected IntegerKeyRepositoryTestsBase(DatabaseFixture fixture) : base(fixture)
+        protected IntegerKeyRepositoryTestsBase(NpgsqlConnection db) : base(db)
         {
         }
 

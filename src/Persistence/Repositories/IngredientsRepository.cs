@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using Npgsql;
 
 using RecipeBook.Core.Domain.Recipes;
-using RecipeBook.Core.Domain.Units;
 
 namespace RecipeBook.Infrastructure.Persistence.Repositories
 {

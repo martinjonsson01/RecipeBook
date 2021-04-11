@@ -6,20 +6,16 @@ using System.Threading.Tasks;
 
 using Dapper;
 
-using FluentAssertions;
-
 using RecipeBook.Core.Domain.Recipes;
 using RecipeBook.Core.Domain.Units;
 using RecipeBook.Infrastructure.Persistence.Repositories;
-
-using Xunit;
 
 namespace Tests.Infrastructure.Persistence.Repositories
 {
     public class IngredientsRepositoryTests
         : IntegerKeyRepositoryTestsBase<IngredientsRepository, Ingredient>
     {
-        public IngredientsRepositoryTests(DatabaseFixture fixture) : base(fixture)
+        public IngredientsRepositoryTests(DatabaseFixture fixture) : base(fixture.Db)
         {
             Repo = new IngredientsRepository(MockLogger.Object, fixture.ConnectionString);
         }

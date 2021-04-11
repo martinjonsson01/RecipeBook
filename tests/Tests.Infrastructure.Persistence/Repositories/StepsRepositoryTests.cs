@@ -15,7 +15,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
 {
     public class StepsRepositoryTests : IntegerKeyRepositoryTestsBase<StepsRepository, Step>
     {
-        public StepsRepositoryTests(DatabaseFixture fixture) : base(fixture)
+        public StepsRepositoryTests(DatabaseFixture fixture) : base(fixture.Db)
         {
             Repo = new StepsRepository(MockLogger.Object, fixture.ConnectionString);
         }
