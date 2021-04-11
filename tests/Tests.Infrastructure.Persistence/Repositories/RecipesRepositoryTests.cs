@@ -3,14 +3,14 @@
 using FluentAssertions;
 
 using RecipeBook.Core.Domain.Recipes;
-using RecipeBook.Infrastructure.Persistence;
+using RecipeBook.Infrastructure.Persistence.Repositories;
 
 using Xunit;
 
-namespace Tests.Infrastructure.Persistence
+namespace Tests.Infrastructure.Persistence.Repositories
 {
     public class RecipesRepositoryTests
-        : RecipeResourceRepositoryTestBase<
+        : RepositoryTestBase<
             RecipesRepository,
             Recipe,
             string>

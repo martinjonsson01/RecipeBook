@@ -6,12 +6,12 @@ using Npgsql;
 
 using Xunit;
 
-namespace Tests.Infrastructure.Persistence
+namespace Tests.Infrastructure.Persistence.Repositories
 {
     public abstract class IntegerKeyRepositoryTestsBase<
             TRepository,
             TResource>
-        : RecipeResourceRepositoryTestBase<
+        : RepositoryTestBase<
             TRepository,
             TResource,
             int?>

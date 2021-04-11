@@ -2,9 +2,9 @@
 
 using RecipeBook.Core.Domain.Recipes;
 
-namespace RecipeBook.Infrastructure.Persistence
+namespace RecipeBook.Infrastructure.Persistence.Repositories
 {
-    public class RecipesRepository : RecipeResourceRepository<RecipesRepository, Recipe, string>
+    public class RecipesRepository : RepositoryBase<RecipesRepository, Recipe, string>
     {
         public RecipesRepository(ILogger<RecipesRepository> logger, string connectionString = "")
             : base(logger, connectionString: connectionString)

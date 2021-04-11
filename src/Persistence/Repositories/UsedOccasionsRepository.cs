@@ -2,10 +2,10 @@
 
 using RecipeBook.Core.Domain.Recipes;
 
-namespace RecipeBook.Infrastructure.Persistence
+namespace RecipeBook.Infrastructure.Persistence.Repositories
 {
     public class UsedOccasionsRepository
-        : RecipeResourceRepository<UsedOccasionsRepository, UsedOccasion, int?>
+        : RepositoryBase<UsedOccasionsRepository, UsedOccasion, int?>
     {
         public UsedOccasionsRepository(
             ILogger<UsedOccasionsRepository> logger,

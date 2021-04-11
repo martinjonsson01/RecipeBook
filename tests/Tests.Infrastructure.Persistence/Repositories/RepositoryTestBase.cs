@@ -12,21 +12,21 @@ using Microsoft.Extensions.Logging;
 
 using Moq;
 
-using RecipeBook.Infrastructure.Persistence;
+using RecipeBook.Infrastructure.Persistence.Repositories;
 
 using Xunit;
 
-namespace Tests.Infrastructure.Persistence
+namespace Tests.Infrastructure.Persistence.Repositories
 {
     [Collection("RepositoryTests")]
-    public abstract class RecipeResourceRepositoryTestBase<
+    public abstract class RepositoryTestBase<
         TRepository,
         TResource,
         TKey> : IClassFixture<DatabaseFixture>
         where TResource : class, new()
         where TRepository : class
     {
-        protected RecipeResourceRepositoryTestBase(DatabaseFixture fixture)
+        protected RepositoryTestBase(DatabaseFixture fixture)
         {
             MockLogger = new Mock<ILogger<TRepository>>();
             Fixture = fixture;
@@ -36,7 +36,7 @@ namespace Tests.Infrastructure.Persistence
             DatabaseFixture.Checkpoint.Reset(fixture.Db).Wait();
         }
 
-        protected RecipeResourceRepository<TRepository, TResource, TKey> Repo = null!; // Has to be set by subtype constructor
+        protected RepositoryBase<TRepository, TResource, TKey> Repo = null!; // Has to be set by subtype constructor
 
         protected readonly Mock<ILogger<TRepository>> MockLogger;
         protected readonly DatabaseFixture            Fixture;

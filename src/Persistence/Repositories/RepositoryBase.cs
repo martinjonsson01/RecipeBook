@@ -13,14 +13,14 @@ using Npgsql;
 
 using RecipeBook.Core.Application.Repository;
 
-namespace RecipeBook.Infrastructure.Persistence
+namespace RecipeBook.Infrastructure.Persistence.Repositories
 {
-    public abstract class RecipeResourceRepository<TSelf, TResource, TKey>
+    public abstract class RepositoryBase<TSelf, TResource, TKey>
         : DatabaseConnected<TSelf>, IResourcesRepository<TResource, TKey>
         where TResource : class
         where TSelf : class
     {
-        protected RecipeResourceRepository(
+        protected RepositoryBase(
             ILogger<TSelf> logger,
             string?        tableName        = null,
             string         keyColumn        = "id",
