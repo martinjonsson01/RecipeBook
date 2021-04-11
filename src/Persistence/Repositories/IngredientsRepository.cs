@@ -23,11 +23,6 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
             LoadEntityProperties();
         }
 
-        protected override void AddTypeHandlers()
-        {
-            SqlMapper.AddTypeHandler(new UnitTypeHandler());
-        }
-
         protected override string GetAllSql => @"
                     SELECT ingredients.id as IngredientId, ingredients.name as IngredientName,
                            masses.id as MassId,
