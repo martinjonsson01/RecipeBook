@@ -1,4 +1,5 @@
 ﻿@using RecipeBook.Core.Domain.Recipes
+@using Newtonsoft.Json
 
 <div class="container">
     <div class="row mb-4">
@@ -7,7 +8,7 @@
             <h1 class="display-4">@Recipe.Name</h1>
         </div>
         <div class="col-sm-1 d-flex p-0">
-            <LoadingIndicator Loading="@Loading"/>
+            <LoadingIndicator Status="@GetStatus()"/>
         </div>
         <hr/>
     </div>
@@ -31,19 +32,22 @@
     [Parameter]
     public Recipe Recipe { get; set; } = null!;
 
-    private bool? Loading =>
-        _propertyLoading.Count == 0 ?
-            null :
-            _propertyLoading.Values.Any(loading => loading == true);
-
-    private Dictionary<string, bool?> _propertyLoading = new();
-
-    private void SetSaving((string, bool) state)
+    private LoadStatus GetStatus()
     {
-        (string property, bool isLoading) = state;
-        if (!_propertyLoading.TryAdd(property, isLoading))
+        if (_propertyLoading.Count == 0) return LoadStatus.None;
+        if (_propertyLoading.ContainsValue(LoadStatus.Fail)) return LoadStatus.Fail;
+        if (_propertyLoading.Values.All(status => status == LoadStatus.Success)) return LoadStatus.Success;
+        return LoadStatus.Loading;
+    }
+
+    private Dictionary<string, LoadStatus> _propertyLoading = new();
+
+    private void SetSaving((string, LoadStatus) state)
+    {
+        (string property, LoadStatus status) = state;
+        if (!_propertyLoading.TryAdd(property, status))
         {
-            _propertyLoading[property] = isLoading;
+            _propertyLoading[property] = status;
         }
     }
 

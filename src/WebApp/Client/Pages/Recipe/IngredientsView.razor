@@ -20,13 +20,13 @@
     public string RecipeName { get; set; } = null!;
 
     [Parameter]
-    public EventCallback<(string, bool)> SetSaving { get; set; } = EventCallback<(string, bool)>.Empty;
+    public EventCallback<(string, LoadStatus)> SetSaving { get; set; } = EventCallback<(string, LoadStatus)>.Empty;
 
     protected override async Task OnInitializedAsync()
     {
-        await SetSaving.InvokeAsync(("ingredient", true));
+        await SetSaving.InvokeAsync(("ingredient", LoadStatus.Loading));
         await Task.Delay(300);
-        await SetSaving.InvokeAsync(("ingredient", false));
+        await SetSaving.InvokeAsync(("ingredient", LoadStatus.Success));
     }
 
 }

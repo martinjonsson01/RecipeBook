@@ -43,7 +43,7 @@
     [Parameter]
     public RenderFragment LoadingTemplate { get; set; } = __builder =>
     {
-        <LoadingIndicator Loading="@true"/>
+        <LoadingIndicator Status="@LoadStatus.Loading"/>
     };
 
     [Parameter]
