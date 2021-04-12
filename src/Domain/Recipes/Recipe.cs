@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace RecipeBook.Core.Domain.Recipes
 {
-    public class Recipe : BaseEntity
+    public class Recipe : BaseEntity, IShallowCloneable<Recipe>
     {
         public string              Name          { get; set; }          = string.Empty;
         public int?                Rating        { get; set; }          = null;
@@ -30,7 +30,7 @@ namespace RecipeBook.Core.Domain.Recipes
             return false;
         }
 
-        public Recipe Clone()
+        public Recipe ShallowClone()
         {
             return new()
             {

@@ -2,6 +2,7 @@
 @using Newtonsoft.Json
 @using System.Timers
 @using System.Text.Json
+@using RecipeBook.Core.Application.Logic
 
 @inject HttpClient _http
 @inject NavigationManager _navigationManager
@@ -18,6 +19,7 @@
         <hr/>
     </div>
     <div class="row">
+        <input class="h4" type="number" @bind="Rating" @bind:event="oninput"/>
         <div class="col-sm-8">
             <StepsView RecipeName="@Recipe.Name" SetSaving="@SetSaving"/>
         </div>
@@ -43,7 +45,7 @@
         set
         {
             Recipe.Name = value;
-            ResetInputTimer();
+            _inputSaver.ResourceHasChanged();
         }
     }
 
@@ -53,7 +55,7 @@
         set
         {
             Recipe.Rating = value;
-            ResetInputTimer();
+            _inputSaver.ResourceHasChanged();
         }
     }
 
@@ -63,30 +65,17 @@
         set
         {
             Recipe.ImagePath = value;
-            ResetInputTimer();
+            _inputSaver.ResourceHasChanged();
         }
     }
 
-    private const int CheckInputInterval = 100;
-    private const int SaveToServerInterval = 1000;
-
-    private Timer _inputTimer = new() { Interval = CheckInputInterval, AutoReset = true };
-
     protected override void OnInitialized()
     {
-        UpdateLastSaved(true);
-        _inputTimer.Elapsed += CheckInput;
-        _inputTimer.Start();
+        _inputSaver = new InputSaver<Recipe>(Recipe, _http, "/api/v1/recipes", SetSaving);
+        _inputSaver.Saved += (_, _) => _navigationManager.NavigateTo($"/{Recipe.ToUrlSafeName()}");
     }
 
-    private Recipe? _lastSavedRecipe;
-    private DateTime _lastInputSave = DateTime.MinValue;
-
-    private void ResetInputTimer()
-    {
-        SetSaving(("input", LoadStatus.None)); // To indicate that displayed data is not saved
-    }
-
+    private InputSaver<Recipe> _inputSaver = null!;
     private Dictionary<string, LoadStatus> _propertyLoading = new();
 
     private LoadStatus GetStatus()
@@ -114,32 +103,6 @@
             _propertyLoading[property] = status;
         }
         StateHasChanged();
-    }
-
-    private async void CheckInput(object sender, ElapsedEventArgs e)
-    {
-        if (DateTime.Now.Subtract(_lastInputSave) <= TimeSpan.FromMilliseconds(SaveToServerInterval)) return;
-        if (Recipe.Equals(_lastSavedRecipe)) return;
-
-        await SaveRecipe();
-    }
-
-    private async Task SaveRecipe()
-    {
-        UpdateLastSaved();
-        SetSaving(("input", LoadStatus.Loading));
-        SetSaving(("save to server", LoadStatus.Loading));
-        HttpResponseMessage response = await _http.PutAsJsonAsync("/api/v1/recipes", Recipe);
-        LoadStatus status = response.IsSuccessStatusCode ? LoadStatus.Success : LoadStatus.Fail;
-        _navigationManager.NavigateTo($"/{Recipe.ToUrlSafeName()}");
-        SetSaving(("save to server", status));
-        SetSaving(("input", status));
-    }
-
-    private void UpdateLastSaved(bool init = false)
-    {
-        if (!init) _lastInputSave = DateTime.Now;
-        _lastSavedRecipe = Recipe.Clone();
     }
 
 }

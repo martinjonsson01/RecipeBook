@@ -1,4 +1,4 @@
-﻿namespace RecipeBook.Presentation.WebApp.Client.Shared
+﻿namespace RecipeBook.Core.Application.Logic
 {
     public enum LoadStatus
     {
