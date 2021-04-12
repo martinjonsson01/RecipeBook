@@ -3,16 +3,22 @@
 <div class="container">
     <div class="row mb-4">
         <img class="mb-2" src="@Recipe.ImagePath" alt="@Recipe.Name"/>
-        <h1 class="display-4">@Recipe.Name</h1>
+        <div class="col-sm-11">
+            <h1 class="display-4">@Recipe.Name</h1>
+        </div>
+        <div class="col-sm-1 d-flex p-0">
+            <LoadingIndicator Loading="@Loading"/>
+        </div>
+        <hr/>
     </div>
     <div class="row">
         <div class="col-sm-8">
-            <StepsView Recipe="@Recipe"/>
+            <StepsView RecipeName="@Recipe.Name" SetSaving="@SetSaving"/>
         </div>
         <div class="col-sm-4">
             <div class="row">
                 <div class="col-sm">
-                    <IngredientsView Recipe="@Recipe"/>
+                    <IngredientsView RecipeName="@Recipe.Name" SetSaving="@SetSaving"/>
                 </div>
             </div>
         </div>
@@ -24,5 +30,21 @@
 
     [Parameter]
     public Recipe Recipe { get; set; } = null!;
+
+    private bool? Loading =>
+        _propertyLoading.Count == 0 ?
+            null :
+            _propertyLoading.Values.Any(loading => loading == true);
+
+    private Dictionary<string, bool?> _propertyLoading = new();
+
+    private void SetSaving((string, bool) state)
+    {
+        (string property, bool isLoading) = state;
+        if (!_propertyLoading.TryAdd(property, isLoading))
+        {
+            _propertyLoading[property] = isLoading;
+        }
+    }
 
 }

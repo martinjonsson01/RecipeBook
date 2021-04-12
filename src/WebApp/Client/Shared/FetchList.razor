@@ -1,0 +1,80 @@
+﻿@using System.Net
+@using Newtonsoft.Json
+
+@typeparam TItem
+
+@inject HttpClient Http
+
+@Header
+<ol>
+    @if (_items is not null)
+    {
+        @foreach (TItem item in _items)
+        {
+            <li>
+                @ItemTemplate(item)
+            </li>
+        }
+    }
+    else if (_responseStatus is null)
+    {
+        @LoadingTemplate
+    }
+    else if (_responseStatus == HttpStatusCode.NotFound)
+    {
+        @NotFoundTemplate
+    }
+</ol>
+
+@* ReSharper disable twice InconsistentNaming *@
+@* ReSharper disable twice UnusedParameter.Local *@
+@code {
+#nullable enable
+
+    [Parameter]
+    public string Url { get; set; } = string.Empty;
+
+    [Parameter]
+    public RenderFragment Header { get; set; } = null!;
+
+    [Parameter]
+    public RenderFragment<TItem> ItemTemplate { get; set; } = null!;
+
+    [Parameter]
+    public RenderFragment LoadingTemplate { get; set; } = __builder =>
+    {
+        <LoadingIndicator Loading="@true"/>
+    };
+
+    [Parameter]
+    public RenderFragment NotFoundTemplate { get; set; } = __builder =>
+    {
+        <p>Kunde inte hitta resurs</p>
+    };
+
+    private IList<TItem>? _items;
+
+    private HttpStatusCode? _responseStatus;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _items = null;
+        _responseStatus = null;
+
+        HttpResponseMessage response = await Http.GetAsync(Url);
+        if (response.StatusCode == HttpStatusCode.OK)
+        {
+            var serializerOptions = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto
+            };
+
+            string json = await response.Content.ReadAsStringAsync();
+            _items = JsonConvert.DeserializeObject<IList<TItem>>(json, serializerOptions);
+
+            return;
+        }
+        _responseStatus = response.StatusCode;
+    }
+
+}

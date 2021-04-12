@@ -1,19 +1,32 @@
 ﻿@using RecipeBook.Core.Domain.Recipes
 
-<div class="bg-white p-2">
-    <h2>Ingredienser</h2>
-    <ul>
-        @foreach (Ingredient ingredient in Recipe.Ingredients)
-        {
-            <li>@ingredient.Name</li>
-        }
-    </ul>
+<div class="bg-white p-2" style="border-radius: 1rem">
+    <FetchList TItem="Ingredient"
+               Context="ingredient"
+               Url="@($"/api/v1/recipes/{RecipeName}/ingredients")">
+        <Header>
+            <h2>Ingredienser</h2>
+        </Header>
+        <ItemTemplate>
+            @ingredient.Name
+        </ItemTemplate>
+    </FetchList>
 </div>
 
 @code {
 #nullable enable
 
     [Parameter]
-    public Recipe Recipe { get; set; } = null!;
+    public string RecipeName { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback<(string, bool)> SetSaving { get; set; } = EventCallback<(string, bool)>.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await SetSaving.InvokeAsync(("ingredient", true));
+        await Task.Delay(300);
+        await SetSaving.InvokeAsync(("ingredient", false));
+    }
 
 }

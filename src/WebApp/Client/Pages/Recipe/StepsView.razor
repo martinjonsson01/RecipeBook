@@ -1,25 +1,31 @@
 ﻿@using RecipeBook.Core.Domain.Recipes
 
 <div class="ms-5">
-    <h2>Steg</h2>
-    <ol>
-        @foreach (Step step in Recipe.Steps)
-        {
-            <li>
-                <p>@step.Instruction</p>
-                @if (step is TimeStep timeStep)
-                {
-                    <h3>i am a timer @timeStep.Duration</h3>   
-                }
-            </li>
-        }
-    </ol>
+    <FetchList TItem="Step"
+               Context="step" 
+               Url="@($"/api/v1/recipes/{RecipeName}/steps")">
+        <Header>
+            <h2>Steg</h2>
+        </Header>
+        <ItemTemplate>
+            @step.Instruction
+        </ItemTemplate>
+    </FetchList>
 </div>
 
 @code {
 #nullable enable
 
     [Parameter]
-    public Recipe Recipe { get; set; } = null!;
+    public string RecipeName { get; set; } = null!;
 
+    [Parameter]
+    public EventCallback<(string, bool)> SetSaving { get; set; } = EventCallback<(string, bool)>.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await SetSaving.InvokeAsync(("step", true));
+        await Task.Delay(1000);
+        await SetSaving.InvokeAsync(("step", false));
+    }
 }
