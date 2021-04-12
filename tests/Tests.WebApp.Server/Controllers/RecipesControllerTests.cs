@@ -14,7 +14,6 @@ namespace Tests.WebApp.Server.Controllers
 {
     public class RecipesControllerTests
         : ResourceControllerTestBase<
-            ResourceController<RecipesController, Recipe, string>,
             RecipesController,
             Recipe,
             string>

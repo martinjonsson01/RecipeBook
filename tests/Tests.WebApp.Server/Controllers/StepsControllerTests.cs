@@ -7,7 +7,6 @@ namespace Tests.WebApp.Server.Controllers
 {
     public class StepsControllerTests
         : ResourceControllerTestBase<
-            ResourceController<StepsController, Step, int?>,
             StepsController,
             Step,
             int?>

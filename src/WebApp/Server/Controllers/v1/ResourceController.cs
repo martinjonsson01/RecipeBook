@@ -72,12 +72,14 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
             TResourceKey key = GetKey(entity);
             if (await _repo.ExistsAsync(recipeName, key))
             {
-                TResource updatedEntity = await _repo.CreateOrUpdateAsync(recipeName, entity);
+                TResource? updatedEntity = await _repo.CreateOrUpdateAsync(recipeName, entity);
+                if (updatedEntity is null) return BadRequest();
                 return Ok(updatedEntity);
             }
-            TResource createdEntity = await _repo.CreateOrUpdateAsync(recipeName, entity);
+            TResource? createdEntity = await _repo.CreateOrUpdateAsync(recipeName, entity);
+            if (createdEntity is null) return BadRequest();
             return CreatedAtAction(
-                $"{nameof(Get)}{typeof(TResource).Name}",
+                $"{nameof(Get)}",
                 new { id = key, recipeName },
                 createdEntity);
         }

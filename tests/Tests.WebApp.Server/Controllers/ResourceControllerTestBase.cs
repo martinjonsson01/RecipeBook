@@ -19,11 +19,9 @@ using Xunit;
 namespace Tests.WebApp.Server.Controllers
 {
     public abstract class ResourceControllerTestBase<
-        TRecipeResourceController,
         TController,
         TResource,
         TKey>
-        where TRecipeResourceController : ResourceController<TController, TResource, TKey>
         where TResource : class, new()
         where TController : class
     {
@@ -34,7 +32,7 @@ namespace Tests.WebApp.Server.Controllers
             Faker = new Faker("sv");
         }
 
-        protected          TRecipeResourceController Controller = null!; // Has to be set by subtype constructor
+        protected          ResourceController<TController, TResource, TKey> Controller = null!; // Has to be set by subtype constructor
         protected readonly Mock<IResourcesRepository<TResource, TKey>> MockRepo;
         protected readonly Mock<ILogger<TController>> MockLogger;
         protected readonly Faker Faker;
@@ -205,6 +203,7 @@ namespace Tests.WebApp.Server.Controllers
             // Needs to contain these keys so resource location is correct.
             objectResult.RouteValues.Keys.Should().Contain("id");
             objectResult.RouteValues.Keys.Should().Contain("recipeName");
+            objectResult.ActionName.Should().Be(nameof(Controller.Get));
             
             objectResult.Value.Should().BeOfType<TResource>();
             var retrievedResource = (TResource) objectResult.Value;

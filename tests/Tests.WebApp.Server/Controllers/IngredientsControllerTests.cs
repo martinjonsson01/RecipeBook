@@ -8,7 +8,6 @@ namespace Tests.WebApp.Server.Controllers
 {
     public class IngredientsControllerTests
         : ResourceControllerTestBase<
-            ResourceController<IngredientsController, Ingredient, int?>,
             IngredientsController,
             Ingredient,
             int?>

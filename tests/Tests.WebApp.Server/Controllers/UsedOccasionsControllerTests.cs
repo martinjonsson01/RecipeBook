@@ -7,7 +7,6 @@ namespace Tests.WebApp.Server.Controllers
 {
     public class UsedOccasionsControllerTests
         : ResourceControllerTestBase<
-            ResourceController<UsedOccasionsController, UsedOccasion, int?>,
             UsedOccasionsController,
             UsedOccasion,
             int?>
