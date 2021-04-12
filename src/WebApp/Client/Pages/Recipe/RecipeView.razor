@@ -67,13 +67,14 @@
         }
     }
 
-        private const int InputSaveFrequency = 1000;
+    private const int CheckInputInterval = 100;
+    private const int SaveToServerInterval = 1000;
 
-    private Timer _inputTimer = new() { Interval = InputSaveFrequency, AutoReset = true };
+    private Timer _inputTimer = new() { Interval = CheckInputInterval, AutoReset = true };
 
     protected override void OnInitialized()
     {
-        UpdateLastSaved();
+        UpdateLastSaved(true);
         _inputTimer.Elapsed += CheckInput;
         _inputTimer.Start();
     }
@@ -117,7 +118,7 @@
 
     private async void CheckInput(object sender, ElapsedEventArgs e)
     {
-        if (DateTime.Now.Subtract(_lastInputSave) <= TimeSpan.FromSeconds(5)) return;
+        if (DateTime.Now.Subtract(_lastInputSave) <= TimeSpan.FromMilliseconds(SaveToServerInterval)) return;
         if (Recipe.Equals(_lastSavedRecipe)) return;
 
         await SaveRecipe();
@@ -135,9 +136,9 @@
         SetSaving(("input", status));
     }
 
-    private void UpdateLastSaved()
+    private void UpdateLastSaved(bool init = false)
     {
-        _lastInputSave = DateTime.Now;
+        if (!init) _lastInputSave = DateTime.Now;
         _lastSavedRecipe = Recipe.Clone();
     }
 
