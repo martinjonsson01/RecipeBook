@@ -1,7 +1,8 @@
 ﻿@using RecipeBook.Core.Domain.Recipes
 @using System.Net
 
-@inject HttpClient Http
+@inject HttpClient _http
+@inject NavigationManager _navigationManager
 
 <nav class="nav flex-column">
     @if (_recipes is not null)
@@ -35,12 +36,26 @@
 
     protected override async Task OnInitializedAsync()
     {
-        HttpResponseMessage response = await Http.GetAsync("/api/v1/recipes");
+        _navigationManager.LocationChanged += OnLocationChanged;
+
+        await FetchRecipes();
+    }
+
+    private async void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        await FetchRecipes();
+    }
+
+    private async Task FetchRecipes()
+    {
+        HttpResponseMessage response = await _http.GetAsync("/api/v1/recipes");
         if (response.StatusCode == HttpStatusCode.OK)
         {
             _recipes = await response.Content.ReadFromJsonAsync<IEnumerable<Recipe>>();
+            StateHasChanged();
             return;
         }
         _responseStatus = response.StatusCode;
     }
+
 }

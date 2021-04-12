@@ -33,6 +33,9 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        // No need to re-fetch if the local model has the updated name.
+        if (RecipeNameUrlSafe.Equals(_recipe?.ToUrlSafeName())) return;
+        
         _recipe = null;
         _responseStatus = null;
 

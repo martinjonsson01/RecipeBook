@@ -2,9 +2,9 @@
 @using Newtonsoft.Json
 @using System.Timers
 @using System.Text.Json
-@using JsonSerializer = System.Text.Json.JsonSerializer
 
-@inject HttpClient Http
+@inject HttpClient _http
+@inject NavigationManager _navigationManager
 
 <div class="container">
     <div class="row mb-4">
@@ -128,8 +128,9 @@
         UpdateLastSaved();
         SetSaving(("input", LoadStatus.Loading));
         SetSaving(("save to server", LoadStatus.Loading));
-        HttpResponseMessage response = await Http.PutAsJsonAsync("/api/v1/recipes", Recipe);
+        HttpResponseMessage response = await _http.PutAsJsonAsync("/api/v1/recipes", Recipe);
         LoadStatus status = response.IsSuccessStatusCode ? LoadStatus.Success : LoadStatus.Fail;
+        _navigationManager.NavigateTo($"/{Recipe.ToUrlSafeName()}");
         SetSaving(("save to server", status));
         SetSaving(("input", status));
     }
