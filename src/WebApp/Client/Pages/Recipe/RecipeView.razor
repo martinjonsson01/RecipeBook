@@ -1,11 +1,16 @@
 ﻿@using RecipeBook.Core.Domain.Recipes
 @using Newtonsoft.Json
+@using System.Timers
+@using System.Text.Json
+@using JsonSerializer = System.Text.Json.JsonSerializer
+
+@inject HttpClient Http
 
 <div class="container">
     <div class="row mb-4">
         <img class="mb-2" src="@Recipe.ImagePath" alt="@Recipe.Name"/>
         <div class="col-sm-11">
-            <h1 class="display-4">@Recipe.Name</h1>
+            <input class="display-4" type="text" @bind="Name" @bind:event="oninput"/>
         </div>
         <div class="col-sm-1 d-flex p-0">
             <LoadingIndicator Status="@GetStatus()"/>
@@ -32,15 +37,73 @@
     [Parameter]
     public Recipe Recipe { get; set; } = null!;
 
-    private LoadStatus GetStatus()
+    private string Name
     {
-        if (_propertyLoading.Count == 0) return LoadStatus.None;
-        if (_propertyLoading.ContainsValue(LoadStatus.Fail)) return LoadStatus.Fail;
-        if (_propertyLoading.Values.All(status => status == LoadStatus.Success)) return LoadStatus.Success;
-        return LoadStatus.Loading;
+        get => Recipe.Name;
+        set
+        {
+            Recipe.Name = value;
+            ResetInputTimer();
+        }
+    }
+
+    private int? Rating
+    {
+        get => Recipe.Rating;
+        set
+        {
+            Recipe.Rating = value;
+            ResetInputTimer();
+        }
+    }
+
+    private string? ImagePath
+    {
+        get => Recipe.ImagePath;
+        set
+        {
+            Recipe.ImagePath = value;
+            ResetInputTimer();
+        }
+    }
+
+        private const int InputSaveFrequency = 1000;
+
+    private Timer _inputTimer = new() { Interval = InputSaveFrequency, AutoReset = true };
+
+    protected override void OnInitialized()
+    {
+        UpdateLastSaved();
+        _inputTimer.Elapsed += CheckInput;
+        _inputTimer.Start();
+    }
+
+    private Recipe? _lastSavedRecipe;
+    private DateTime _lastInputSave = DateTime.MinValue;
+
+    private void ResetInputTimer()
+    {
+        SetSaving(("input", LoadStatus.None)); // To indicate that displayed data is not saved
     }
 
     private Dictionary<string, LoadStatus> _propertyLoading = new();
+
+    private LoadStatus GetStatus()
+    {
+        if (_propertyLoading.ContainsValue(LoadStatus.Fail)) return LoadStatus.Fail;
+        if (_propertyLoading.ContainsValue(LoadStatus.Loading)) return LoadStatus.Loading;
+        if (_propertyLoading.Count == 0
+            || AllLoadsAreSuccessful() && _propertyLoading.ContainsValue(LoadStatus.None))
+            return LoadStatus.None;
+        if (AllLoadsAreSuccessful()) return LoadStatus.Success;
+        return LoadStatus.None;
+    }
+
+    private bool AllLoadsAreSuccessful()
+    {
+        return _propertyLoading.Values.All(status =>
+            status is LoadStatus.Success or LoadStatus.None);
+    }
 
     private void SetSaving((string, LoadStatus) state)
     {
@@ -49,6 +112,32 @@
         {
             _propertyLoading[property] = status;
         }
+        StateHasChanged();
+    }
+
+    private async void CheckInput(object sender, ElapsedEventArgs e)
+    {
+        if (DateTime.Now.Subtract(_lastInputSave) <= TimeSpan.FromSeconds(5)) return;
+        if (Recipe.Equals(_lastSavedRecipe)) return;
+
+        await SaveRecipe();
+    }
+
+    private async Task SaveRecipe()
+    {
+        UpdateLastSaved();
+        SetSaving(("input", LoadStatus.Loading));
+        SetSaving(("save to server", LoadStatus.Loading));
+        HttpResponseMessage response = await Http.PutAsJsonAsync("/api/v1/recipes", Recipe);
+        LoadStatus status = response.IsSuccessStatusCode ? LoadStatus.Success : LoadStatus.Fail;
+        SetSaving(("save to server", status));
+        SetSaving(("input", status));
+    }
+
+    private void UpdateLastSaved()
+    {
+        _lastInputSave = DateTime.Now;
+        _lastSavedRecipe = Recipe.Clone();
     }
 
 }
