@@ -3,6 +3,7 @@
 using RecipeBook.Core.Application.FileStorage;
 using RecipeBook.Core.Application.Repository;
 using RecipeBook.Core.Domain.Recipes;
+using RecipeBook.Infrastructure.Persistence.FileStorage;
 using RecipeBook.Infrastructure.Persistence.Repositories;
 
 namespace RecipeBook.Infrastructure.Persistence

@@ -37,16 +37,9 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         [ApiExplorerSettings(IgnoreApi = false)] 
         public IActionResult GetImage(string recipeName, string imageName)
         {
-            try
-            {
-                FileStream fileStream = _fileStorer.LoadFile($"{imageName}.jpg");
-                return File(fileStream, "image/jpeg");
-            }
-            catch (IOException e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            if (!_fileStorer.Exists(imageName)) return NotFound();
+            FileStream fileStream = _fileStorer.LoadFile(imageName);
+            return File(fileStream, "image/jpeg");
         }
 
         /// <summary>
@@ -73,10 +66,13 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
                     $"{nameof(GetImage)}",
                     new { imageName = fileName, recipeName }, image);
             }
-            catch (FileUploadException e)
+            catch (FileLengthZeroException)
             {
-                Console.WriteLine(e);
-                throw;
+                return StatusCode(StatusCodes.Status406NotAcceptable);
+            }
+            catch (FileTooLargeException)
+            {
+                return StatusCode(StatusCodes.Status413RequestEntityTooLarge);
             }
         }
     }

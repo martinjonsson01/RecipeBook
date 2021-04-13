@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 
 using RecipeBook.Core.Application.Exceptions;
+using RecipeBook.Infrastructure.Persistence.FileStorage;
 using RecipeBook.Infrastructure.Persistence.Repositories;
 
 using Xunit;
@@ -24,7 +25,6 @@ namespace Tests.Infrastructure.Persistence.Repositories
             var mockedEnvironment = new Mock<IWebHostEnvironment>();
             Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), ImageFileStorer.ImageUploadsDirectory));
             mockedEnvironment.SetupGet(env => env.ContentRootPath).Returns(Path.GetTempPath);
-            mockedEnvironment.SetupGet(env => env.EnvironmentName).Returns("environmentName");
             _repo = new ImageFileStorer(
                 new Mock<ILogger<ImageFileStorer>>().Object,
                 mockedEnvironment.Object);
@@ -94,6 +94,42 @@ namespace Tests.Infrastructure.Persistence.Repositories
 
             // Assert
             method.Should().Throw<FileTooLargeException>();
+        }
+
+        [Fact]
+        public void Exists_ReturnsTrue_WithExistingFile()
+        {
+            // Arrange
+            string file = Path.GetTempFileName();
+
+            // Act
+            bool exists = _repo.Exists(file);
+
+            // Assert
+            exists.Should().BeTrue();
+        }
+
+        [Fact]
+        public void Exists_ReturnsFalse_WithNoFile()
+        {
+            // Act
+            bool exists = _repo.Exists("nonexistent-file");
+
+            // Assert
+            exists.Should().BeFalse();
+        }
+
+        [Fact]
+        public void LoadFile_ReturnsStream_WithExistingFile()
+        {
+            // Arrange
+            string file = Path.GetTempFileName();
+
+            // Act
+            Stream stream = _repo.LoadFile(file);
+
+            // Assert
+            stream.Should().NotBeNull();
         }
     }
 }

@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 
 using Moq;
 
+using RecipeBook.Core.Application.Exceptions;
 using RecipeBook.Core.Application.FileStorage;
 using RecipeBook.Presentation.WebApp.Server.Controllers.v1;
 
@@ -34,24 +35,25 @@ namespace Tests.WebApp.Server.Controllers
             {
                 HttpContext = mockedHttpContext.Object
             };
-            var fileStore = new Mock<IFileStorer>();
+            _fileStore = new Mock<IFileStorer>();
             _controller = new ImagesController(
                 new Mock<ILogger<ImagesController>>().Object,
-                fileStore.Object)
+                _fileStore.Object)
             {
                 ControllerContext = controllerContext
             };
         }
 
-        private readonly ImagesController _controller;
+        private readonly ImagesController  _controller;
+        private readonly Mock<IFileStorer> _fileStore;
 
-        private string MockKey() => $"{Path.GetRandomFileName()}.jpg";
+        private string MockFileName() => $"{Path.GetRandomFileName()}.jpg";
 
-        private IFormFile MockResource(string? key = default)
+        private IFormFile MockImageFile(string? name = default)
         {
-            key ??= MockKey();
+            name ??= MockFileName();
             var imageStream = new MemoryStream(GenerateImageByteArray());
-            var validImage = new FormFile(imageStream, 0, imageStream.Length, key, key)
+            var validImage = new FormFile(imageStream, 0, imageStream.Length, name, name)
             {
                 Headers = new HeaderDictionary(),
                 ContentType = "image/jpeg"
@@ -80,7 +82,7 @@ namespace Tests.WebApp.Server.Controllers
         public void PostImage_ReturnsStoredImageLocation_WithValidImage()
         {
             // Arrange
-            IFormFile validImageFile = MockResource();
+            IFormFile validImageFile = MockImageFile();
 
             // Act
             IActionResult response = _controller.PostImage(validImageFile, string.Empty);
@@ -93,6 +95,77 @@ namespace Tests.WebApp.Server.Controllers
             objectResult.RouteValues.Keys.Should().Contain("imageName");
             objectResult.RouteValues.Keys.Should().Contain("recipeName");
             objectResult.ActionName.Should().Be(nameof(ImagesController.GetImage));
+        }
+
+        [Fact]
+        public void PostImage_Returns406NotAcceptable_WhenFileStoreThrowsFileLengthZeroException()
+        {
+            // Arrange
+            var file = new Mock<IFormFile>();
+            _fileStore.Setup(fileStore => fileStore.SaveFile(It.IsAny<Stream>()))
+                      .Throws<FileLengthZeroException>();
+
+            // Act
+            IActionResult response = _controller.PostImage(file.Object, string.Empty);
+
+            // Assert
+            response.Should().BeAssignableTo<StatusCodeResult>();
+            var statusCodeResult = (StatusCodeResult) response;
+
+            statusCodeResult.StatusCode.Should().Be(StatusCodes.Status406NotAcceptable);
+        }
+
+        [Fact]
+        public void PostImage_Returns413RequestEntityTooLarge_WhenFileStoreThrowsFileTooLargeException()
+        {
+            // Arrange
+            var file = new Mock<IFormFile>();
+            _fileStore.Setup(fileStore => fileStore.SaveFile(It.IsAny<Stream>()))
+                      .Throws<FileTooLargeException>();
+
+            // Act
+            IActionResult response = _controller.PostImage(file.Object, string.Empty);
+
+            // Assert
+            response.Should().BeAssignableTo<StatusCodeResult>();
+            var statusCodeResult = (StatusCodeResult) response;
+
+            statusCodeResult.StatusCode.Should().Be(StatusCodes.Status413RequestEntityTooLarge);
+        }
+
+        [Fact]
+        public void GetImage_Returns404NotFound_WhenFileDoesNotExist()
+        {
+            // Arrange
+            _fileStore.Setup(fileStore => fileStore.Exists(It.IsAny<string>()))
+                      .Returns(false);
+
+            // Act
+            IActionResult response = _controller.GetImage(string.Empty, "nonexistent-file");
+
+            // Assert
+            response.Should().BeAssignableTo<NotFoundResult>();
+        }
+
+        [Fact]
+        public void GetImage_ReturnsJpegFile_WhenFileExists()
+        {
+            // Arrange
+            const string existingFile = "existing-file.jpg";
+            _fileStore.Setup(fileStore => fileStore.Exists(existingFile))
+                      .Returns(true);
+            string filePath = Path.GetTempFileName();
+            _fileStore.Setup(fileStore => fileStore.LoadFile(existingFile))
+                      .Returns(File.OpenRead(filePath));
+            
+            // Act
+            IActionResult response = _controller.GetImage(string.Empty, existingFile);
+
+            // Assert
+            response.Should().BeAssignableTo<FileResult>();
+            var fileResult = (FileResult) response;
+
+            fileResult.ContentType.Should().Be("image/jpeg");
         }
     }
 }

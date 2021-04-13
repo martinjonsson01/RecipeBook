@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using RecipeBook.Core.Application.Exceptions;
 using RecipeBook.Core.Application.FileStorage;
 
-namespace RecipeBook.Infrastructure.Persistence.Repositories
+namespace RecipeBook.Infrastructure.Persistence.FileStorage
 {
     public class ImageFileStorer : IFileStorer
     {
@@ -23,15 +23,19 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
             _env = env;
         }
 
-        public bool Exists(string filePath)
+        private string GetFilePath(string fileName)
         {
-            return File.Exists(filePath);
+            return Path.Combine(_env.ContentRootPath, ImageUploadsDirectory, fileName);
+        }
+        
+        public bool Exists(string fileName)
+        {
+            return File.Exists(GetFilePath(fileName));
         }
 
         public FileStream LoadFile(string fileName)
         {
-            string path = Path.Combine(_env.ContentRootPath, ImageUploadsDirectory, fileName);
-            return File.OpenRead(path);
+            return File.OpenRead(GetFilePath(fileName));
         }
 
         public string SaveFile(Stream stream)
@@ -47,7 +51,7 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
             switch (stream.Length)
             {
                 case 0:
-                    throw new FileLengthZeroException($"Length is 0");
+                    throw new FileLengthZeroException("Length is 0");
                 case > maxFileSize:
                     throw new FileTooLargeException($"File of {stream.Length} bytes " +
                                                     $"is larger than the limit of {maxFileSize} bytes");
