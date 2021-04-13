@@ -26,5 +26,21 @@
     <ProjectReference Include="..\Client\WebApp.Client.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="recipe-file-uploads\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="recipe-file-uploads\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="recipe-file-uploads\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="recipe-file-uploads\**" />
+  </ItemGroup>
+
 
 </Project>

@@ -37,6 +37,7 @@ namespace RecipeBook.Core.Domain.Recipes
                 Id = Id,
                 Name = Name,
                 Rating = Rating,
+                ImagePath = ImagePath,
                 Steps = Steps,
                 Ingredients = Ingredients,
                 UsedOccasions = UsedOccasions
@@ -49,6 +50,7 @@ namespace RecipeBook.Core.Domain.Recipes
             return other.Id == Id &&
                    other.Name.Equals(Name) &&
                    other.Rating == Rating &&
+                   ImagePathEquals(other.ImagePath, ImagePath) &&
                    ItemEquals(other.Steps,         Steps) &&
                    ItemEquals(other.Ingredients,   Ingredients) &&
                    ItemEquals(other.UsedOccasions, UsedOccasions);
@@ -60,6 +62,13 @@ namespace RecipeBook.Core.Domain.Recipes
             if (otherItems.Count != items.Count) return false;
             return !otherItems.Where((item, index) => !item.Equals(items[index]))
                               .Any();
+        }
+
+        private bool ImagePathEquals(string? otherImagePath, string? imagePath)
+        {
+            if (otherImagePath == imagePath) return true;
+            if (imagePath is null) return false;
+            return imagePath.Equals(otherImagePath);
         }
     }
 }

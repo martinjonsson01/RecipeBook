@@ -22,7 +22,7 @@ namespace Tests.WebApp.Server.Controllers
         TController,
         TResource,
         TKey>
-        where TResource : class, new()
+        where TResource : class
         where TController : class
     {
         protected ResourceControllerTestBase()
@@ -39,12 +39,10 @@ namespace Tests.WebApp.Server.Controllers
 
         protected abstract TKey   GetKey(TResource resource);
         protected abstract TKey   MockKey();
-        protected abstract TKey[] MockKeys(int count);
+        protected virtual TKey[] MockKeys(int count) =>
+            Enumerable.Range(0, count).Select(_ => MockKey()).ToArray();
 
-        protected virtual TResource MockResource(string recipeName, TKey key = default)
-        {
-            return new();
-        }
+        protected abstract TResource MockResource(string recipeName, TKey key = default);
 
         protected TResource MockResourceInRepository(string recipeName, TKey key = default)
         {
@@ -161,7 +159,7 @@ namespace Tests.WebApp.Server.Controllers
             response.Result.Should().BeAssignableTo<ObjectResult>();
             var objectResult = (ObjectResult) response.Result;
 
-            objectResult.Value.Should().BeOfType<TResource>();
+            objectResult.Value.Should().BeAssignableTo<TResource>();
             var retrievedResource = (TResource) objectResult.Value;
 
             retrievedResource.Should().BeEquivalentTo(resource);
@@ -205,7 +203,7 @@ namespace Tests.WebApp.Server.Controllers
             objectResult.RouteValues.Keys.Should().Contain("recipeName");
             objectResult.ActionName.Should().Be(nameof(Controller.Get));
             
-            objectResult.Value.Should().BeOfType<TResource>();
+            objectResult.Value.Should().BeAssignableTo<TResource>();
             var retrievedResource = (TResource) objectResult.Value;
 
             retrievedResource.Should().BeEquivalentTo(newResource);
@@ -230,7 +228,7 @@ namespace Tests.WebApp.Server.Controllers
             response.Result.Should().BeAssignableTo<ObjectResult>();
             var objectResult = (ObjectResult) response.Result;
 
-            objectResult.Value.Should().BeOfType<TResource>();
+            objectResult.Value.Should().BeAssignableTo<TResource>();
             var retrievedResource = (TResource) objectResult.Value;
 
             GetKey(retrievedResource).Should().BeEquivalentTo(GetKey(existingResource));

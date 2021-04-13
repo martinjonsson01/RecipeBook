@@ -3,6 +3,8 @@
 using RecipeBook.Core.Domain.Recipes;
 using RecipeBook.Presentation.WebApp.Server.Controllers.v1;
 
+using Tests.Shared;
+
 namespace Tests.WebApp.Server.Controllers
 {
     public class UsedOccasionsControllerTests
@@ -25,13 +27,9 @@ namespace Tests.WebApp.Server.Controllers
 
         protected override UsedOccasion MockResource(string recipeName, int? key = default)
         {
-            return new()
-            {
-                Id = key ?? MockKey(),
-                Comment = Faker.Lorem.Sentence(),
-                Date = Faker.Date.Recent(),
-                Duration = Faker.Date.Timespan()
-            };
+            UsedOccasion usedOccasion = Fakers.UsedOccasion.Generate();
+            usedOccasion.Id = key ?? MockKey();
+            return usedOccasion;
         }
     }
 }

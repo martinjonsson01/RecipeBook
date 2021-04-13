@@ -6,6 +6,8 @@ using FluentAssertions;
 
 using RecipeBook.Core.Domain.Recipes;
 
+using Tests.Shared;
+
 using Xunit;
 
 namespace Tests.Core.Application.Recipes
@@ -41,6 +43,48 @@ namespace Tests.Core.Application.Recipes
 
             // Assert
             actual.Should().BeEquivalentTo(name);
+        }
+
+        [Fact]
+        public void ShallowClone_ReturnsNewInstanceWithSameValues()
+        {
+            // Arrange
+            Recipe recipe  = Fakers.Recipe.Generate();
+
+            // Act
+            Recipe shallowClone = recipe.ShallowClone();
+            
+            // Assert
+            shallowClone.Should().NotBeSameAs(recipe);
+            shallowClone.Should().BeEquivalentTo(recipe);
+        }
+
+        [Fact]
+        public void Equals_ReturnsTrue_WhenRecipesAreEqual()
+        {
+            // Arrange
+            Recipe first  = Fakers.Recipe.Generate();
+            Recipe second = first.ShallowClone();
+
+            // Act
+            bool equal = first.Equals(second);
+
+            // Assert
+            equal.Should().BeTrue();
+        }
+        
+        [Fact]
+        public void Equals_ReturnsFalse_WhenRecipesAreDifferent()
+        {
+            // Arrange
+            Recipe first = Fakers.Recipe.Generate();
+            Recipe second = Fakers.Recipe.Generate();
+
+            // Act
+            bool equal = first.Equals(second);
+
+            // Assert
+            equal.Should().BeFalse();
         }
     }
 }

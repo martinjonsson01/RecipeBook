@@ -3,12 +3,18 @@
 @using System.Timers
 @using System.Text.Json
 @using RecipeBook.Core.Application.Logic
+@using System.IO
+@using System.Net
+@using Microsoft.Extensions.Logging
+@using RecipeBook.Core.Application.Web
 
 @inject HttpClient _http
 @inject NavigationManager _navigationManager
+@inject ILogger<RecipeView> _logger
 
 <div class="container">
     <div class="row mb-4">
+        <InputFile OnChange="UploadImage"/>
         <img class="mb-2" src="@Recipe.ImagePath" alt="@Recipe.Name"/>
         <div class="col-sm-11">
             <input class="display-4" type="text" @bind="Name" @bind:event="oninput"/>
@@ -103,6 +109,43 @@
             _propertyLoading[property] = status;
         }
         StateHasChanged();
+    }
+
+        private const string ImageUploadTag = "image upload";
+    private long _maxFileSize = 1024 * 500;
+
+    private async Task UploadImage(InputFileChangeEventArgs arg)
+    {
+        using var content = new MultipartFormDataContent();
+        StreamContent fileContent;
+        try
+        {
+            fileContent = new StreamContent(arg.File.OpenReadStream(_maxFileSize));
+        }
+        catch (IOException e)
+        {
+            Console.WriteLine(e);
+            return;
+        }
+
+        if (arg.File.Size >= _maxFileSize)
+        {
+            _logger.LogInformation("{FileName} not uploaded", arg.File.Name);
+            return;
+        }
+
+        content.Add(
+            content: fileContent,
+            name: "\"image\"",
+            fileName: arg.File.Name);
+
+        HttpResponseMessage response = await _http.PostAsync(
+            $"api/v1/recipes/{Recipe.ToUrlSafeName()}/images", content);
+
+        if (response.IsSuccessStatusCode)
+        {
+            ImagePath = response.Headers.Location?.ToString();
+        }
     }
 
 }

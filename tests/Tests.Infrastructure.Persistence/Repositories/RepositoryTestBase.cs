@@ -27,7 +27,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
         TRepository,
         TResource,
         TKey> : IClassFixture<DatabaseFixture>
-        where TResource : class, new()
+        where TResource : class
         where TRepository : class
     {
         protected RepositoryTestBase(NpgsqlConnection db)
@@ -102,7 +102,7 @@ namespace Tests.Infrastructure.Persistence.Repositories
             return mockedResources;
         }
 
-        private async Task<bool> ExistsInDatabase(TKey key)
+        protected virtual async Task<bool> ExistsInDatabase(TKey key)
         {
             var existsInDatabase = await Db.QuerySingleAsync<bool>(ResourceExistsSql, new { key });
             return existsInDatabase;

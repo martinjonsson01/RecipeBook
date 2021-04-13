@@ -45,13 +45,13 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         }
 
         /// <summary>
-        /// Gets a recipe by name.
+        /// Gets a image by name.
         /// </summary>
         /// <param name="unused">Has no effect on response</param>
-        /// <param name="id">The name of the recipe</param>
-        /// <returns>A recipe with matching name</returns>
-        /// <response code="200">Returns the matching recipe</response>
-        /// <response code="404">If no recipe with matching name is found</response>
+        /// <param name="id">The name of the image</param>
+        /// <returns>A image with matching name</returns>
+        /// <response code="200">Returns the matching image</response>
+        /// <response code="404">If no image with matching name is found</response>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -62,32 +62,32 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         }
 
         /// <summary>
-        /// Creates a new or updates an existing recipe.
+        /// Creates a new or updates an existing image.
         /// </summary>
         /// <param name="unused">Has no effect on response</param>
-        /// <param name="recipe">The recipe to create or update</param>
-        /// <returns>A created or updated recipe</returns>
-        /// <response code="201">If a new recipe was created</response>
-        /// <response code="200">If an existing recipe was updated</response>
-        /// <response code="400">If recipe name is already taken</response>
+        /// <param name="image">The image to create or update</param>
+        /// <returns>A created or updated image</returns>
+        /// <response code="201">If a new image was created</response>
+        /// <response code="200">If an existing image was updated</response>
+        /// <response code="400">If image name is already taken</response>
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ApiExplorerSettings(IgnoreApi = false)]
-        public override Task<ActionResult<Recipe>> CreateOrUpdate(string? unused, Recipe recipe)
+        public override Task<ActionResult<Recipe>> CreateOrUpdate(string? unused, Recipe image)
         {
-            return base.CreateOrUpdate(unused ?? string.Empty, recipe);
+            return base.CreateOrUpdate(unused ?? string.Empty, image);
         }
 
         /// <summary>
-        /// Deletes a recipe by name.
+        /// Deletes a image by name.
         /// </summary>
         /// <param name="unused">Has no effect on response</param>
-        /// <param name="id">The name of the recipe</param>
-        /// <response code="200">The recipe was deleted</response>
-        /// <response code="404">The recipe does not exist</response>
-        /// <response code="500">The server failed to delete the recipe</response>
+        /// <param name="id">The name of the image</param>
+        /// <response code="200">The image was deleted</response>
+        /// <response code="404">The image does not exist</response>
+        /// <response code="500">The server failed to delete the image</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

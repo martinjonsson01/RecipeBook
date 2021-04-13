@@ -1,8 +1,9 @@
 ﻿using System.Linq;
 
 using RecipeBook.Core.Domain.Recipes;
-using RecipeBook.Core.Domain.Units;
 using RecipeBook.Presentation.WebApp.Server.Controllers.v1;
+
+using Tests.Shared;
 
 namespace Tests.WebApp.Server.Controllers
 {
@@ -26,16 +27,11 @@ namespace Tests.WebApp.Server.Controllers
 
         protected override Ingredient MockResource(string recipeName, int? key = default)
         {
+            Ingredient ingredient = Fakers.Ingredient.Generate();
             key ??= MockKey();
-            return new Ingredient
-            {
-                Id = key,
-                Name = Faker.Lorem.Sentence(),
-                Amount = Faker.PickRandom<Unit>(
-                    new Mass { Id = key, Value = Faker.Random.Double(10) },
-                    new Volume { Id = key, Value = Faker.Random.Double(10) }
-                )
-            };
+            ingredient.Id = key;
+            ingredient.Amount.Id = key;
+            return ingredient;
         }
     }
 }

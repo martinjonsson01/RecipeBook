@@ -3,6 +3,8 @@
 using RecipeBook.Core.Domain.Recipes;
 using RecipeBook.Presentation.WebApp.Server.Controllers.v1;
 
+using Tests.Shared;
+
 namespace Tests.WebApp.Server.Controllers
 {
     public class StepsControllerTests
@@ -25,12 +27,9 @@ namespace Tests.WebApp.Server.Controllers
 
         protected override Step MockResource(string recipeName, int? key = default)
         {
-            return new()
-            {
-                Id = key ?? MockKey(),
-                Number = Faker.Random.Int(1, 10),
-                Instruction = Faker.Lorem.Sentences(2)
-            };
+            Step step = Fakers.Step.Generate();
+            step.Id = key ?? MockKey();
+            return step;
         }
     }
 }

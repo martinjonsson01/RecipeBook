@@ -9,6 +9,27 @@
             Contains all the common components of the api controllers.
             </summary>
         </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.ImagesController.GetImage(System.String,System.String)">
+            <summary>
+            Gets an image by name.
+            </summary>
+            <param name="recipeName">The name of the recipe of this image</param>
+            <param name="imageName">The name of the image</param>
+            <returns>An image with matching name</returns>
+            <response code="200">Returns the matching image</response>
+            <response code="404">If no image with matching name is found</response>
+        </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.ImagesController.PostImage(Microsoft.AspNetCore.Http.IFormFile,System.String)">
+            <summary>
+            Uploads an image.
+            </summary>
+            <returns>The location of the stored image</returns>
+            <param name="recipeName">The name of the recipe of this image</param>
+            <param name="image">The image to upload</param>
+            <response code="201">Returns the location of the stored image</response>
+            <response code="406">If image length is zero</response>  
+            <response code="413">If image is too large</response>  
+        </member>
         <member name="T:RecipeBook.Presentation.WebApp.Server.Controllers.v1.IngredientsController">
             This subclass of ResourceController is merely a facade with documentation applied.
             The actual implementation is in the base class.
@@ -69,34 +90,34 @@
         </member>
         <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipesController.Get(System.String,System.String)">
             <summary>
-            Gets a recipe by name.
+            Gets a image by name.
             </summary>
             <param name="unused">Has no effect on response</param>
-            <param name="id">The name of the recipe</param>
-            <returns>A recipe with matching name</returns>
-            <response code="200">Returns the matching recipe</response>
-            <response code="404">If no recipe with matching name is found</response>
+            <param name="id">The name of the image</param>
+            <returns>A image with matching name</returns>
+            <response code="200">Returns the matching image</response>
+            <response code="404">If no image with matching name is found</response>
         </member>
         <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipesController.CreateOrUpdate(System.String,RecipeBook.Core.Domain.Recipes.Recipe)">
             <summary>
-            Creates a new or updates an existing recipe.
+            Creates a new or updates an existing image.
             </summary>
             <param name="unused">Has no effect on response</param>
-            <param name="recipe">The recipe to create or update</param>
-            <returns>A created or updated recipe</returns>
-            <response code="201">If a new recipe was created</response>
-            <response code="200">If an existing recipe was updated</response>
-            <response code="400">If recipe name is already taken</response>
+            <param name="image">The image to create or update</param>
+            <returns>A created or updated image</returns>
+            <response code="201">If a new image was created</response>
+            <response code="200">If an existing image was updated</response>
+            <response code="400">If image name is already taken</response>
         </member>
         <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipesController.Delete(System.String,System.String)">
             <summary>
-            Deletes a recipe by name.
+            Deletes a image by name.
             </summary>
             <param name="unused">Has no effect on response</param>
-            <param name="id">The name of the recipe</param>
-            <response code="200">The recipe was deleted</response>
-            <response code="404">The recipe does not exist</response>
-            <response code="500">The server failed to delete the recipe</response>
+            <param name="id">The name of the image</param>
+            <response code="200">The image was deleted</response>
+            <response code="404">The image does not exist</response>
+            <response code="500">The server failed to delete the image</response>
         </member>
         <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.ResourceController`3.GetAll(System.String)">
             <summary>

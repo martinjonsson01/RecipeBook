@@ -7,6 +7,15 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Reference Include="Microsoft.AspNetCore.Hosting.Abstractions, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60">
+        <HintPath>..\..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\5.0.4\Microsoft.AspNetCore.Hosting.Abstractions.dll</HintPath>
+      </Reference>
+      <Reference Include="Microsoft.AspNetCore.Http, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60">
+        <HintPath>..\..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\5.0.4\Microsoft.AspNetCore.Http.dll</HintPath>
+      </Reference>
+      <Reference Include="Microsoft.AspNetCore.Http.Features, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60">
+        <HintPath>..\..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\5.0.4\Microsoft.AspNetCore.Http.Features.dll</HintPath>
+      </Reference>
       <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60">
         <HintPath>..\..\..\..\..\..\..\Program Files\dotnet\packs\Microsoft.AspNetCore.App.Ref\5.0.0\ref\net5.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
       </Reference>
@@ -20,6 +29,11 @@
       <PackageReference Include="Dapper" Version="2.0.78" />
       <PackageReference Include="Dapper.Extensions.PostgreSQL" Version="3.3.0" />
       <PackageReference Include="Npgsql" Version="5.0.4" />
+      <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="FileStorage" />
     </ItemGroup>
 	
 	 <Target Name="InheritDoc" AfterTargets="PostBuildEvent" Condition="$(GenerateDocumentationFile)">

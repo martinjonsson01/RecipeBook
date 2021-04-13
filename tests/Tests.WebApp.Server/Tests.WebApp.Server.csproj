@@ -26,6 +26,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\WebApp\Server\WebApp.Server.csproj" />
+    <ProjectReference Include="..\Tests.Shared\Tests.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Files\tesImage.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
