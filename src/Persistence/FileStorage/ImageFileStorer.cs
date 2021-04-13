@@ -27,7 +27,7 @@ namespace RecipeBook.Infrastructure.Persistence.FileStorage
         {
             return Path.Combine(_env.ContentRootPath, ImageUploadsDirectory, fileName);
         }
-        
+
         public bool Exists(string fileName)
         {
             return File.Exists(GetFilePath(fileName));
@@ -57,14 +57,14 @@ namespace RecipeBook.Infrastructure.Persistence.FileStorage
                                                     $"is larger than the limit of {maxFileSize} bytes");
             }
 
-            string trustedFileNameForFileStorage = Path.GetRandomFileName();
+            string fileName = $"{Path.GetRandomFileName()}.jpg";
             string path = Path.Combine(_env.ContentRootPath, ImageUploadsDirectory,
-                $"{trustedFileNameForFileStorage}.jpg");
+                fileName);
             Image returnImage = Image.FromStream(stream);
             returnImage.Save(path);
-            _logger.LogInformation("{FileName} saved at {Path}", trustedFileNameForFileStorage, path);
+            _logger.LogInformation("{FileName} saved at {Path}", fileName, path);
 
-            return trustedFileNameForFileStorage;
+            return fileName;
         }
     }
 }
