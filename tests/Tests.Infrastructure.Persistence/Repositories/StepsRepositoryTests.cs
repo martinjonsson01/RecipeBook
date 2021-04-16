@@ -24,10 +24,20 @@ namespace Tests.Infrastructure.Persistence.Repositories
             INSERT INTO steps (id, number, instruction, recipeid)
                 VALUES (:Id, :Number, :Instruction, {recipeId})  RETURNING *;
         ";
-        
+
         private static string InsertTimeStepSql => @"
+            WITH insert_step AS (
+                INSERT INTO steps (id, number, instruction, recipeid)
+                VALUES (:Id, :Number, :Instruction, :recipeId)
+                RETURNING id, number, instruction
+            )
             INSERT INTO timesteps (id, duration)
-                VALUES (:Id, :Duration)  RETURNING *;
+            VALUES ((SELECT id FROM insert_step), :Duration)
+            RETURNING
+                (SELECT id FROM insert_step),
+                (SELECT number FROM insert_step),
+                (SELECT instruction FROM insert_step),
+                (duration);
         ";
 
         protected override string ResourceExistsSql =>
@@ -43,28 +53,31 @@ namespace Tests.Infrastructure.Persistence.Repositories
             };
         }
 
-        private TimeStep TimeStepFromStep(Step step)
+        private async Task<TimeStep> MockTimeStep(int? key = default)
         {
             return new()
             {
-                Id = step.Id,
-                Number = step.Number,
-                Instruction = step.Instruction,
+                Id = key ?? await MockKey(),
+                Number = Faker.Random.Int(1, 10),
+                Instruction = Faker.Lorem.Sentences(2),
                 Duration = Faker.Date.Timespan()
             };
         }
 
         private async Task<TimeStep> MockTimeStepInDatabaseAsync(string recipeName, int? key = null)
         {
-            Step     mockedParentStep     = await MockResourceInDatabaseAsync(recipeName, key);
-            TimeStep mockedTimeStep = TimeStepFromStep(mockedParentStep);
+            TimeStep mockedTimeStep = await MockTimeStep(key);
 
-            return await StoreTimeStepInDatabase(mockedTimeStep);
+            return await StoreTimeStepInDatabase(recipeName, mockedTimeStep);
         }
 
-        private async Task<TimeStep> StoreTimeStepInDatabase(TimeStep timeStep)
+        private async Task<TimeStep> StoreTimeStepInDatabase(string recipeName, TimeStep timeStep)
         {
-            return await Db.QuerySingleAsync<TimeStep>(InsertTimeStepSql, timeStep);
+            var recipeId = await Db.QuerySingleAsync<int>(InsertOrGetParentRecipeSql, new { recipeName });
+            return await Db.QuerySingleAsync<TimeStep>(InsertTimeStepSql, new
+            {
+                timeStep.Id, timeStep.Number, timeStep.Instruction, timeStep.Duration, recipeId
+            });
         }
 
         [Theory]
@@ -86,12 +99,12 @@ namespace Tests.Infrastructure.Persistence.Repositories
             actualResources.Should().ContainEquivalentOf(expectedTimeStep);
             actualResources.Should().BeEquivalentTo(resources);
         }
-        
+
         [Fact]
         public async Task Get_ReturnsTimeStep_WhenTimeStepExists()
         {
             // Arrange
-            string    recipeName       = Faker.Lorem.Sentence();
+            string   recipeName       = Faker.Lorem.Sentence();
             TimeStep expectedResource = await MockTimeStepInDatabaseAsync(recipeName);
             int?     expectedKey      = GetKey(expectedResource);
 

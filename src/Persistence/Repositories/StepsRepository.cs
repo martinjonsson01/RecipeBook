@@ -44,7 +44,13 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
 
             return await db.QueryAsync<Step, TimeStep, Step>(
                 sql: GetAllSql,
-                map: (step, timeStep) => timeStep ?? step,
+                map: (step, timeStep) =>
+                {
+                    if (timeStep is null) return step;
+                    timeStep.Number = step.Number;
+                    timeStep.Instruction = step.Instruction;
+                    return timeStep;
+                },
                 param: new { recipeId });
         }
 
@@ -56,7 +62,13 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
 
             IEnumerable<Step> result = await db.QueryAsync<Step, TimeStep, Step>(
                 sql: GetSql,
-                map: (step, timeStep) => timeStep ?? step,
+                map: (step, timeStep) =>
+                {
+                    if (timeStep is null) return step;
+                    timeStep.Number = step.Number;
+                    timeStep.Instruction = step.Instruction;
+                    return timeStep;
+                },
                 param: new { key, recipeId });
 
             return result.FirstOrDefault();
