@@ -1,0 +1,28 @@
+﻿@using RecipeBook.Core.Domain.Recipes
+
+@inherits SyncedView<Ingredient>
+
+<input class="remove-input-style" type="text" @bind="Name" @bind:event="oninput"/>
+
+@code {
+#nullable enable
+
+    [Parameter]
+    public Ingredient Ingredient { get; set; } = null!;
+
+    private string Name
+    {
+        get => Ingredient.Name;
+        set
+        {
+            Ingredient.Name = value;
+            ResourceHasChanged();
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        Initialize(Ingredient);
+    }
+
+}

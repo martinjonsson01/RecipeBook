@@ -9,7 +9,9 @@
             <h2>Ingredienser</h2>
         </Header>
         <ItemTemplate>
-            @ingredient.Name
+            <IngredientView Url="@($"/api/v1/recipes/{RecipeName}/ingredients")"
+                            Ingredient="@ingredient"
+                            SetSaving="@SetSaving"/>
         </ItemTemplate>
     </FetchList>
 </div>
