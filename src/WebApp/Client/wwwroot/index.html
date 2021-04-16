@@ -12,6 +12,14 @@
     <link href="manifest.json" rel="manifest" />
     <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png" />
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css">
+    <script>
+        window.interopFunctions = {
+            textareaAutoHeight : function (textarea) {
+                textarea.style.height = "5px";
+                textarea.style.height = (textarea.scrollHeight) + "px";
+            }
+        }
+    </script>
 </head>
 
 <body>

@@ -4,3 +4,9 @@
     object-fit: cover;
     border-radius: 2rem;
 }
+
+textarea.name {
+    resize: none;
+    overflow: hidden;
+    min-height: 5rem;
+}
