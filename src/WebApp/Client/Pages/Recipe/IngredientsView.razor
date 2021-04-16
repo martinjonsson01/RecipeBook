@@ -1,5 +1,4 @@
 ﻿@using RecipeBook.Core.Domain.Recipes
-@using RecipeBook.Core.Application.Logic
 
 <div class="bg-white p-2" style="border-radius: 1rem">
     <FetchList TItem="Ingredient"
@@ -9,7 +8,9 @@
             <h2>Ingredienser</h2>
         </Header>
         <ItemTemplate>
-            @ingredient.Name
+            <IngredientView Url="@($"/api/v1/recipes/{RecipeName}/ingredients")"
+                            Ingredient="@ingredient"
+                            SetSaving="@SetSaving"/>
         </ItemTemplate>
     </FetchList>
 </div>
