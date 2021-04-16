@@ -7,6 +7,8 @@
 @using System.Net
 @using Microsoft.Extensions.Logging
 
+@inherits SyncedView<Recipe>
+
 @inject HttpClient _http
 @inject NavigationManager _navigationManager
 @inject ILogger<RecipeView> _logger
@@ -50,7 +52,7 @@
         set
         {
             Recipe.Name = value;
-            _inputSaver.ResourceHasChanged();
+            ResourceHasChanged();
         }
     }
 
@@ -60,7 +62,7 @@
         set
         {
             Recipe.Rating = value;
-            _inputSaver.ResourceHasChanged();
+            ResourceHasChanged();
         }
     }
 
@@ -70,17 +72,19 @@
         set
         {
             Recipe.ImagePath = value;
-            _inputSaver.ResourceHasChanged();
+            ResourceHasChanged();
         }
     }
 
     protected override void OnInitialized()
     {
-        _inputSaver = new InputSaver<Recipe>(Recipe, _http, "/api/v1/recipes", SetSaving);
-        _inputSaver.Saved += (_, _) => _navigationManager.NavigateTo($"/{Recipe.ToUrlSafeName()}");
+        Url = "/api/v1/recipes";
+        Initialize(Recipe);
+        Synced += (_, _) => _navigationManager.NavigateTo($"/{Recipe.ToUrlSafeName()}");
     }
 
-    private InputSaver<Recipe> _inputSaver = null!;
+    protected override void SetSavingDelegate((string, LoadStatus) tuple) => SetSaving(tuple);
+
     private Dictionary<string, LoadStatus> _propertyLoading = new();
 
     private LoadStatus GetStatus()

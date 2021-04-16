@@ -10,6 +10,9 @@
 @code {
 #nullable enable
 
+    [Parameter]
+    public Step Step { get; set; } = null!;
+    
     private string Instruction
     {
         get => Step.Instruction;
@@ -19,4 +22,10 @@
             ResourceHasChanged();
         }
     }
+
+    protected override void OnInitialized()
+    {
+        Initialize(Step);
+    }
+
 }

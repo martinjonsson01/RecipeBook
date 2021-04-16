@@ -9,7 +9,7 @@ using RecipeBook.Core.Domain;
 namespace RecipeBook.Core.Application.Logic
 {
     public class InputSaver<TResource>
-        where TResource : IShallowCloneable<TResource>, IEquatable<TResource>
+        where TResource : BaseEntity, IShallowCloneable<TResource>, IEquatable<TResource>
     {
         public InputSaver(
             TResource                    resource,
@@ -45,8 +45,10 @@ namespace RecipeBook.Core.Application.Logic
 
         public void ResourceHasChanged()
         {
-            _setSaving((InputSaveTag, LoadStatus.None)); // To indicate that displayed data is not saved
+            _setSaving((ResourceIdentifier, LoadStatus.None)); // To indicate that displayed data is not saved
         }
+
+        private string ResourceIdentifier => $"{typeof(TResource).FullName}:{_resource.Id}";
 
         private async void CheckInput(object sender, ElapsedEventArgs e)
         {
@@ -59,7 +61,7 @@ namespace RecipeBook.Core.Application.Logic
         private async Task SaveResource()
         {
             UpdateLastSaved();
-            _setSaving((InputSaveTag, LoadStatus.Loading));
+            _setSaving((ResourceIdentifier, LoadStatus.Loading));
             _setSaving((SaveToServerTag, LoadStatus.Loading));
             HttpResponseMessage response = await _http.PutAsJsonAsync(_apiPutUrl, _resource);
             Saved.Invoke(this, new InputSavedEventArgs(response));
@@ -69,7 +71,7 @@ namespace RecipeBook.Core.Application.Logic
         {
             LoadStatus status = e.Response.IsSuccessStatusCode ? LoadStatus.Success : LoadStatus.Fail;
             _setSaving((SaveToServerTag, status));
-            _setSaving((InputSaveTag, status));
+            _setSaving((ResourceIdentifier, status));
         }
 
         private void UpdateLastSaved(bool init = false)

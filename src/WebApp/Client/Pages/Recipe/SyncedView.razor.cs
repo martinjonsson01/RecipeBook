@@ -9,26 +9,28 @@ using RecipeBook.Core.Domain;
 namespace RecipeBook.Presentation.WebApp.Client.Pages.Recipe
 {
     public partial class SyncedView<TResource> : ComponentBase
-        where TResource : IShallowCloneable<TResource>, IEquatable<TResource>
+        where TResource : BaseEntity, IShallowCloneable<TResource>, IEquatable<TResource>
     {
         [Inject] private HttpClient Http { get; set; } = null!;
 
         [Parameter] public string Url { get; set; } = null!;
 
-        [Parameter] public TResource Step { get; set; } = default!;
-
         [Parameter]
         public EventCallback<(string, LoadStatus)> SetSaving { get; set; } = EventCallback<(string, LoadStatus)>.Empty;
 
-        protected override void OnInitialized()
+        protected void Initialize(TResource resource)
         {
-            _inputSaver = new InputSaver<TResource>(Step, Http, Url, SetSavingDelegate);
+            _inputSaver = new InputSaver<TResource>(resource, Http, Url, SetSavingDelegate);
+            _inputSaver.Saved += (sender, args) => Synced?.Invoke(sender, args);
         }
 
         protected void ResourceHasChanged() => _inputSaver.ResourceHasChanged();
+
+        protected event EventHandler<InputSavedEventArgs>? Synced;
         
-        private void SetSavingDelegate((string, LoadStatus) tuple) => SetSaving.InvokeAsync(tuple);
+        protected virtual void SetSavingDelegate((string, LoadStatus) tuple) => SetSaving.InvokeAsync(tuple);
 
         private InputSaver<TResource> _inputSaver = null!;
+
     }
 }
