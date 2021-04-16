@@ -17,8 +17,9 @@
     <div class="row mb-4">
         <InputFile OnChange="UploadImage"/>
         <img class="mb-2" src="@Recipe.ImagePath" alt="@Recipe.Name"/>
-        <div class="col-sm-11">
+        <div class="col-sm-11 d-flex flex-column">
             <input class="remove-input-style display-4" type="text" @bind="Name" @bind:event="oninput"/>
+            <RatingInput @bind-Rating="@Rating"/>
         </div>
         <div class="col-sm-1 d-flex p-0">
             <LoadingIndicator Status="@GetStatus()"/>
@@ -26,7 +27,6 @@
         <hr/>
     </div>
     <div class="row">
-        <input class="h4" type="number" @bind="Rating" @bind:event="oninput"/>
         <div class="col-sm-8">
             <StepsView RecipeName="@Recipe.Name" SetSaving="@SetSaving"/>
         </div>
@@ -104,7 +104,7 @@
             status is LoadStatus.Success or LoadStatus.None);
     }
 
-    private void SetSaving((string, LoadStatus) state)
+    private new void SetSaving((string, LoadStatus) state)
     {
         (string property, LoadStatus status) = state;
         if (!_propertyLoading.TryAdd(property, status))

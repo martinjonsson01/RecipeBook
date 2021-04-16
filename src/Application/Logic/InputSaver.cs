@@ -31,7 +31,6 @@ namespace RecipeBook.Core.Application.Logic
 
         private const int    CheckInputInterval   = 100;
         private const int    SaveToServerInterval = 1000;
-        private const string InputSaveTag         = "input";
         private const string SaveToServerTag      = "save to server";
 
         private readonly TResource _resource;
@@ -54,7 +53,7 @@ namespace RecipeBook.Core.Application.Logic
         {
             if (DateTime.Now.Subtract(_lastInputSave) <= TimeSpan.FromMilliseconds(SaveToServerInterval)) return;
             if (_resource.Equals(_lastSavedResource)) return;
-
+            
             await SaveResource();
         }
 
