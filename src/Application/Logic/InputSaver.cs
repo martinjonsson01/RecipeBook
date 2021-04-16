@@ -9,7 +9,7 @@ using RecipeBook.Core.Domain;
 namespace RecipeBook.Core.Application.Logic
 {
     public class InputSaver<TResource>
-        where TResource : IShallowCloneable<TResource>
+        where TResource : IShallowCloneable<TResource>, IEquatable<TResource>
     {
         public InputSaver(
             TResource                    resource,
@@ -24,9 +24,10 @@ namespace RecipeBook.Core.Application.Logic
             UpdateLastSaved(true);
             _inputTimer.Elapsed += CheckInput;
             _inputTimer.Start();
+            Saved += OnSaved;
         }
 
-        public event EventHandler Saved = null!;
+        public event EventHandler<InputSavedEventArgs> Saved = null!;
 
         private const int    CheckInputInterval   = 100;
         private const int    SaveToServerInterval = 1000;
@@ -61,8 +62,12 @@ namespace RecipeBook.Core.Application.Logic
             _setSaving((InputSaveTag, LoadStatus.Loading));
             _setSaving((SaveToServerTag, LoadStatus.Loading));
             HttpResponseMessage response = await _http.PutAsJsonAsync(_apiPutUrl, _resource);
-            LoadStatus          status   = response.IsSuccessStatusCode ? LoadStatus.Success : LoadStatus.Fail;
-            Saved.Invoke(this, EventArgs.Empty);
+            Saved.Invoke(this, new InputSavedEventArgs(response));
+        }
+
+        private void OnSaved(object? sender, InputSavedEventArgs e)
+        {
+            LoadStatus status = e.Response.IsSuccessStatusCode ? LoadStatus.Success : LoadStatus.Fail;
             _setSaving((SaveToServerTag, status));
             _setSaving((InputSaveTag, status));
         }

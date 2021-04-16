@@ -22,6 +22,16 @@ a.no-underline {
     outline: 1px solid #26b050;
 }
 
+input.remove-input-style {
+    background: none;
+    border: none;
+}
+
+input.remove-input-style:focus {
+    background: white;
+    border: 1px solid grey;
+}
+
 .invalid {
     outline: 1px solid red;
 }

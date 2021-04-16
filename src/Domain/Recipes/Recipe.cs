@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace RecipeBook.Core.Domain.Recipes
 {
-    public class Recipe : BaseEntity, IShallowCloneable<Recipe>
+    public class Recipe : BaseEntity, IShallowCloneable<Recipe>, IEquatable<Recipe>
     {
         public string              Name          { get; set; }          = string.Empty;
         public int?                Rating        { get; set; }          = null;
@@ -24,12 +24,6 @@ namespace RecipeBook.Core.Domain.Recipes
             return Uri.UnescapeDataString(escapedString);
         }
 
-        public override bool Equals(object? obj)
-        {
-            if (obj is Recipe other) return Equals(other);
-            return false;
-        }
-
         public Recipe ShallowClone()
         {
             return new()
@@ -46,14 +40,22 @@ namespace RecipeBook.Core.Domain.Recipes
 
         public bool Equals(Recipe? other)
         {
-            if (other is null) return false;
-            return other.Id == Id &&
-                   other.Name.Equals(Name) &&
-                   other.Rating == Rating &&
-                   ImagePathEquals(other.ImagePath, ImagePath) &&
-                   ItemEquals(other.Steps,         Steps) &&
-                   ItemEquals(other.Ingredients,   Ingredients) &&
-                   ItemEquals(other.UsedOccasions, UsedOccasions);
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Name == other.Name && 
+                   Rating == other.Rating && 
+                   ImagePath == other.ImagePath && 
+                   ItemEquals(UsedOccasions, other.UsedOccasions) &&
+                   ItemEquals(Steps,         other.Steps) &&
+                   ItemEquals(Ingredients, other.Ingredients);
+        }
+
+        public override bool Equals(object? obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((Recipe) obj);
         }
 
         private bool ItemEquals<T>(IList<T> otherItems, IList<T> items)
@@ -64,11 +66,18 @@ namespace RecipeBook.Core.Domain.Recipes
                               .Any();
         }
 
-        private bool ImagePathEquals(string? otherImagePath, string? imagePath)
+        public override int GetHashCode()
         {
-            if (otherImagePath == imagePath) return true;
-            if (imagePath is null) return false;
-            return imagePath.Equals(otherImagePath);
+            unchecked
+            {
+                int hashCode = Name.GetHashCode();
+                hashCode = (hashCode * 397) ^ Rating.GetHashCode();
+                hashCode = (hashCode * 397) ^ (ImagePath != null ? ImagePath.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ UsedOccasions.GetHashCode();
+                hashCode = (hashCode * 397) ^ Steps.GetHashCode();
+                hashCode = (hashCode * 397) ^ Ingredients.GetHashCode();
+                return hashCode;
+            }
         }
     }
 }

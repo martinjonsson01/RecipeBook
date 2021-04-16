@@ -16,7 +16,7 @@
         <InputFile OnChange="UploadImage"/>
         <img class="mb-2" src="@Recipe.ImagePath" alt="@Recipe.Name"/>
         <div class="col-sm-11">
-            <input class="display-4" type="text" @bind="Name" @bind:event="oninput"/>
+            <input class="remove-input-style display-4" type="text" @bind="Name" @bind:event="oninput"/>
         </div>
         <div class="col-sm-1 d-flex p-0">
             <LoadingIndicator Status="@GetStatus()"/>

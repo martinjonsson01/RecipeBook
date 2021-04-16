@@ -72,7 +72,7 @@
 
             string json = await response.Content.ReadAsStringAsync();
             _items = JsonConvert.DeserializeObject<IList<TItem>>(json, serializerOptions);
-
+            
             return;
         }
         _responseStatus = response.StatusCode;

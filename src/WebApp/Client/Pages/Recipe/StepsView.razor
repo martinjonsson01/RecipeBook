@@ -1,15 +1,18 @@
 ﻿@using RecipeBook.Core.Domain.Recipes
-@using RecipeBook.Core.Application.Logic
+
+@inject HttpClient _http
 
 <div class="ms-5">
     <FetchList TItem="Step"
-               Context="step" 
+               Context="step"
                Url="@($"/api/v1/recipes/{RecipeName}/steps")">
         <Header>
             <h2>Steg</h2>
         </Header>
         <ItemTemplate>
-            @step.Instruction
+            <StepView RecipeName="@RecipeName"
+                      Step="@step"
+                      SetSaving="@SetSaving"/>
         </ItemTemplate>
     </FetchList>
 </div>
