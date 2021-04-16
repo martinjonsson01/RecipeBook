@@ -1,29 +1,14 @@
 ﻿@using RecipeBook.Core.Domain.Recipes
 @using RecipeBook.Core.Application.Logic
 
+@inherits SyncedView<Step>
+
 @inject HttpClient _http
 
 <input class="remove-input-style" type="text" @bind="Instruction" @bind:event="oninput"/>
 
 @code {
-
-    [Parameter]
-    public string RecipeName { get; set; } = null!;
-
-    [Parameter]
-    public Step Step { get; set; } = null!;
-
-    [Parameter]
-    public EventCallback<(string, LoadStatus)> SetSaving { get; set; } = EventCallback<(string, LoadStatus)>.Empty;
-
-    protected override void OnInitialized()
-    {
-        _inputSaver = new InputSaver<Step>(Step, _http, $"/api/v1/recipes/{RecipeName}/steps", SetSavingDelegate);
-    }
-
-    private void SetSavingDelegate((string, LoadStatus) tuple) => SetSaving.InvokeAsync(tuple);
-
-    private InputSaver<Step> _inputSaver = null!;
+#nullable enable
 
     private string Instruction
     {
@@ -31,8 +16,7 @@
         set
         {
             Step.Instruction = value;
-            _inputSaver.ResourceHasChanged();
+            ResourceHasChanged();
         }
     }
-
 }
