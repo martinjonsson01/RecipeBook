@@ -2,20 +2,23 @@
 {
     public class Mass : Unit
     {
-        private const string Kilogram         = "kg";
-        private const string Gram             = "g";
+        public const string Kilogram = "kg";
+        public const string Gram     = "g";
+
         private const double GramsInAKilogram = 1000.0d; // 1000 g = 1 kg
 
-        public Mass() { }
-        
+        public Mass()
+        {
+        }
+
         public Mass(double kilograms)
         {
             Value = kilograms;
         }
-        
-        public static Mass FromGrams(int grams)
+
+        public static Mass FromGrams(double grams)
         {
-            return new(grams / GramsInAKilogram); 
+            return new(grams / GramsInAKilogram);
         }
 
         public override string ToString()
