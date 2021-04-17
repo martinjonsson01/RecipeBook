@@ -2,16 +2,23 @@
 
 <div class="ingredients bg-white p-2 shadow">
     <FetchList TItem="Ingredient"
-               Context="ingredient"
+               Context="ingredients"
                Url="@($"/api/v1/recipes/{RecipeName}/ingredients")">
         <Header>
             <h2>Ingredienser</h2>
         </Header>
-        <ItemTemplate>
-            <IngredientView Url="@($"/api/v1/recipes/{RecipeName}/ingredients")"
-                            Ingredient="@ingredient"
-                            SetSaving="@SetSaving"/>
-        </ItemTemplate>
+        <ItemsTemplate>
+            <ol class="no-style">
+                @foreach (Ingredient ingredient in ingredients)
+                {
+                    <li>
+                        <IngredientView Url="@($"/api/v1/recipes/{RecipeName}/ingredients")"
+                                        Ingredient="@ingredient"
+                                        SetSaving="@SetSaving"/>
+                    </li>
+                }
+            </ol>
+        </ItemsTemplate>
     </FetchList>
 </div>
 

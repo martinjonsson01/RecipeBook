@@ -2,28 +2,33 @@
 
 <div class="ms-5">
     <FetchList TItem="Step"
-               Context="step"
+               Context="steps"
                Url="@($"/api/v1/recipes/{RecipeName}/steps")">
         <Header>
             <h2>Steg</h2>
         </Header>
-        <ItemTemplate>
-            @switch (step)
-            {
-                case TimeStep ts:
-                    <StepView Url="@($"/api/v1/recipes/{RecipeName}/steps")"
-                              Step="@ts"
-                              SetSaving="@SetSaving">
-                        <TimerView Duration="ts.Duration"/>
-                    </StepView>
-                    break;
-                default:
-                    <StepView Url="@($"/api/v1/recipes/{RecipeName}/steps")"
-                              Step="@step"
-                              SetSaving="@SetSaving"/>
-                    break;
-            }
-        </ItemTemplate>
+        <ItemsTemplate>
+            <ol class="no-style">
+                @foreach (Step step in steps)
+                {
+                    @switch (step)
+                    {
+                        case TimeStep ts:
+                            <StepView Url="@($"/api/v1/recipes/{RecipeName}/steps")"
+                                      Step="@ts"
+                                      SetSaving="@SetSaving">
+                                <TimerView Duration="ts.Duration"/>
+                            </StepView>
+                            break;
+                        default:
+                            <StepView Url="@($"/api/v1/recipes/{RecipeName}/steps")"
+                                      Step="@step"
+                                      SetSaving="@SetSaving"/>
+                            break;
+                    }
+                }
+            </ol>
+        </ItemsTemplate>
     </FetchList>
 </div>
 

@@ -7,25 +7,18 @@
 @inject HttpClient _http
 
 @Header
-<ol class="no-style">
-    @if (_items is not null)
-    {
-        @foreach (TItem item in _items)
-        {
-            <li>
-                @ItemTemplate(item)
-            </li>
-        }
-    }
-    else if (_responseStatus is null)
-    {
-        @LoadingTemplate
-    }
-    else if (_responseStatus == HttpStatusCode.NotFound)
-    {
-        @NotFoundTemplate
-    }
-</ol>
+@if (_items is not null)
+{
+    @ItemsTemplate(_items)
+}
+else if (_responseStatus is null)
+{
+    @LoadingTemplate
+}
+else if (_responseStatus == HttpStatusCode.NotFound)
+{
+    @NotFoundTemplate
+}
 
 @* ReSharper disable twice InconsistentNaming *@
 @* ReSharper disable twice UnusedParameter.Local *@
@@ -39,7 +32,7 @@
     public RenderFragment Header { get; set; } = null!;
 
     [Parameter]
-    public RenderFragment<TItem> ItemTemplate { get; set; } = null!;
+    public RenderFragment<IEnumerable<TItem>> ItemsTemplate { get; set; } = null!;
 
     [Parameter]
     public RenderFragment LoadingTemplate { get; set; } = __builder =>
