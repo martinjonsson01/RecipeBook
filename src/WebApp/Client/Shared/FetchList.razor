@@ -4,10 +4,10 @@
 
 @typeparam TItem
 
-@inject HttpClient Http
+@inject HttpClient _http
 
 @Header
-<ol>
+<ol class="no-style">
     @if (_items is not null)
     {
         @foreach (TItem item in _items)
@@ -62,7 +62,7 @@
         _items = null;
         _responseStatus = null;
 
-        HttpResponseMessage response = await Http.GetAsync(Url);
+        HttpResponseMessage response = await _http.GetAsync(Url);
         if (response.StatusCode == HttpStatusCode.OK)
         {
             var serializerOptions = new JsonSerializerSettings
