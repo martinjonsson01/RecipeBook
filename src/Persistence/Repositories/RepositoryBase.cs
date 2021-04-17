@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 using Npgsql;
 
-using RecipeBook.Core.Application.Repository;
+using RecipeBook.Core.Application.Repositories;
 
 namespace RecipeBook.Infrastructure.Persistence.Repositories
 {

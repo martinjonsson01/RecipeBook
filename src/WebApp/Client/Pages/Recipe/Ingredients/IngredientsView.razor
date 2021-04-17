@@ -15,12 +15,12 @@
                     @{
                         Ingredient[] ingredients = _ingredients as Ingredient[] ?? _ingredients.ToArray();
                     }
-                    <div class="col-sm-auto p-0">
+                    <div class="col-sm-4 p-0">
                         <ol class="no-style text-end pe-1">
                             @foreach (Ingredient ingredient in ingredients)
                             {
                                 <li id="@($"unit-{ingredient.Id}")" class="mb-3" style="height: 5px">
-                                    <UnitView Unit="@ingredient.Amount"/>
+                                    <UnitView @bind-Unit="@ingredient.Amount"/>
                                 </li>
                             }
                         </ol>

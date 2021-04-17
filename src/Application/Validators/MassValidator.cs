@@ -2,7 +2,7 @@
 
 using RecipeBook.Core.Domain.Units;
 
-namespace RecipeBook.Core.Application.Validation
+namespace RecipeBook.Core.Application.Validators
 {
     public class MassValidator : AbstractValidator<Mass>
     {

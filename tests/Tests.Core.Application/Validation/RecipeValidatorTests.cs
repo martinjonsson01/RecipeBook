@@ -2,7 +2,7 @@ using FluentAssertions;
 
 using FluentValidation.Results;
 
-using RecipeBook.Core.Application.Validation;
+using RecipeBook.Core.Application.Validators;
 using RecipeBook.Core.Domain.Recipes;
 
 using Xunit;

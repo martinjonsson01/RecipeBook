@@ -2,7 +2,7 @@
 
 using RecipeBook.Core.Domain.Recipes;
 
-namespace RecipeBook.Core.Application.Validation
+namespace RecipeBook.Core.Application.Validators
 {
     public class RecipeValidator : AbstractValidator<Recipe>
     {

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Components;
 using RecipeBook.Core.Application.Logic;
 using RecipeBook.Core.Domain;
 
-namespace RecipeBook.Presentation.WebApp.Client.Pages.Recipe
+namespace RecipeBook.Presentation.WebApp.Client.Shared
 {
     public partial class SyncedView<TResource> : ComponentBase
         where TResource : BaseEntity, IShallowCloneable<TResource>, IEquatable<TResource>

@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 using Moq;
 
-using RecipeBook.Core.Application.Repository;
+using RecipeBook.Core.Application.Repositories;
 using RecipeBook.Presentation.WebApp.Server.Controllers.v1;
 
 using Xunit;

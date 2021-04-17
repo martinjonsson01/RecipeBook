@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace RecipeBook.Core.Application.Repository
+namespace RecipeBook.Core.Application.Repositories
 {
     public interface IResourcesRepository<TResource, in TKey>
     {

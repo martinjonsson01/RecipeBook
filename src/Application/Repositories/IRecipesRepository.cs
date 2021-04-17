@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 using RecipeBook.Core.Domain.Recipes;
 
-namespace RecipeBook.Core.Application.Repository
+namespace RecipeBook.Core.Application.Repositories
 {
     public interface IRecipesRepository
     {

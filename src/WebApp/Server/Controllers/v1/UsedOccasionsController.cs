@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-using RecipeBook.Core.Application.Repository;
+using RecipeBook.Core.Application.Repositories;
 using RecipeBook.Core.Domain.Recipes;
 
 namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1

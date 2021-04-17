@@ -1,11 +1,35 @@
 ﻿@using RecipeBook.Core.Domain.Units
 
-<h5>@Unit</h5>
+<input type="text" class="remove-input-style h5 mb-0 w-100" value="@_unitString" @oninput="OnInput" />
 
 @code {
     #nullable enable
 
     [Parameter]
     public Unit Unit { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback<Unit> UnitChanged { get; set; }
+
+    private string _unitString = null!;
+
+    protected override void OnInitialized()
+    {
+        _unitString = Unit.ToString();
+    }
+
+    private async Task OnInput(ChangeEventArgs obj)
+    {
+        if (obj.Value is not string s) return;
+        if (Unit.TryParseString(s, out Unit result, out string? errorMessage))
+        {
+            result.Id = Unit.Id;
+            await UnitChanged.InvokeAsync(result);
+        } 
+        else
+        {
+            Console.WriteLine(errorMessage);
+        }
+    }
 
 } 
