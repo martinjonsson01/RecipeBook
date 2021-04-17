@@ -2,7 +2,9 @@
 
 @inherits SyncedView<Ingredient>
 
-<input class="remove-input-style" type="text" @bind="Name" @bind:event="oninput"/>
+@inject IJSRuntime _js;
+
+<textarea @ref="_input" class="remove-input-style w-100 step" type="text" @bind="Name" @bind:event="oninput"></textarea>
 
 @code {
 #nullable enable
@@ -10,11 +12,14 @@
     [Parameter]
     public Ingredient Ingredient { get; set; } = null!;
 
+    private ElementReference _input;
+
     private string Name
     {
         get => Ingredient.Name;
         set
         {
+            _js.InvokeVoidAsync("interopFunctions.textareaAutoHeight", _input);
             Ingredient.Name = value;
             ResourceHasChanged();
         }
@@ -23,6 +28,11 @@
     protected override void OnInitialized()
     {
         Initialize(Ingredient);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await _js.InvokeVoidAsync("interopFunctions.textareaAutoHeight", _input);
     }
 
 }
