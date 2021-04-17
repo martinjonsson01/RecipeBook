@@ -1,0 +1,6 @@
+﻿div.ingredients {
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 20px;
+    border-radius: 1rem;
+}

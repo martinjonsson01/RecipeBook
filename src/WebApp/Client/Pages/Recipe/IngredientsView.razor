@@ -1,6 +1,6 @@
 ﻿@using RecipeBook.Core.Domain.Recipes
 
-<div class="bg-white p-2" style="border-radius: 1rem">
+<div class="ingredients bg-white p-2 shadow">
     <FetchList TItem="Ingredient"
                Context="ingredient"
                Url="@($"/api/v1/recipes/{RecipeName}/ingredients")">
