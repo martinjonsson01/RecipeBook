@@ -4,13 +4,18 @@
 
 @inject IJSRuntime _js;
 
-<textarea @ref="_input" class="remove-input-style w-100 step" type="text" @bind="Instruction" @bind:event="oninput"></textarea>
+<div class="d-flex">
+    <h5 class="me-4">@Step.Number.</h5>
+    <textarea @ref="_input" class="remove-input-style w-100 step" type="text" @bind="Instruction" @bind:event="oninput"></textarea>
+</div>
 
 @code {
 #nullable enable
 
     [Parameter]
     public Step Step { get; set; } = null!;
+
+    private ElementReference _input;
 
     private string Instruction
     {
@@ -33,5 +38,4 @@
         await _js.InvokeVoidAsync("interopFunctions.textareaAutoHeight", _input);
     }
 
-    private ElementReference _input;
 }
