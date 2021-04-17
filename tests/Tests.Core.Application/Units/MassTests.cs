@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using System.Globalization;
+
+using FluentAssertions;
 
 using RecipeBook.Core.Domain.Units;
 
@@ -8,6 +10,11 @@ namespace Tests.Core.Application.Units
 {
     public class MassTests
     {
+        public MassTests()
+        {
+            CultureInfo.CurrentCulture = new CultureInfo("sv-SE");
+        }
+        
         [Theory]
         [InlineData(0,    0d)]
         [InlineData(1,    0.001d)]
