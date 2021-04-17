@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Net.Http;
-using System.Net.Http.Json;
-using System.Text.Json;
+using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
+
+using Newtonsoft.Json;
 
 using RecipeBook.Core.Domain;
 
@@ -54,7 +55,7 @@ namespace RecipeBook.Core.Application.Logic
         {
             if (DateTime.Now.Subtract(_lastInputSave) <= TimeSpan.FromMilliseconds(SaveToServerInterval)) return;
             if (_resource.Equals(_lastSavedResource)) return;
-            
+
             await SaveResource();
         }
 
@@ -63,7 +64,13 @@ namespace RecipeBook.Core.Application.Logic
             UpdateLastSaved();
             _setSaving((ResourceIdentifier, LoadStatus.Loading));
             _setSaving((SaveToServerTag, LoadStatus.Loading));
-            HttpResponseMessage response = await _http.PutAsJsonAsync(_apiPutUrl, _resource);
+
+            string json = JsonConvert.SerializeObject(_resource,
+                new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await _http.PutAsync(_apiPutUrl, content);
+
             Saved.Invoke(this, new InputSavedEventArgs(response));
         }
 

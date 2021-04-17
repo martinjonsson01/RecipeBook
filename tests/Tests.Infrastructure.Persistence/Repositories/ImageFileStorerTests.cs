@@ -12,7 +12,6 @@ using Moq;
 
 using RecipeBook.Core.Application.Exceptions;
 using RecipeBook.Infrastructure.Persistence.FileStorage;
-using RecipeBook.Infrastructure.Persistence.Repositories;
 
 using Xunit;
 
