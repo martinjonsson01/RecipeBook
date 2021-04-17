@@ -4,7 +4,7 @@
         constraint recipes_pk
             primary key,
     rating    integer,
-    imagepath varchar(100),
+    imagepath varchar(300),
     name      varchar(100) not null
 );
 
@@ -12,10 +12,10 @@ alter table recipes
     owner to postgres;
 
 create unique index recipes_id_uindex
-    on recipes using btree (id);
+    on recipes (id);
 
 create unique index recipes_name_uindex
-    on recipes using btree (name);
+    on recipes (name);
 
 create table usedoccasions
 (
@@ -35,7 +35,7 @@ alter table usedoccasions
     owner to postgres;
 
 create unique index usedoccasions_id_uindex
-    on usedoccasions using btree (id);
+    on usedoccasions (id);
 
 create table steps
 (
@@ -54,7 +54,7 @@ alter table steps
     owner to postgres;
 
 create unique index steps_id_uindex
-    on steps using btree (id);
+    on steps (id);
 
 create table ingredients
 (
@@ -72,7 +72,7 @@ alter table ingredients
     owner to postgres;
 
 create unique index ingredients_id_uindex
-    on ingredients using btree (id);
+    on ingredients (id);
 
 create table units
 (
@@ -89,7 +89,7 @@ alter table units
     owner to postgres;
 
 create unique index units_id_uindex
-    on units using btree (id);
+    on units (id);
 
 create table volumes
 (
@@ -105,7 +105,7 @@ alter table volumes
     owner to postgres;
 
 create unique index volumes_id_uindex
-    on volumes using btree (id);
+    on volumes (id);
 
 create table masses
 (
@@ -121,7 +121,7 @@ alter table masses
     owner to postgres;
 
 create unique index masses_id_uindex
-    on masses using btree (id);
+    on masses (id);
 
 create table timesteps
 (
@@ -138,5 +138,5 @@ alter table timesteps
     owner to postgres;
 
 create unique index timesteps_id_uindex
-    on timesteps using btree (id);
+    on timesteps (id);
 
