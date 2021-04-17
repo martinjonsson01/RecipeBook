@@ -6,9 +6,13 @@ using System.Threading.Tasks;
 
 using Dapper;
 
+using FluentAssertions;
+
 using RecipeBook.Core.Domain.Recipes;
 using RecipeBook.Core.Domain.Units;
 using RecipeBook.Infrastructure.Persistence.Repositories;
+
+using Xunit;
 
 namespace Tests.Infrastructure.Persistence.Repositories
 {
@@ -74,10 +78,30 @@ namespace Tests.Infrastructure.Persistence.Repositories
             string sql = InsertIngredientSql(mockedResource.Amount is Mass, mockedResource.Id, mockedResource.Name,
                 recipeId,
                 mockedResource.Amount.Value);
-            
+
             IEnumerable<dynamic> results = await Db.QueryAsync(sql);
             return results.Select(Ingredient.MapFromRow)
-                   .First();
+                          .First();
+        }
+
+        [Fact]
+        public async Task CreateOrUpdate_UpdatesUnitType_WithUpdatedUnitType()
+        {
+            // Arrange
+            Ingredient   initialIngredient = await MockResource();
+            const double unitValue         = 23954.2352d;
+            var          initialUnit       = new Mass(unitValue) { Id = initialIngredient.Id };
+            initialIngredient.Amount = initialUnit;
+            Ingredient storedIngredient = await StoreInDatabase("recipe-name", initialIngredient);
+
+            // Act
+            var updatedUnit = new Volume(unitValue) { Id = storedIngredient.Id };
+            storedIngredient.Amount = updatedUnit;
+            Ingredient? updatedIngredient = await Repo.CreateOrUpdateAsync("recipe-name", storedIngredient);
+
+            // Assert
+            updatedIngredient?.Amount.Should().BeAssignableTo<Volume>();
+            updatedIngredient?.Amount.Should().NotBeAssignableTo(initialUnit.GetType());
         }
     }
 }

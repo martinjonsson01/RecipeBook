@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Npgsql;
 
 using RecipeBook.Core.Domain.Recipes;
+using RecipeBook.Core.Domain.Units;
 
 namespace RecipeBook.Infrastructure.Persistence.Repositories
 {
@@ -48,6 +50,48 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
                        AND recipeid = :recipeId;
             ";
 
+        protected override string CreateOrUpdateSql(string idQuery, int recipeId, Ingredient ingredient) => $@"
+            WITH {(idQuery != "default" ? @"
+            delete_volume AS (
+              DELETE FROM volumes
+                WHERE id = :Id
+            ),
+            delete_mass AS (
+              DELETE FROM masses
+                WHERE id = :Id
+            )," : "")}
+            insert_ingredient AS (
+               INSERT INTO ingredients (id, name, recipeid)
+               VALUES ({idQuery}, :Name, {recipeId})
+               ON CONFLICT (id)
+                 DO UPDATE
+                       SET name = :Name
+                     WHERE ingredients.id = {ingredient.Id}
+               RETURNING id AS ingredient_id, name AS ingredient_name
+            ),
+            insert_unit AS (
+               INSERT INTO units (id, value)
+               SELECT ingredient_id, {ingredient.Amount.Value.ToString(CultureInfo.InvariantCulture)} FROM insert_ingredient
+               ON CONFLICT (id)
+                 DO UPDATE
+                       SET value = {ingredient.Amount.Value.ToString(CultureInfo.InvariantCulture)}
+                     WHERE units.id = {ingredient.Amount.Id}
+               RETURNING id AS unit_id, value AS unit_value
+            )
+            INSERT INTO {(ingredient.Amount is Mass ? "masses" : "volumes")} (id)
+            SELECT unit_id FROM insert_unit
+            ON CONFLICT (id)
+              DO UPDATE
+                    SET id = (SELECT unit_id FROM insert_unit)
+                  WHERE {(ingredient.Amount is Mass ? "masses" : "volumes")}.id = {ingredient.Amount.Id}
+            RETURNING
+                (SELECT ingredient_id AS IngredientId FROM insert_ingredient),
+                (SELECT ingredient_name as IngredientName FROM insert_ingredient),
+                (SELECT unit_id AS {(ingredient.Amount is Mass ? "MassId" : "VolumeId")} FROM insert_unit),
+                (SELECT NULL AS {(ingredient.Amount is Mass ? "VolumeId" : "MassId")} FROM insert_unit),
+                (SELECT unit_value as Value FROM insert_unit);
+            ";
+
         public override async Task<IEnumerable<Ingredient>> GetAllAsync(string recipeName)
         {
             await using var db = new NpgsqlConnection(ConnectionString);
@@ -70,6 +114,15 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
 
             return results.Select(Ingredient.MapFromRow)
                           .FirstOrDefault();
+        }
+
+        protected override async Task<Ingredient?> CreateOrUpdateSendQueryAsync(Ingredient entity, NpgsqlConnection? db, string idQuery, int recipeId)
+        {
+            var insertedEntity = await db.QuerySingleAsync<dynamic>(
+                CreateOrUpdateSql(idQuery, recipeId, entity),
+                entity);
+
+            return Ingredient.MapFromRow(insertedEntity);
         }
     }
 }

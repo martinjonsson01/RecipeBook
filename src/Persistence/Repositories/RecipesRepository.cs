@@ -41,7 +41,7 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
                                rating = :Rating,
                                imagepath = :ImagePath
                          WHERE recipes.id = :Id
-                     RETURNING id;
+                     RETURNING *;
                 ";
 
         protected override string DeleteSql => @"

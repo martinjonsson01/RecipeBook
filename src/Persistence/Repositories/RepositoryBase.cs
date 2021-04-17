@@ -76,7 +76,7 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
                  DO UPDATE
                        SET recipeid = {recipeId}, {_setColumnsToPropertyNames}
                      WHERE {_table}.{_keyColumn} = :{_keyPropertyName}
-                 RETURNING {_keyColumn};
+                 RETURNING *;
             ";
 
         protected virtual string DeleteSql => $@"
@@ -131,13 +131,7 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
 
                 AddTypeHandlers();
 
-                var insertedKey = await db.QuerySingleAsync<TKey>(
-                    CreateOrUpdateSql(idQuery, recipeId, entity),
-                    entity);
-
-                SetEntityKey(entity, insertedKey);
-
-                return entity;
+                return await CreateOrUpdateSendQueryAsync(entity, db, idQuery, recipeId);
             }
             catch (NpgsqlException e)
             {
@@ -146,6 +140,15 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
                 Logger.LogWarning("Could not create or update resource because of column conflict");
                 return null;
             }
+        }
+
+        protected virtual async Task<TResource?> CreateOrUpdateSendQueryAsync(TResource entity, NpgsqlConnection? db, string idQuery, int recipeId)
+        {
+            var insertedEntity = await db.QuerySingleAsync<TResource>(
+                CreateOrUpdateSql(idQuery, recipeId, entity),
+                entity);
+
+            return insertedEntity;
         }
 
         public virtual async Task DeleteAsync(string recipeName, TKey key)
