@@ -1,23 +1,44 @@
 ﻿@using RecipeBook.Core.Domain.Recipes
 
-<div class="ingredients bg-white p-2 shadow">
+@inject IJSRuntime _js;
+
+<div class="ingredients bg-white shadow">
     <FetchList TItem="Ingredient"
-               Context="ingredients"
+               Context="_ingredients"
                Url="@($"/api/v1/recipes/{RecipeName}/ingredients")">
         <Header>
-            <h2>Ingredienser</h2>
+            <h2 class="p-4">Ingredienser</h2>
         </Header>
         <ItemsTemplate>
-            <ol class="no-style">
-                @foreach (Ingredient ingredient in ingredients)
-                {
-                    <li>
-                        <IngredientView Url="@($"/api/v1/recipes/{RecipeName}/ingredients")"
-                                        Ingredient="@ingredient"
-                                        SetSaving="@SetSaving"/>
-                    </li>
-                }
-            </ol>
+            <div class="container">
+                <div class="row">
+                    @{
+                        Ingredient[] ingredients = _ingredients as Ingredient[] ?? _ingredients.ToArray();
+                    }
+                    <div class="col-sm-auto p-0">
+                        <ol class="no-style text-end pe-1">
+                            @foreach (Ingredient ingredient in ingredients)
+                            {
+                                <li id="@($"unit-{ingredient.Id}")" class="mb-3" style="height: 5px">
+                                    <UnitView Unit="@ingredient.Amount"/>
+                                </li>
+                            }
+                        </ol>
+                    </div>
+                    <div class="col-sm p-0">
+                        <ol class="no-style text-start ps-1">
+                            @foreach (Ingredient ingredient in ingredients)
+                            {
+                                <li id="@($"ingredient-{ingredient.Id}")" class="mb-3">
+                                    <IngredientView Url="@($"/api/v1/recipes/{RecipeName}/ingredients")"
+                                                    Ingredient="@ingredient"
+                                                    SetSaving="@SetSaving"/> 
+                                </li>
+                            }
+                        </ol>
+                    </div>
+                </div>
+            </div>
         </ItemsTemplate>
     </FetchList>
 </div>
