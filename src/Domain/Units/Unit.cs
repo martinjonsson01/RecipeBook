@@ -97,7 +97,7 @@ namespace RecipeBook.Core.Domain.Units
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Value.Equals(other.Value);
+            return other.ToString().Equals(ToString());
         }
 
         public override bool Equals(object? obj)

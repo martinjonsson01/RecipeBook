@@ -100,5 +100,17 @@ namespace Tests.Core.Application.Units
             // Assert
             unit.Value.Should().BeApproximately(expectedLiters, Precision);
         }
+
+        [Fact]
+        public void Equals_ReturnsFalse_WithDifferentSubtype()
+        {
+            // Arrange
+            const double unitValue = 1234234.122d;
+            var          volume    = new Volume(unitValue);
+            var          mass    = new Mass(unitValue);
+
+            // Assert
+            volume.Equals(mass).Should().BeFalse();
+        }
     }
 }
