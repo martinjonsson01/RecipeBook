@@ -2,19 +2,22 @@
 
 @inherits SyncedView<Step>
 
-<input class="remove-input-style" type="text" @bind="Instruction" @bind:event="oninput"/>
+@inject IJSRuntime _js;
+
+<textarea @ref="_input" class="remove-input-style w-100 step" type="text" @bind="Instruction" @bind:event="oninput"></textarea>
 
 @code {
 #nullable enable
 
     [Parameter]
     public Step Step { get; set; } = null!;
-    
+
     private string Instruction
     {
         get => Step.Instruction;
         set
         {
+            _js.InvokeVoidAsync("interopFunctions.textareaAutoHeight", _input);
             Step.Instruction = value;
             ResourceHasChanged();
         }
@@ -25,4 +28,10 @@
         Initialize(Step);
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await _js.InvokeVoidAsync("interopFunctions.textareaAutoHeight", _input);
+    }
+
+    private ElementReference _input;
 }

@@ -32,6 +32,11 @@ a.no-underline {
     border: 1px solid grey;
 }
 
+textarea.remove-input-style {
+    resize: none;
+    overflow: hidden;
+}
+
 .invalid {
     outline: 1px solid red;
 }

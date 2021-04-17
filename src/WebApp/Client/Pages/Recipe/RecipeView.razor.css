@@ -6,7 +6,5 @@
 }
 
 textarea.name {
-    resize: none;
-    overflow: hidden;
     min-height: 5rem;
 }
