@@ -6,8 +6,14 @@
 
 <div class="d-flex">
     <h5 class="me-4">@Step.Number.</h5>
-    <textarea @ref="_input" class="remove-input-style w-100 step" type="text" @bind="Instruction" @bind:event="oninput"></textarea>
+    <div class="d-flex w-100 flex-column">
+        <textarea @ref="Input" class="remove-input-style w-100 step" type="text" @bind="Instruction" @bind:event="oninput"></textarea>
+        @ChildContent
+    </div>
 </div>
+
+@* ReSharper disable twice UnusedParameter.Local *@
+@* ReSharper disable twice InconsistentNaming *@
 
 @code {
 #nullable enable
@@ -15,14 +21,17 @@
     [Parameter]
     public Step Step { get; set; } = null!;
 
-    private ElementReference _input;
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = __builder => { };
 
-    private string Instruction
+    protected ElementReference Input;
+
+    protected string Instruction
     {
         get => Step.Instruction;
         set
         {
-            _js.InvokeVoidAsync("interopFunctions.textareaAutoHeight", _input);
+            _js.InvokeVoidAsync("interopFunctions.textareaAutoHeight", Input);
             Step.Instruction = value;
             ResourceHasChanged();
         }
@@ -35,7 +44,7 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await _js.InvokeVoidAsync("interopFunctions.textareaAutoHeight", _input);
+        await _js.InvokeVoidAsync("interopFunctions.textareaAutoHeight", Input);
     }
 
 }

@@ -8,9 +8,21 @@
             <h2>Steg</h2>
         </Header>
         <ItemTemplate>
-            <StepView Url="@($"/api/v1/recipes/{RecipeName}/steps")"
-                      Step="@step"
-                      SetSaving="@SetSaving"/>
+            @switch (step)
+            {
+                case TimeStep ts:
+                    <StepView Url="@($"/api/v1/recipes/{RecipeName}/steps")"
+                              Step="@ts"
+                              SetSaving="@SetSaving">
+                        <TimerView Duration="ts.Duration"/>
+                    </StepView>
+                    break;
+                default:
+                    <StepView Url="@($"/api/v1/recipes/{RecipeName}/steps")"
+                              Step="@step"
+                              SetSaving="@SetSaving"/>
+                    break;
+            }
         </ItemTemplate>
     </FetchList>
 </div>
