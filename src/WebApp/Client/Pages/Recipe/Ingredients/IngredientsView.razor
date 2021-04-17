@@ -15,8 +15,8 @@
                     @{
                         Ingredient[] ingredients = _ingredients as Ingredient[] ?? _ingredients.ToArray();
                     }
-                    <div class="col-sm-4 p-0">
-                        <ol class="no-style text-end pe-1">
+                    <div class="col-sm-3 p-0">
+                        <ol class="no-style pe-1">
                             @foreach (Ingredient ingredient in ingredients)
                             {
                                 <li id="@($"unit-{ingredient.Id}")" class="mb-3" style="height: 5px">
@@ -25,7 +25,7 @@
                             }
                         </ol>
                     </div>
-                    <div class="col-sm p-0">
+                    <div class="col-sm-9 p-0">
                         <ol class="no-style text-start ps-1">
                             @foreach (Ingredient ingredient in ingredients)
                             {
