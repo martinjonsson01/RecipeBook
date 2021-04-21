@@ -1,0 +1,26 @@
+﻿<div class="relative-container">
+    <style>
+        #inputFile {
+            display:  none;
+        }
+    </style>
+    <InputFile class="input" id="inputFile" OnChange="UploadImage"/>
+    <button type="button" class="upload-button btn btn-primary" onclick="document.getElementById('inputFile').click();">
+        Browse...
+    </button>
+    <img class="mb-2 image" src="@ImagePath" alt="@AltText"/>
+</div>
+
+@code {
+    #nullable enable
+
+    [Parameter]
+    public string ImagePath { get; set; } = null!;
+
+    [Parameter]
+    public string AltText { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback<InputFileChangeEventArgs> UploadImage { get; set; } = EventCallback<InputFileChangeEventArgs>.Empty;
+
+}

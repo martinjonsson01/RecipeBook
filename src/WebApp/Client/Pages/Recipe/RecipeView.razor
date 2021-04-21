@@ -16,8 +16,9 @@
 
 <div class="container">
     <div class="row mb-4">
-        <InputFile OnChange="UploadImage"/>
-        <img class="mb-2" src="@Recipe.ImagePath" alt="@Recipe.Name"/>
+        <ImageInput ImagePath="@Recipe.ImagePath"
+                    AltText="@Recipe.Name"
+                    UploadImage="@UploadImage"/>
         <div class="col-sm-11 d-flex flex-column">
             <textarea @ref="_nameInput" class="remove-input-style display-4 name" type="text" @bind="Name" @bind:event="oninput"></textarea>
             <RatingInput @bind-Rating="@Rating"/>
@@ -126,8 +127,7 @@
 
         private const string ImageUploadTag = "image upload";
     private long _maxFileSize = 1024 * 500;
-
-
+    
     private async Task UploadImage(InputFileChangeEventArgs arg)
     {
         using var content = new MultipartFormDataContent();
@@ -153,6 +153,7 @@
             name: "\"image\"",
             fileName: arg.File.Name);
 
+        Console.WriteLine(JsonConvert.SerializeObject(content, Formatting.Indented));
         HttpResponseMessage response = await _http.PostAsync(
             $"api/v1/recipes/{Recipe.ToUrlSafeName()}/images", content);
 
