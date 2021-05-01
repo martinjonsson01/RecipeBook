@@ -33,7 +33,8 @@
                                 <li id="@($"ingredient-{ingredient.Id}")" class="mb-3">
                                     <IngredientView Url="@($"/api/v1/recipes/{RecipeName}/ingredients")"
                                                     Ingredient="@ingredient"
-                                                    SetSaving="@SetSaving"/>
+                                                    SetSaving="@SetSaving"
+                                                    DeleteItem="() => DeleteIngredient(ingredients, ingredient)"/>
                                 </li>
                             }
                         </ol>
@@ -56,6 +57,11 @@
     private Ingredient CreateNewIngredient(int _)
     {
         return new() { Name = "Skriv ingrediens här", Amount = new Mass(0) };
+    }
+
+    private void DeleteIngredient(ICollection<Ingredient> ingredients, Ingredient ingredient)
+    {
+        ingredients.Remove(ingredient);
     }
 
 }

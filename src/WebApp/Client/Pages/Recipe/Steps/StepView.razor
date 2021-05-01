@@ -4,6 +4,7 @@
 
 <SyncedView @ref="_syncedView"
             TResource="Step"
+            DeleteItem="@DeleteItem"
             @attributes="AllOtherAttributes">
     <div class="d-flex">
         <h5 class="me-4">@Step.Number.</h5>
@@ -25,6 +26,9 @@
 
     [Parameter]
     public RenderFragment ChildContent { get; set; } = __builder => { };
+
+    [Parameter]
+    public EventCallback DeleteItem { get; set; }
 
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> AllOtherAttributes { get; set; } = null!;

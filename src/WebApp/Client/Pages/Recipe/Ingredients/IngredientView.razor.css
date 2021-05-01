@@ -1,3 +1,9 @@
 ﻿.ingredient {
     font-size: 1.25rem;
 }
+
+textarea {
+    width: 100%;
+    word-break: break-all;
+    hyphens: auto;
+}

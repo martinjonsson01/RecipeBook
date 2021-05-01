@@ -1,4 +1,5 @@
 ﻿@using RecipeBook.Core.Domain.Recipes
+@using System.Collections.ObjectModel
 
 <div class="ms-5">
     <FetchList TItem="Step"
@@ -19,20 +20,22 @@
                         case TimeStep timeStep:
                             <StepView Url="@($"/api/v1/recipes/{RecipeName}/steps")"
                                       Step="@timeStep"
-                                      SetSaving="@SetSaving">
+                                      SetSaving="@SetSaving"
+                                      DeleteItem="() => DeleteStep(steps, timeStep)">
                                 <TimerView Duration="timeStep.Duration"/>
                             </StepView>
                             break;
                         default:
                             <StepView Url="@($"/api/v1/recipes/{RecipeName}/steps")"
                                       Step="@step"
-                                      SetSaving="@SetSaving"/>
+                                      SetSaving="@SetSaving"
+                                      DeleteItem="() => DeleteStep(steps, step)"/>
                             break;
                     }
                 }
             </ol>
         </ItemsTemplate>
-    </FetchList>
+    </FetchList> 
 </div>
 
 @code {
@@ -47,6 +50,11 @@
     private Step CreateNewStep(int number)
     {
         return new() { Number = number, Instruction = "Skriv instruktion här" };
+    }
+
+    private void DeleteStep(ICollection<Step> steps, Step step)
+    {
+        steps.Remove(step);
     }
 
 }

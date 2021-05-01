@@ -4,7 +4,8 @@
 
 <SyncedView @ref="_syncedView"
             TResource="Ingredient"
-            @attributes="AllOtherAttributes">
+            @attributes="AllOtherAttributes"
+            DeleteItem="@DeleteItem">
     <textarea @ref="_input" class="remove-input-style ingredient" type="text" @bind="Name" @bind:event="oninput"></textarea>
 </SyncedView>
 
@@ -13,6 +14,9 @@
 
     [Parameter]
     public Ingredient Ingredient { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback DeleteItem { get; set; }
 
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> AllOtherAttributes { get; set; } = null!;
