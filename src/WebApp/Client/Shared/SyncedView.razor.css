@@ -1,0 +1,7 @@
+﻿button {
+    visibility: hidden;
+}
+
+div.container-fluid:hover button {
+    visibility: visible;
+}
