@@ -92,7 +92,7 @@ namespace RecipeBook.Presentation.WebApp.Client.Shared
             await HttpHelper.SendHttpMessageWithSetSaving(
                 $"{typeof(TItem).Name}-UploadNew",
                 () => _http.PutAsync(Url, content),
-                response => UpdateItemId(item, response, serializerOptions),
+                async response => await UpdateItemId(item, response, serializerOptions),
                 tuple => SetSaving.InvokeAsync(tuple));
         }
 

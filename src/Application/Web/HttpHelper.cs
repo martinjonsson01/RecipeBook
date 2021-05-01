@@ -8,32 +8,30 @@ namespace RecipeBook.Core.Application.Web
 {
     public static class HttpHelper
     {
-        public static async Task<HttpResponseMessage> SendHttpMessageWithSetSaving(
-            string                           saveTaskName,
-            Func<Task<HttpResponseMessage>>  httpAction,
-            Func<HttpResponseMessage, Task>? successAction,
-            Func<(string, LoadStatus), Task> setSaving)
+        public static async Task SendHttpMessageWithSetSaving(
+            string                          saveTaskName,
+            Func<Task<HttpResponseMessage>> httpAction,
+            Action<HttpResponseMessage>?    successAction,
+            Action<(string, LoadStatus)>    setSaving)
         {
-            await setSaving((saveTaskName, LoadStatus.Loading));
+            setSaving((saveTaskName, LoadStatus.Loading));
             HttpResponseMessage response = await httpAction();
-            await HandleResponse(response, saveTaskName, successAction, setSaving);
-            return response;
+            HandleResponse(response, saveTaskName, successAction, setSaving);
         }
 
-        private static async Task HandleResponse(
-            HttpResponseMessage              response,
-            string                           taskName,
-            Func<HttpResponseMessage, Task>? successAction,
-            Func<(string, LoadStatus), Task> setSaving)
+        private static void HandleResponse(
+            HttpResponseMessage          response,
+            string                       taskName,
+            Action<HttpResponseMessage>? successAction,
+            Action<(string, LoadStatus)> setSaving)
         {
             if (response.IsSuccessStatusCode)
             {
-                await setSaving((taskName, LoadStatus.Success));
-                if (successAction is not null)
-                    await successAction(response);
+                setSaving((taskName, LoadStatus.Success));
+                successAction?.Invoke(response);
             }
             else
-                await setSaving((taskName, LoadStatus.Fail));
+                setSaving((taskName, LoadStatus.Fail));
         }
     }
 }

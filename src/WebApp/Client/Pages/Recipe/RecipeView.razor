@@ -6,6 +6,7 @@
 @using System.IO
 @using System.Net
 @using Microsoft.Extensions.Logging
+@using RecipeBook.Core.Application.Web
 
 @inherits SyncedView<Recipe>
 
@@ -43,7 +44,7 @@
     </div>
     <div class="row mt-5">
         <div class="col d-flex justify-content-end">
-            <button type="button" class="btn btn-danger">Ta bort recept</button>
+            <button type="button" class="btn btn-danger" @onclick="DeleteRecipe">Ta bort recept</button>
         </div>
     </div>
 </div>
@@ -123,8 +124,8 @@
             status is LoadStatus.Success or LoadStatus.None);
     }
 
-    private new void SetSaving((string, LoadStatus) state)
-    {
+    private void SetSaving((string, LoadStatus) state)
+    { 
         (string property, LoadStatus status) = state;
         if (!_propertyLoading.TryAdd(property, status))
         {
@@ -176,6 +177,15 @@
         {
             ImageInputErrorMessage = "Kunde inte ladda upp bild, försök igen";
         }
+    }
+
+    private async Task DeleteRecipe()
+    {
+        await HttpHelper.SendHttpMessageWithSetSaving(
+            "Recipe-DeleteItem",
+            () => _http.DeleteAsync($"{Url}/{Recipe.Name}"),
+            _ => _navigationManager.NavigateTo("/"),
+            SetSaving); 
     }
 
 }
