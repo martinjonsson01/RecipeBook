@@ -83,34 +83,64 @@ namespace RecipeBook.Presentation.WebApp.Client.Shared
 
         private async Task UploadNewItem(TItem item)
         {
-            var serializerOptions = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
-            string json = JsonConvert.SerializeObject(item,
-                serializerOptions);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            JsonSerializerSettings serializerOptions = new() { TypeNameHandling = TypeNameHandling.Auto };
+            StringContent          content           = ItemToStringContent(item, serializerOptions);
 
-            string saveTaskName = $"{typeof(TItem).Name}-UploadNew";
-            await SetSaving.InvokeAsync((saveTaskName, LoadStatus.Loading));
-            HttpResponseMessage response = await _http.PutAsync(Url, content);
-            if (response.IsSuccessStatusCode)
-            {
-                await SetSaving.InvokeAsync((saveTaskName, LoadStatus.Success));
-                string responseJson = await response.Content.ReadAsStringAsync();
-                var responseItem = JsonConvert.DeserializeObject<TItem>(responseJson, serializerOptions);
-                item.Id = responseItem?.Id;
-            }
-            else
-                await SetSaving.InvokeAsync((saveTaskName, LoadStatus.Fail));
+            await SendHttpMessageWithSetSaving(
+                $"{typeof(TItem).Name}-UploadNew",
+                () => _http.PutAsync(Url, content),
+                response => UpdateItemId(item, response, serializerOptions));
         }
 
         private async Task DeleteItem(TItem item)
         {
-            string deleteTaskName = $"{typeof(TItem).Name}-DeleteItem";
-            await SetSaving.InvokeAsync((deleteTaskName, LoadStatus.Loading));
-            HttpResponseMessage response = await _http.DeleteAsync($"{Url}/{item.Id}");
+            await SendHttpMessageWithSetSaving(
+                $"{typeof(TItem).Name}-DeleteItem",
+                () => _http.DeleteAsync($"{Url}/{item.Id}"),
+                null);
+        }
+
+        private async Task<HttpResponseMessage> SendHttpMessageWithSetSaving(
+            string                           saveTaskName,
+            Func<Task<HttpResponseMessage>>  httpAction,
+            Func<HttpResponseMessage, Task>? successAction)
+        {
+            await SetSaving.InvokeAsync((saveTaskName, LoadStatus.Loading));
+            HttpResponseMessage response = await httpAction();
+            await HandleResponse(response, saveTaskName, successAction);
+            return response;
+        }
+
+
+        private async Task UpdateItemId(
+            TItem                  item,
+            HttpResponseMessage    response,
+            JsonSerializerSettings serializerOptions)
+        {
+            string responseJson = await response.Content.ReadAsStringAsync();
+            var    responseItem = JsonConvert.DeserializeObject<TItem>(responseJson, serializerOptions);
+            item.Id = responseItem?.Id;
+        }
+
+        private async Task HandleResponse(
+            HttpResponseMessage              response,
+            string                           taskName,
+            Func<HttpResponseMessage, Task>? successAction)
+        {
             if (response.IsSuccessStatusCode)
-                await SetSaving.InvokeAsync((deleteTaskName, LoadStatus.Success));
+            {
+                await SetSaving.InvokeAsync((taskName, LoadStatus.Success));
+                if (successAction is not null)
+                    await successAction(response);
+            }
             else
-                await SetSaving.InvokeAsync((deleteTaskName, LoadStatus.Fail));
+                await SetSaving.InvokeAsync((taskName, LoadStatus.Fail));
+        }
+
+        private static StringContent ItemToStringContent(TItem item, JsonSerializerSettings? serializerOptions)
+        {
+            string json    = JsonConvert.SerializeObject(item, serializerOptions);
+            return new StringContent(json, Encoding.UTF8, "application/json");
         }
     }
 }
