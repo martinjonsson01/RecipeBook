@@ -29,6 +29,15 @@ else if (_responseStatus == HttpStatusCode.NotFound)
 {
     @NotFoundTemplate
 }
+else if (_responseStatus == HttpStatusCode.NoContent)
+{
+    <div class="d-flex justify-content-center">
+        <button type="button" class="btn btn-outline-secondary mb-3"
+                @onclick="_ => _items.Add(CreateNewItem(_items.Count + 1))">
+            @CreateNewItemText
+        </button>
+    </div>
+}
 
 @* ReSharper disable twice InconsistentNaming *@
 @* ReSharper disable twice UnusedParameter.Local *@

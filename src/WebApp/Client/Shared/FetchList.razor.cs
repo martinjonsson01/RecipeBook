@@ -35,21 +35,25 @@ namespace RecipeBook.Presentation.WebApp.Client.Shared
             _responseStatus = null;
 
             HttpResponseMessage response = await _http.GetAsync(Url);
-            if (response.StatusCode == HttpStatusCode.OK)
+            switch (response.StatusCode)
             {
-                var serializerOptions = new JsonSerializerSettings
-                {
-                    TypeNameHandling = TypeNameHandling.Auto
-                };
+                case HttpStatusCode.OK:
+                    var serializerOptions = new JsonSerializerSettings
+                    {
+                        TypeNameHandling = TypeNameHandling.Auto
+                    };
 
-                string json = await response.Content.ReadAsStringAsync();
-                _items = JsonConvert.DeserializeObject<ObservableCollection<TItem>>(json, serializerOptions);
-
-                if (_items is not null)
-                    _items.CollectionChanged += ItemsCollectionChanged;
-
-                return;
+                    string json = await response.Content.ReadAsStringAsync();
+                    _items = JsonConvert.DeserializeObject<ObservableCollection<TItem>>(json, serializerOptions);
+                    break;
+                case HttpStatusCode.NoContent:
+                    _items = new ObservableCollection<TItem>();
+                    break;
             }
+
+            if (_items is not null)
+                _items.CollectionChanged += ItemsCollectionChanged;
+            
             _responseStatus = response.StatusCode;
         }
 
