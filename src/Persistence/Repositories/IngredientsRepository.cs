@@ -66,7 +66,7 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
                ON CONFLICT (id)
                  DO UPDATE
                        SET name = :Name
-                     WHERE ingredients.id = {ingredient.Id}
+                     WHERE ingredients.id = {(idQuery == "default" ? "-1" : idQuery)}
                RETURNING id AS ingredient_id, name AS ingredient_name
             ),
             insert_unit AS (
@@ -75,7 +75,7 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
                ON CONFLICT (id)
                  DO UPDATE
                        SET value = {ingredient.Amount.Value.ToString(CultureInfo.InvariantCulture)}
-                     WHERE units.id = {ingredient.Amount.Id}
+                     WHERE units.id = (SELECT ingredient_id FROM insert_ingredient)
                RETURNING id AS unit_id, value AS unit_value
             )
             INSERT INTO {(ingredient.Amount is Mass ? "masses" : "volumes")} (id)
@@ -83,7 +83,7 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
             ON CONFLICT (id)
               DO UPDATE
                     SET id = (SELECT unit_id FROM insert_unit)
-                  WHERE {(ingredient.Amount is Mass ? "masses" : "volumes")}.id = {ingredient.Amount.Id}
+                  WHERE {(ingredient.Amount is Mass ? "masses" : "volumes")}.id = (SELECT ingredient_id FROM insert_ingredient)
             RETURNING
                 (SELECT ingredient_id AS IngredientId FROM insert_ingredient),
                 (SELECT ingredient_name as IngredientName FROM insert_ingredient),
@@ -118,8 +118,9 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
 
         protected override async Task<Ingredient?> CreateOrUpdateSendQueryAsync(Ingredient entity, NpgsqlConnection? db, string idQuery, int recipeId)
         {
+            string sql = CreateOrUpdateSql(idQuery, recipeId, entity);
             var insertedEntity = await db.QuerySingleAsync<dynamic>(
-                CreateOrUpdateSql(idQuery, recipeId, entity),
+                sql,
                 entity);
 
             return Ingredient.MapFromRow(insertedEntity);
