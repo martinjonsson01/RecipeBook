@@ -45,9 +45,9 @@
     [Parameter]
     public EventCallback<(string, LoadStatus)> SetSaving { get; set; } = EventCallback<(string, LoadStatus)>.Empty;
 
-    private Ingredient CreateNewIngredient(int number)
+    private Ingredient CreateNewIngredient(int _)
     {
-        return new() { Id = -number, Name = "Skriv ingrediens här", Amount = new Mass(0) };
+        return new() { Name = "Skriv ingrediens här", Amount = new Mass(0) };
     }
 
     private void DeleteIngredient(ICollection<Ingredient> ingredients, Ingredient ingredient)

@@ -8,7 +8,7 @@ using RecipeBook.Core.Domain;
 
 namespace RecipeBook.Presentation.WebApp.Client.Shared
 {
-    public partial class SyncedView<TResource> : ComponentBase
+    public partial class SyncedView<TResource>
         where TResource : BaseEntity, IShallowCloneable<TResource>, IEquatable<TResource>
     {
         [Inject] private HttpClient Http { get; set; } = null!;
