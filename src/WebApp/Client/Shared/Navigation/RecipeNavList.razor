@@ -20,10 +20,7 @@
             }
         </ItemsTemplate>
         <CreateNewButtonTemplate Context="recipes">
-            <button type="button" class="btn btn-outline-secondary mb-3"
-                    @onclick="_ => recipes.Add(CreateNewRecipe(recipes.Count + 1))">
-                Skapa recept
-            </button>
+            <CreateNewRecipeButton Items="recipes"/>
         </CreateNewButtonTemplate>
         <LoadingTemplate>
             <h3>Laddar...</h3>
@@ -48,11 +45,6 @@
         if (_fetchList is null) return;
         await _fetchList.ReloadItems();
         StateHasChanged();
-    }
-
-    private Recipe CreateNewRecipe(int number)
-    {
-        return new() { Name = $"Skriv receptnamn här ({number})" };
     }
 
     private FetchList<Recipe>? _fetchList;
