@@ -4,7 +4,9 @@
     <FetchList TItem="Step"
                Context="steps"
                Url="@($"/api/v1/recipes/{RecipeName}/steps")"
-               SetSaving="@SetSaving">
+               SetSaving="@SetSaving"
+               CreateNewItemText="Lägg till steg"
+               CreateNewItem="CreateNewStep">
         <Header>
             <h2>Steg</h2>
         </Header>
@@ -28,8 +30,6 @@
                             break;
                     }
                 }
-                <button type="button" class="btn btn-outline-secondary" 
-                        @onclick="args => AddStep(steps, args)">Lägg till steg</button>
             </ol>
         </ItemsTemplate>
     </FetchList>
@@ -44,10 +44,9 @@
     [Parameter]
     public EventCallback<(string, LoadStatus)> SetSaving { get; set; } = EventCallback<(string, LoadStatus)>.Empty;
 
-    private void AddStep(ICollection<Step> steps, MouseEventArgs obj)
+    private Step CreateNewStep(int number)
     {
-        steps.Add(new Step { Number = steps.Count + 1, Instruction = "Skriv instruktion här" });
-        StateHasChanged();
+        return new() { Number = number, Instruction = "Skriv instruktion här" };
     }
 
 }

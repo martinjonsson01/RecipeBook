@@ -14,6 +14,8 @@
 @if (_items is not null)
 {
     @ItemsTemplate(_items)
+    <button type="button" class="btn btn-outline-secondary" 
+            @onclick="_ => _items.Add(CreateNewItem(_items.Count + 1))">@CreateNewItemText</button>
 }
 else if (_responseStatus is null)
 {
@@ -26,7 +28,6 @@ else if (_responseStatus == HttpStatusCode.NotFound)
 
 @* ReSharper disable twice InconsistentNaming *@
 @* ReSharper disable twice UnusedParameter.Local *@
-
 @code {
 #nullable enable
 
@@ -39,6 +40,11 @@ else if (_responseStatus == HttpStatusCode.NotFound)
     [Parameter]
     public EventCallback<(string, LoadStatus)> SetSaving { get; set; }
 
+    [Parameter]
+    public Func<int, TItem> CreateNewItem { get; set; } = null!;
+
+    [Parameter] public string CreateNewItemText { get; set; }= "Lägg till";
+    
     [Parameter]
     public RenderFragment<ObservableCollection<TItem>> ItemsTemplate { get; set; } = null!;
 
