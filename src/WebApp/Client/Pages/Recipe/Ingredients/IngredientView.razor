@@ -1,16 +1,21 @@
 ﻿@using RecipeBook.Core.Domain.Recipes
 
-@inherits SyncedView<Ingredient>
-
 @inject IJSRuntime _js;
 
-<textarea @ref="_input" class="remove-input-style ingredient" type="text" @bind="Name" @bind:event="oninput"></textarea>
+<SyncedView @ref="_syncedView"
+            TResource="Ingredient"
+            @attributes="AllOtherAttributes">
+    <textarea @ref="_input" class="remove-input-style ingredient" type="text" @bind="Name" @bind:event="oninput"></textarea>
+</SyncedView>
 
 @code {
 #nullable enable
 
     [Parameter]
     public Ingredient Ingredient { get; set; } = null!;
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> AllOtherAttributes { get; set; } = null!;
 
     private ElementReference _input;
 
@@ -21,13 +26,14 @@
         {
             _js.InvokeVoidAsync("interopFunctions.textareaAutoHeight", _input);
             Ingredient.Name = value;
-            ResourceHasChanged();
+            _syncedView.ResourceHasChanged();
         }
     }
 
-    protected override void OnInitialized()
+    protected override void OnAfterRender(bool firstRender)
     {
-        Initialize(Ingredient);
+        if (firstRender)
+            _syncedView.Initialize(Ingredient);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -36,4 +42,5 @@
         await _js.InvokeVoidAsync("interopFunctions.copyElementHeight", $"ingredient-{Ingredient.Id}", $"unit-{Ingredient.Id}");
     }
 
+    private SyncedView<Ingredient> _syncedView = null!;
 }

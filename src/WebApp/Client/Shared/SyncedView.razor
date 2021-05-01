@@ -1,1 +1,20 @@
-﻿
+﻿@typeparam TResource
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-11">
+            @ChildContent
+        </div>
+        <div class="col-1">
+            <h1>X</h1>
+        </div>
+    </div>
+</div>
+
+@code {
+#nullable enable
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = null!;
+
+}

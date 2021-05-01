@@ -18,13 +18,13 @@ namespace RecipeBook.Presentation.WebApp.Client.Shared
         [Parameter]
         public EventCallback<(string, LoadStatus)> SetSaving { get; set; } = EventCallback<(string, LoadStatus)>.Empty;
 
-        protected void Initialize(TResource resource)
+        public void Initialize(TResource resource)
         {
             _inputSaver = new InputSaver<TResource>(resource, Http, Url, SetSavingDelegate);
             _inputSaver.Saved += (sender, args) => Synced?.Invoke(sender, args);
         }
 
-        protected void ResourceHasChanged() => _inputSaver.ResourceHasChanged();
+        public void ResourceHasChanged() => _inputSaver.ResourceHasChanged();
 
         protected event EventHandler<InputSavedEventArgs>? Synced;
         

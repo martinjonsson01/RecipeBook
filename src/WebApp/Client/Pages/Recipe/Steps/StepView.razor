@@ -1,16 +1,18 @@
 ﻿@using RecipeBook.Core.Domain.Recipes
 
-@inherits SyncedView<Step>
-
 @inject IJSRuntime _js;
 
-<div class="d-flex">
-    <h5 class="me-4">@Step.Number.</h5>
-    <div class="d-flex w-100 flex-column">
-        <textarea @ref="Input" class="remove-input-style w-100 step" type="text" @bind="Instruction" @bind:event="oninput"></textarea>
-        @ChildContent
+<SyncedView @ref="_syncedView"
+            TResource="Step"
+            @attributes="AllOtherAttributes">
+    <div class="d-flex">
+        <h5 class="me-4">@Step.Number.</h5>
+        <div class="d-flex w-100 flex-column">
+            <textarea @ref="Input" class="remove-input-style w-100 step" type="text" @bind="Instruction" @bind:event="oninput"></textarea>
+            @ChildContent
+        </div>
     </div>
-</div>
+</SyncedView>
 
 @* ReSharper disable twice UnusedParameter.Local *@
 @* ReSharper disable twice InconsistentNaming *@
@@ -24,22 +26,26 @@
     [Parameter]
     public RenderFragment ChildContent { get; set; } = __builder => { };
 
-    protected ElementReference Input;
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> AllOtherAttributes { get; set; } = null!;
 
-    protected string Instruction
+    private ElementReference Input;
+
+    private string Instruction
     {
         get => Step.Instruction;
         set
         {
             _js.InvokeVoidAsync("interopFunctions.textareaAutoHeight", Input);
             Step.Instruction = value;
-            ResourceHasChanged();
+            _syncedView.ResourceHasChanged();
         }
     }
 
-    protected override void OnInitialized()
+    protected override void OnAfterRender(bool firstRender)
     {
-        Initialize(Step);
+        if (firstRender)
+            _syncedView.Initialize(Step);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -47,4 +53,5 @@
         await _js.InvokeVoidAsync("interopFunctions.textareaAutoHeight", Input);
     }
 
+    private SyncedView<Step> _syncedView = null!;
 }
