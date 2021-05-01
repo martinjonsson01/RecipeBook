@@ -1,11 +1,15 @@
 ﻿@using RecipeBook.Core.Domain.Recipes
+@using RecipeBook.Core.Domain.Units
 
 @inject IJSRuntime _js;
 
 <div class="ingredients bg-white shadow">
     <FetchList TItem="Ingredient"
                Context="ingredients"
-               Url="@($"/api/v1/recipes/{RecipeName}/ingredients")">
+               Url="@($"/api/v1/recipes/{RecipeName}/ingredients")"
+               SetSaving="@SetSaving"
+               CreateNewItemText="Lägg till ingrediens"
+               CreateNewItem="CreateNewIngredient">
         <Header>
             <h2 class="p-4">Ingredienser</h2>
         </Header>
@@ -29,7 +33,7 @@
                                 <li id="@($"ingredient-{ingredient.Id}")" class="mb-3">
                                     <IngredientView Url="@($"/api/v1/recipes/{RecipeName}/ingredients")"
                                                     Ingredient="@ingredient"
-                                                    SetSaving="@SetSaving"/> 
+                                                    SetSaving="@SetSaving"/>
                                 </li>
                             }
                         </ol>
@@ -48,5 +52,10 @@
 
     [Parameter]
     public EventCallback<(string, LoadStatus)> SetSaving { get; set; } = EventCallback<(string, LoadStatus)>.Empty;
+
+    private Ingredient CreateNewIngredient(int _)
+    {
+        return new() { Name = "Skriv ingrediens här", Amount = new Mass(0) };
+    }
 
 }
