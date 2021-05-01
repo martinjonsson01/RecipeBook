@@ -4,7 +4,7 @@
 
 <div class="ingredients bg-white shadow">
     <FetchList TItem="Ingredient"
-               Context="_ingredients"
+               Context="ingredients"
                Url="@($"/api/v1/recipes/{RecipeName}/ingredients")">
         <Header>
             <h2 class="p-4">Ingredienser</h2>
@@ -12,9 +12,6 @@
         <ItemsTemplate>
             <div class="container">
                 <div class="row">
-                    @{
-                        Ingredient[] ingredients = _ingredients as Ingredient[] ?? _ingredients.ToArray();
-                    }
                     <div class="col-sm-3 p-0">
                         <ol class="no-style pe-1">
                             @foreach (Ingredient ingredient in ingredients)

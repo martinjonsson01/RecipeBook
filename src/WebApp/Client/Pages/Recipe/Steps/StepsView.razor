@@ -3,7 +3,8 @@
 <div class="ms-5">
     <FetchList TItem="Step"
                Context="steps"
-               Url="@($"/api/v1/recipes/{RecipeName}/steps")">
+               Url="@($"/api/v1/recipes/{RecipeName}/steps")"
+               SetSaving="@SetSaving">
         <Header>
             <h2>Steg</h2>
         </Header>
@@ -13,11 +14,11 @@
                 {
                     @switch (step)
                     {
-                        case TimeStep ts:
+                        case TimeStep timeStep:
                             <StepView Url="@($"/api/v1/recipes/{RecipeName}/steps")"
-                                      Step="@ts"
+                                      Step="@timeStep"
                                       SetSaving="@SetSaving">
-                                <TimerView Duration="ts.Duration"/>
+                                <TimerView Duration="timeStep.Duration"/>
                             </StepView>
                             break;
                         default:
@@ -27,6 +28,8 @@
                             break;
                     }
                 }
+                <button type="button" class="btn btn-outline-secondary" 
+                        @onclick="args => AddStep(steps, args)">Lägg till steg</button>
             </ol>
         </ItemsTemplate>
     </FetchList>
@@ -40,5 +43,11 @@
 
     [Parameter]
     public EventCallback<(string, LoadStatus)> SetSaving { get; set; } = EventCallback<(string, LoadStatus)>.Empty;
+
+    private void AddStep(ICollection<Step> steps, MouseEventArgs obj)
+    {
+        steps.Add(new Step { Number = steps.Count + 1, Instruction = "Skriv instruktion här" });
+        StateHasChanged();
+    }
 
 }

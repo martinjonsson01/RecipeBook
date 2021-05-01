@@ -31,14 +31,14 @@ namespace RecipeBook.Core.Application.Logic
 
         public event EventHandler<InputSavedEventArgs> Saved = null!;
 
-        private const int    CheckInputInterval   = 100;
-        private const int    SaveToServerInterval = 1000;
+        private const int    CheckInputIntervalMs   = 100;
+        private const int    SaveToServerIntervalMs = 1000;
         private const string SaveToServerTag      = "save to server";
 
         private readonly TResource _resource;
         private readonly HttpClient _http;
         private readonly Action<(string, LoadStatus)> _setSaving;
-        private readonly Timer _inputTimer = new() { Interval = CheckInputInterval, AutoReset = true };
+        private readonly Timer _inputTimer = new() { Interval = CheckInputIntervalMs, AutoReset = true };
         private readonly string _apiPutUrl;
 
         private TResource? _lastSavedResource;
@@ -53,7 +53,7 @@ namespace RecipeBook.Core.Application.Logic
 
         private async void CheckInput(object sender, ElapsedEventArgs e)
         {
-            if (DateTime.Now.Subtract(_lastInputSave) <= TimeSpan.FromMilliseconds(SaveToServerInterval)) return;
+            if (DateTime.Now.Subtract(_lastInputSave) <= TimeSpan.FromMilliseconds(SaveToServerIntervalMs)) return;
             if (_resource.Equals(_lastSavedResource)) return;
 
             await SaveResource();

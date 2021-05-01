@@ -47,16 +47,17 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         /// </summary>
         /// <param name="recipeName">The name of the recipe containing this step</param>
         /// <param name="id">The Id of the step</param>
+        /// <param name="version">The API version</param>
         /// <returns>A step with matching Id</returns>
         /// <response code="200">Returns the matching step</response>
         /// <response code="404">If no step with matching Id is found</response>
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name="GetStep")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ApiExplorerSettings(IgnoreApi = false)] 
-        public override Task<ActionResult<Step>> Get(string recipeName, int? id)
+        public override Task<ActionResult<Step>> Get(string recipeName, int? id, ApiVersion version)
         {
-            return base.Get(recipeName, id);
+            return base.Get(recipeName, id, version);
         }
 
         /// <summary>
@@ -64,6 +65,7 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         /// </summary>
         /// <param name="recipeName">The name of the recipe containing this resource</param>
         /// <param name="step">The step to create or update</param>
+        /// <param name="version">The API version</param>
         /// <returns>A created or updated step</returns>
         /// <response code="201">If a new step was created</response>
         /// <response code="200">If an existing step was updated</response>
@@ -73,9 +75,9 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ApiExplorerSettings(IgnoreApi = false)] 
-        public override Task<ActionResult<Step>> CreateOrUpdate(string recipeName, Step step)
+        public override Task<ActionResult<Step>> CreateOrUpdate(string recipeName, Step step, ApiVersion version)
         {
-            return base.CreateOrUpdate(recipeName, step);
+            return base.CreateOrUpdate(recipeName, step, version);
         }
 
         /// <summary>

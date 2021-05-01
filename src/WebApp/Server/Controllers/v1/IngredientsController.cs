@@ -25,7 +25,7 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         }
 
         protected override int? GetKey(Ingredient entity) => entity.Id;
-        
+
         /// <summary>
         /// Gets all ingredients.
         /// </summary>
@@ -36,7 +36,7 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ApiExplorerSettings(IgnoreApi = false)] 
+        [ApiExplorerSettings(IgnoreApi = false)]
         public override Task<ActionResult<IEnumerable<Ingredient>>> GetAll(string recipeName)
         {
             return base.GetAll(recipeName);
@@ -47,16 +47,17 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         /// </summary>
         /// <param name="recipeName">The name of the recipe containing this ingredient</param>
         /// <param name="id">The Id of the ingredient</param>
+        /// <param name="version">The API version</param>
         /// <returns>A ingredient with matching Id</returns>
         /// <response code="200">Returns the matching ingredient</response>
         /// <response code="404">If no ingredient with matching Id is found</response>
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetIngredient")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ApiExplorerSettings(IgnoreApi = false)] 
-        public override Task<ActionResult<Ingredient>> Get(string recipeName, int? id)
+        [ApiExplorerSettings(IgnoreApi = false)]
+        public override Task<ActionResult<Ingredient>> Get(string recipeName, int? id, ApiVersion version)
         {
-            return base.Get(recipeName, id);
+            return base.Get(recipeName, id, version);
         }
 
         /// <summary>
@@ -64,6 +65,7 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         /// </summary>
         /// <param name="recipeName">The name of the recipe containing this resource</param>
         /// <param name="ingredient">The ingredient to create or update</param>
+        /// <param name="version">The API version</param>
         /// <returns>A created or updated ingredient</returns>
         /// <response code="201">If a new ingredient was created</response>
         /// <response code="200">If an existing ingredient was updated</response>
@@ -72,10 +74,13 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ApiExplorerSettings(IgnoreApi = false)] 
-        public override Task<ActionResult<Ingredient>> CreateOrUpdate(string recipeName, Ingredient ingredient)
+        [ApiExplorerSettings(IgnoreApi = false)]
+        public override Task<ActionResult<Ingredient>> CreateOrUpdate(
+            string     recipeName,
+            Ingredient ingredient,
+            ApiVersion version)
         {
-            return base.CreateOrUpdate(recipeName, ingredient);
+            return base.CreateOrUpdate(recipeName, ingredient, version);
         }
 
         /// <summary>
@@ -90,7 +95,7 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [ApiExplorerSettings(IgnoreApi = false)] 
+        [ApiExplorerSettings(IgnoreApi = false)]
         public override Task<ActionResult> Delete(string recipeName, int? id)
         {
             return base.Delete(recipeName, id);

@@ -49,16 +49,17 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         /// </summary>
         /// <param name="unused">Has no effect on response</param>
         /// <param name="id">The name of the image</param>
+        /// <param name="version">The API version</param>
         /// <returns>A image with matching name</returns>
         /// <response code="200">Returns the matching image</response>
         /// <response code="404">If no image with matching name is found</response>
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetRecipe")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ApiExplorerSettings(IgnoreApi = false)]
-        public override Task<ActionResult<Recipe>> Get(string? unused, string id)
+        public override Task<ActionResult<Recipe>> Get(string? unused, string id, ApiVersion version)
         {
-            return base.Get(unused ?? string.Empty, Recipe.FromUrlSafeNameToOrdinaryName(id));
+            return base.Get(unused ?? string.Empty, Recipe.FromUrlSafeNameToOrdinaryName(id), version);
         }
 
         /// <summary>
@@ -66,6 +67,7 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         /// </summary>
         /// <param name="unused">Has no effect on response</param>
         /// <param name="image">The image to create or update</param>
+        /// <param name="version">The API version</param>
         /// <returns>A created or updated image</returns>
         /// <response code="201">If a new image was created</response>
         /// <response code="200">If an existing image was updated</response>
@@ -75,9 +77,9 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ApiExplorerSettings(IgnoreApi = false)]
-        public override Task<ActionResult<Recipe>> CreateOrUpdate(string? unused, Recipe image)
+        public override Task<ActionResult<Recipe>> CreateOrUpdate(string? unused, Recipe image, ApiVersion version)
         {
-            return base.CreateOrUpdate(unused ?? string.Empty, image);
+            return base.CreateOrUpdate(unused ?? string.Empty, image, version);
         }
 
         /// <summary>

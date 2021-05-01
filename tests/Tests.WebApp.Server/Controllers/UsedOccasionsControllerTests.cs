@@ -15,7 +15,7 @@ namespace Tests.WebApp.Server.Controllers
     {
         public UsedOccasionsControllerTests()
         {
-            Controller = new UsedOccasionsController(MockLogger.Object, MockRepo.Object);
+            Controller = new UsedOccasionsController(MockLogger.Object, MockRepo.Object) { Url = MockUrlHelper.Object };
         }
 
         protected override int? GetKey(UsedOccasion resource) => resource.Id;

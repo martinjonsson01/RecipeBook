@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 
 using RecipeBook.Core.Application.Repositories;
@@ -33,7 +34,7 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         /// <returns>All resources</returns>
         /// <response code="200">Returns the resources</response>
         /// <response code="204">If there are no resources</response>
-        [ApiExplorerSettings(IgnoreApi = true)] 
+        [ApiExplorerSettings(IgnoreApi = true)]
         public virtual async Task<ActionResult<IEnumerable<TResource>>> GetAll(string recipeName)
         {
             IEnumerable<TResource> resources = await _repo.GetAllAsync(recipeName);
@@ -46,11 +47,12 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         /// </summary>
         /// <param name="recipeName">The name of the recipe containing this resource</param>
         /// <param name="id">The key of the resource</param>
+        /// <param name="version">The API version</param>
         /// <returns>A resource with matching key</returns>
         /// <response code="200">Returns the matching resource</response>
         /// <response code="404">If no resource with matching key is found</response>
-        [ApiExplorerSettings(IgnoreApi = true)] 
-        public virtual async Task<ActionResult<TResource>> Get(string recipeName, TResourceKey id)
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public virtual async Task<ActionResult<TResource>> Get(string recipeName, TResourceKey id, ApiVersion version)
         {
             TResource? entity = await _repo.GetAsync(recipeName, id);
             if (entity is null) return NotFound();
@@ -62,12 +64,16 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         /// </summary>
         /// <param name="recipeName">The name of the recipe containing this resource</param>
         /// <param name="entity">The resource to create or update</param>
+        /// <param name="version">The API version</param>
         /// <returns>A created or updated resource</returns>
         /// <response code="201">If a new resource was created</response>
         /// <response code="200">If an existing resource was updated</response>
         /// <response code="400">If a provided entity is wrong</response>
-        [ApiExplorerSettings(IgnoreApi = true)] 
-        public virtual async Task<ActionResult<TResource>> CreateOrUpdate(string recipeName, TResource entity)
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public virtual async Task<ActionResult<TResource>> CreateOrUpdate(
+            string     recipeName,
+            TResource  entity,
+            ApiVersion version)
         {
             TResourceKey key = GetKey(entity);
             if (await _repo.ExistsAsync(recipeName, key))
@@ -78,10 +84,10 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
             }
             TResource? createdEntity = await _repo.CreateOrUpdateAsync(recipeName, entity);
             if (createdEntity is null) return BadRequest();
-            return CreatedAtAction(
-                $"{nameof(Get)}",
-                new { id = key, recipeName },
-                createdEntity);
+            return CreatedAtRoute(
+                routeName: $"{nameof(Get)}{typeof(TResource).Name}",
+                routeValues: new { id = GetKey(createdEntity), recipeName },
+                value: createdEntity);
         }
 
         /// <summary>
@@ -92,7 +98,7 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         /// <response code="200">The resource was deleted</response>
         /// <response code="404">The resource does not exist</response>
         /// <response code="500">The server failed to delete the resource</response>
-        [ApiExplorerSettings(IgnoreApi = true)] 
+        [ApiExplorerSettings(IgnoreApi = true)]
         public virtual async Task<ActionResult> Delete(string recipeName, TResourceKey id)
         {
             if (!await _repo.ExistsAsync(recipeName, id))

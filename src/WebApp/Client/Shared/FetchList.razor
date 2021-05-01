@@ -1,6 +1,10 @@
 ﻿@using System.Net
 @using Newtonsoft.Json
 @using RecipeBook.Core.Application.Logic
+@using System.Collections.ObjectModel
+@using System.Collections.Specialized
+@using System.Text
+@using System.Collections
 
 @typeparam TItem
 
@@ -22,6 +26,7 @@ else if (_responseStatus == HttpStatusCode.NotFound)
 
 @* ReSharper disable twice InconsistentNaming *@
 @* ReSharper disable twice UnusedParameter.Local *@
+
 @code {
 #nullable enable
 
@@ -32,7 +37,10 @@ else if (_responseStatus == HttpStatusCode.NotFound)
     public RenderFragment Header { get; set; } = null!;
 
     [Parameter]
-    public RenderFragment<IEnumerable<TItem>> ItemsTemplate { get; set; } = null!;
+    public EventCallback<(string, LoadStatus)> SetSaving { get; set; }
+
+    [Parameter]
+    public RenderFragment<ObservableCollection<TItem>> ItemsTemplate { get; set; } = null!;
 
     [Parameter]
     public RenderFragment LoadingTemplate { get; set; } = __builder =>
@@ -46,7 +54,7 @@ else if (_responseStatus == HttpStatusCode.NotFound)
         <p>Kunde inte hitta resurs</p>
     };
 
-    private IList<TItem>? _items;
+    private ObservableCollection<TItem>? _items;
 
     private HttpStatusCode? _responseStatus;
 
@@ -64,11 +72,58 @@ else if (_responseStatus == HttpStatusCode.NotFound)
             };
 
             string json = await response.Content.ReadAsStringAsync();
-            _items = JsonConvert.DeserializeObject<IList<TItem>>(json, serializerOptions);
-            
+            _items = JsonConvert.DeserializeObject<ObservableCollection<TItem>>(json, serializerOptions);
+
+            if (_items is not null)
+                _items.CollectionChanged += ItemsCollectionChanged;
+
             return;
         }
         _responseStatus = response.StatusCode;
     }
+
+    private async void ItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        switch (e.Action)
+        {
+            case NotifyCollectionChangedAction.Add:
+                await ItemsAdded(e.NewItems);
+                break;
+            case NotifyCollectionChangedAction.Remove:
+
+                break;
+            case NotifyCollectionChangedAction.Replace:
+                break;
+            case NotifyCollectionChangedAction.Move:
+                break;
+            case NotifyCollectionChangedAction.Reset:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    private async Task ItemsAdded(IList? items)
+    {
+        if (items is null) return;
+        foreach (TItem addedItem in items)
+            await UploadNewItem(addedItem);
+    }
+
+    private async Task UploadNewItem(TItem item)
+    {
+        string json = JsonConvert.SerializeObject(item,
+            new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        string saveTaskName = $"{typeof(TItem).Name}-UploadNew";
+        await SetSaving.InvokeAsync((saveTaskName, LoadStatus.Loading));
+        HttpResponseMessage response = await _http.PutAsync(Url, content);
+        if (response.IsSuccessStatusCode)
+            await SetSaving.InvokeAsync((saveTaskName, LoadStatus.Success));
+        else
+            await SetSaving.InvokeAsync((saveTaskName, LoadStatus.Fail));
+    }
+
 
 }

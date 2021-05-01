@@ -18,14 +18,14 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
     public class UsedOccasionsController : ResourceController<UsedOccasionsController, UsedOccasion, int?>
     {
         public UsedOccasionsController(
-            ILogger<UsedOccasionsController>       logger,
+            ILogger<UsedOccasionsController>         logger,
             IResourcesRepository<UsedOccasion, int?> repo)
             : base(logger, repo)
         {
         }
 
         protected override int? GetKey(UsedOccasion entity) => entity.Id;
-        
+
         /// <summary>
         /// Gets all used occasions.
         /// </summary>
@@ -36,7 +36,7 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ApiExplorerSettings(IgnoreApi = false)] 
+        [ApiExplorerSettings(IgnoreApi = false)]
         public override Task<ActionResult<IEnumerable<UsedOccasion>>> GetAll(string recipeName)
         {
             return base.GetAll(recipeName);
@@ -47,16 +47,17 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         /// </summary>
         /// <param name="recipeName">The name of the recipe containing this used occasion</param>
         /// <param name="id">The Id of the used occasion</param>
+        /// <param name="version">The API version</param>
         /// <returns>A used occasion with matching Id</returns>
         /// <response code="200">Returns the matching used occasion</response>
         /// <response code="404">If no used occasion with matching Id is found</response>
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetUsedOccasion")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ApiExplorerSettings(IgnoreApi = false)] 
-        public override Task<ActionResult<UsedOccasion>> Get(string recipeName, int? id)
+        [ApiExplorerSettings(IgnoreApi = false)]
+        public override Task<ActionResult<UsedOccasion>> Get(string recipeName, int? id, ApiVersion version)
         {
-            return base.Get(recipeName, id);
+            return base.Get(recipeName, id, version);
         }
 
         /// <summary>
@@ -64,6 +65,7 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         /// </summary>
         /// <param name="recipeName">The name of the recipe containing this resource</param>
         /// <param name="usedOccasion">The used occasion to create or update</param>
+        /// <param name="version">The API version</param>
         /// <returns>A created or updated used occasion</returns>
         /// <response code="201">If a new used occasion was created</response>
         /// <response code="200">If an existing used occasion was updated</response>
@@ -72,10 +74,13 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ApiExplorerSettings(IgnoreApi = false)] 
-        public override Task<ActionResult<UsedOccasion>> CreateOrUpdate(string recipeName, UsedOccasion usedOccasion)
+        [ApiExplorerSettings(IgnoreApi = false)]
+        public override Task<ActionResult<UsedOccasion>> CreateOrUpdate(
+            string       recipeName,
+            UsedOccasion usedOccasion,
+            ApiVersion   version)
         {
-            return base.CreateOrUpdate(recipeName, usedOccasion);
+            return base.CreateOrUpdate(recipeName, usedOccasion, version);
         }
 
         /// <summary>
@@ -90,7 +95,7 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [ApiExplorerSettings(IgnoreApi = false)] 
+        [ApiExplorerSettings(IgnoreApi = false)]
         public override Task<ActionResult> Delete(string recipeName, int? id)
         {
             return base.Delete(recipeName, id);

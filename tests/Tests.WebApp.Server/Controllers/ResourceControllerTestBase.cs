@@ -29,13 +29,18 @@ namespace Tests.WebApp.Server.Controllers
         {
             MockRepo = new Mock<IResourcesRepository<TResource, TKey>>();
             MockLogger = new Mock<ILogger<TController>>();
+            MockUrlHelper = new Mock<IUrlHelper>();
+            MockUrlHelper.SetReturnsDefault("test/url/path");
             Faker = new Faker("sv");
         }
 
+        protected static ApiVersion Version = new(1, 0);
+        
         protected          ResourceController<TController, TResource, TKey> Controller = null!; // Has to be set by subtype constructor
         protected readonly Mock<IResourcesRepository<TResource, TKey>> MockRepo;
         protected readonly Mock<ILogger<TController>> MockLogger;
-        protected readonly Faker Faker;
+        protected          Mock<IUrlHelper> MockUrlHelper;
+        protected readonly Faker            Faker;
 
         protected abstract TKey   GetKey(TResource resource);
         protected abstract TKey   MockKey();
@@ -153,7 +158,7 @@ namespace Tests.WebApp.Server.Controllers
             TKey      key        = GetKey(resource);
 
             // Act
-            ActionResult<TResource> response = await Controller.Get(recipeName, key);
+            ActionResult<TResource> response = await Controller.Get(recipeName, key, Version);
 
             // Assert
             response.Result.Should().BeAssignableTo<ObjectResult>();
@@ -174,7 +179,7 @@ namespace Tests.WebApp.Server.Controllers
             TKey      key        = GetKey(resource);
 
             // Act
-            ActionResult<TResource> response = await Controller.Get(recipeName, key);
+            ActionResult<TResource> response = await Controller.Get(recipeName, key, Version);
 
             // Assert
             response.Result.Should().BeOfType<NotFoundResult>();
@@ -192,16 +197,16 @@ namespace Tests.WebApp.Server.Controllers
                     .ReturnsAsync(newResource);
 
             // Act
-            ActionResult<TResource> response = await Controller.CreateOrUpdate(recipeName, newResource);
+            ActionResult<TResource> response = await Controller.CreateOrUpdate(recipeName, newResource, Version);
 
             // Assert
-            response.Result.Should().BeAssignableTo<CreatedAtActionResult>();
-            var objectResult = (CreatedAtActionResult) response.Result;
+            response.Result.Should().BeAssignableTo<CreatedAtRouteResult>();
+            var objectResult = (CreatedAtRouteResult) response.Result;
 
             // Needs to contain these keys so resource location is correct.
             objectResult.RouteValues.Keys.Should().Contain("id");
             objectResult.RouteValues.Keys.Should().Contain("recipeName");
-            objectResult.ActionName.Should().Be(nameof(Controller.Get));
+            objectResult.RouteName.Should().Be($"{nameof(Controller.Get)}{typeof(TResource).Name}");
             
             objectResult.Value.Should().BeAssignableTo<TResource>();
             var retrievedResource = (TResource) objectResult.Value;
@@ -222,7 +227,7 @@ namespace Tests.WebApp.Server.Controllers
                     .ReturnsAsync(updatedResource);
 
             // Act
-            ActionResult<TResource> response = await Controller.CreateOrUpdate(recipeName, updatedResource);
+            ActionResult<TResource> response = await Controller.CreateOrUpdate(recipeName, updatedResource, Version);
 
             // Assert
             response.Result.Should().BeAssignableTo<ObjectResult>();

@@ -15,7 +15,7 @@ namespace Tests.WebApp.Server.Controllers
     {
         public IngredientsControllerTests()
         {
-            Controller = new IngredientsController(MockLogger.Object, MockRepo.Object);
+            Controller = new IngredientsController(MockLogger.Object, MockRepo.Object) { Url = MockUrlHelper.Object };
         }
 
         protected override int? GetKey(Ingredient resource) => resource.Id;

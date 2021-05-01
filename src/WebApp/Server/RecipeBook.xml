@@ -43,22 +43,24 @@
             <response code="200">Returns the ingredients</response>
             <response code="204">If there are no ingredients</response>  
         </member>
-        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.IngredientsController.Get(System.String,System.Nullable{System.Int32})">
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.IngredientsController.Get(System.String,System.Nullable{System.Int32},Microsoft.AspNetCore.Mvc.ApiVersion)">
             <summary>
             Gets an ingredient by Id.
             </summary>
             <param name="recipeName">The name of the recipe containing this ingredient</param>
             <param name="id">The Id of the ingredient</param>
+            <param name="version">The API version</param>
             <returns>A ingredient with matching Id</returns>
             <response code="200">Returns the matching ingredient</response>
             <response code="404">If no ingredient with matching Id is found</response>
         </member>
-        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.IngredientsController.CreateOrUpdate(System.String,RecipeBook.Core.Domain.Recipes.Ingredient)">
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.IngredientsController.CreateOrUpdate(System.String,RecipeBook.Core.Domain.Recipes.Ingredient,Microsoft.AspNetCore.Mvc.ApiVersion)">
             <summary>
             Creates a new or updates an existing ingredient.
             </summary>
             <param name="recipeName">The name of the recipe containing this resource</param>
             <param name="ingredient">The ingredient to create or update</param>
+            <param name="version">The API version</param>
             <returns>A created or updated ingredient</returns>
             <response code="201">If a new ingredient was created</response>
             <response code="200">If an existing ingredient was updated</response>
@@ -88,22 +90,24 @@
             <response code="200">Returns the recipes</response>
             <response code="204">If there are no recipes</response>  
         </member>
-        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipesController.Get(System.String,System.String)">
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipesController.Get(System.String,System.String,Microsoft.AspNetCore.Mvc.ApiVersion)">
             <summary>
             Gets a image by name.
             </summary>
             <param name="unused">Has no effect on response</param>
             <param name="id">The name of the image</param>
+            <param name="version">The API version</param>
             <returns>A image with matching name</returns>
             <response code="200">Returns the matching image</response>
             <response code="404">If no image with matching name is found</response>
         </member>
-        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipesController.CreateOrUpdate(System.String,RecipeBook.Core.Domain.Recipes.Recipe)">
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipesController.CreateOrUpdate(System.String,RecipeBook.Core.Domain.Recipes.Recipe,Microsoft.AspNetCore.Mvc.ApiVersion)">
             <summary>
             Creates a new or updates an existing image.
             </summary>
             <param name="unused">Has no effect on response</param>
             <param name="image">The image to create or update</param>
+            <param name="version">The API version</param>
             <returns>A created or updated image</returns>
             <response code="201">If a new image was created</response>
             <response code="200">If an existing image was updated</response>
@@ -128,22 +132,24 @@
             <response code="200">Returns the resources</response>
             <response code="204">If there are no resources</response>
         </member>
-        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.ResourceController`3.Get(System.String,`2)">
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.ResourceController`3.Get(System.String,`2,Microsoft.AspNetCore.Mvc.ApiVersion)">
             <summary>
             Gets a resource by key.
             </summary>
             <param name="recipeName">The name of the recipe containing this resource</param>
             <param name="id">The key of the resource</param>
+            <param name="version">The API version</param>
             <returns>A resource with matching key</returns>
             <response code="200">Returns the matching resource</response>
             <response code="404">If no resource with matching key is found</response>
         </member>
-        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.ResourceController`3.CreateOrUpdate(System.String,`1)">
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.ResourceController`3.CreateOrUpdate(System.String,`1,Microsoft.AspNetCore.Mvc.ApiVersion)">
             <summary>
             Creates a new or updates an existing resource.
             </summary>
             <param name="recipeName">The name of the recipe containing this resource</param>
             <param name="entity">The resource to create or update</param>
+            <param name="version">The API version</param>
             <returns>A created or updated resource</returns>
             <response code="201">If a new resource was created</response>
             <response code="200">If an existing resource was updated</response>
@@ -177,22 +183,24 @@
             <response code="200">Returns the steps</response>
             <response code="204">If there are no steps</response>  
         </member>
-        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.StepsController.Get(System.String,System.Nullable{System.Int32})">
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.StepsController.Get(System.String,System.Nullable{System.Int32},Microsoft.AspNetCore.Mvc.ApiVersion)">
             <summary>
             Gets a step by Id.
             </summary>
             <param name="recipeName">The name of the recipe containing this step</param>
             <param name="id">The Id of the step</param>
+            <param name="version">The API version</param>
             <returns>A step with matching Id</returns>
             <response code="200">Returns the matching step</response>
             <response code="404">If no step with matching Id is found</response>
         </member>
-        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.StepsController.CreateOrUpdate(System.String,RecipeBook.Core.Domain.Recipes.Step)">
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.StepsController.CreateOrUpdate(System.String,RecipeBook.Core.Domain.Recipes.Step,Microsoft.AspNetCore.Mvc.ApiVersion)">
             <summary>
             Creates a new or updates an existing step.
             </summary>
             <param name="recipeName">The name of the recipe containing this resource</param>
             <param name="step">The step to create or update</param>
+            <param name="version">The API version</param>
             <returns>A created or updated step</returns>
             <response code="201">If a new step was created</response>
             <response code="200">If an existing step was updated</response>
@@ -221,22 +229,24 @@
             <response code="200">Returns the used occasions</response>
             <response code="204">If there are no used occasions</response>  
         </member>
-        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.UsedOccasionsController.Get(System.String,System.Nullable{System.Int32})">
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.UsedOccasionsController.Get(System.String,System.Nullable{System.Int32},Microsoft.AspNetCore.Mvc.ApiVersion)">
             <summary>
             Gets a used occasion by Id.
             </summary>
             <param name="recipeName">The name of the recipe containing this used occasion</param>
             <param name="id">The Id of the used occasion</param>
+            <param name="version">The API version</param>
             <returns>A used occasion with matching Id</returns>
             <response code="200">Returns the matching used occasion</response>
             <response code="404">If no used occasion with matching Id is found</response>
         </member>
-        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.UsedOccasionsController.CreateOrUpdate(System.String,RecipeBook.Core.Domain.Recipes.UsedOccasion)">
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.UsedOccasionsController.CreateOrUpdate(System.String,RecipeBook.Core.Domain.Recipes.UsedOccasion,Microsoft.AspNetCore.Mvc.ApiVersion)">
             <summary>
             Creates a new or updates an existing used occasion.
             </summary>
             <param name="recipeName">The name of the recipe containing this resource</param>
             <param name="usedOccasion">The used occasion to create or update</param>
+            <param name="version">The API version</param>
             <returns>A created or updated used occasion</returns>
             <response code="201">If a new used occasion was created</response>
             <response code="200">If an existing used occasion was updated</response>

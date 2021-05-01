@@ -15,7 +15,7 @@ namespace Tests.WebApp.Server.Controllers
     {
         public StepsControllerTests()
         {
-            Controller = new StepsController(MockLogger.Object, MockRepo.Object);
+            Controller = new StepsController(MockLogger.Object, MockRepo.Object) { Url = MockUrlHelper.Object };
         }
 
         protected override int? GetKey(Step resource) => resource.Id;

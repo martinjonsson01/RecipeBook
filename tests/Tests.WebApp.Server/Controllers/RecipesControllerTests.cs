@@ -20,7 +20,7 @@ namespace Tests.WebApp.Server.Controllers
     {
         public RecipesControllerTests()
         {
-            Controller = new RecipesController(MockLogger.Object, MockRepo.Object);
+            Controller = new RecipesController(MockLogger.Object, MockRepo.Object) { Url = MockUrlHelper.Object };
         }
 
         protected override string GetKey(Recipe resource) => resource.Name;
@@ -48,7 +48,7 @@ namespace Tests.WebApp.Server.Controllers
             string urlSafeName = recipe.ToUrlSafeName();
             
             // Act
-            ActionResult<Recipe> response = await Controller.Get(string.Empty, urlSafeName);
+            ActionResult<Recipe> response = await Controller.Get(string.Empty, urlSafeName, Version);
 
             // Assert
             response.Result.Should().BeAssignableTo<ObjectResult>();
