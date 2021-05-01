@@ -7,9 +7,12 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
+using Microsoft.AspNetCore.Components;
+
 using Newtonsoft.Json;
 
 using RecipeBook.Core.Application.Logic;
+using RecipeBook.Core.Application.Web;
 using RecipeBook.Core.Domain;
 
 namespace RecipeBook.Presentation.WebApp.Client.Shared
@@ -86,32 +89,22 @@ namespace RecipeBook.Presentation.WebApp.Client.Shared
             JsonSerializerSettings serializerOptions = new() { TypeNameHandling = TypeNameHandling.Auto };
             StringContent          content           = ItemToStringContent(item, serializerOptions);
 
-            await SendHttpMessageWithSetSaving(
+            await HttpHelper.SendHttpMessageWithSetSaving(
                 $"{typeof(TItem).Name}-UploadNew",
                 () => _http.PutAsync(Url, content),
-                response => UpdateItemId(item, response, serializerOptions));
+                response => UpdateItemId(item, response, serializerOptions),
+                tuple => SetSaving.InvokeAsync(tuple));
         }
 
         private async Task DeleteItem(TItem item)
         {
-            await SendHttpMessageWithSetSaving(
+            await HttpHelper.SendHttpMessageWithSetSaving(
                 $"{typeof(TItem).Name}-DeleteItem",
                 () => _http.DeleteAsync($"{Url}/{item.Id}"),
-                null);
+                null,
+                tuple => SetSaving.InvokeAsync(tuple));
         }
-
-        private async Task<HttpResponseMessage> SendHttpMessageWithSetSaving(
-            string                           saveTaskName,
-            Func<Task<HttpResponseMessage>>  httpAction,
-            Func<HttpResponseMessage, Task>? successAction)
-        {
-            await SetSaving.InvokeAsync((saveTaskName, LoadStatus.Loading));
-            HttpResponseMessage response = await httpAction();
-            await HandleResponse(response, saveTaskName, successAction);
-            return response;
-        }
-
-
+        
         private async Task UpdateItemId(
             TItem                  item,
             HttpResponseMessage    response,
@@ -122,20 +115,6 @@ namespace RecipeBook.Presentation.WebApp.Client.Shared
             item.Id = responseItem?.Id;
         }
 
-        private async Task HandleResponse(
-            HttpResponseMessage              response,
-            string                           taskName,
-            Func<HttpResponseMessage, Task>? successAction)
-        {
-            if (response.IsSuccessStatusCode)
-            {
-                await SetSaving.InvokeAsync((taskName, LoadStatus.Success));
-                if (successAction is not null)
-                    await successAction(response);
-            }
-            else
-                await SetSaving.InvokeAsync((taskName, LoadStatus.Fail));
-        }
 
         private static StringContent ItemToStringContent(TItem item, JsonSerializerSettings? serializerOptions)
         {
