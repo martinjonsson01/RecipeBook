@@ -5,6 +5,10 @@
         }
     </style>
     <InputFile class="input" id="inputFile" OnChange="UploadImage"/>
+    @if (ErrorMessage is not null)
+    {
+        <h3 class="text-warning" id="error-text">@ErrorMessage</h3>
+    }
     <button type="button" class="upload-button btn btn-primary" onclick="document.getElementById('inputFile').click();">
         Browse...
     </button>
@@ -19,6 +23,9 @@
 
     [Parameter]
     public string AltText { get; set; } = null!;
+
+    [Parameter]
+    public string? ErrorMessage { get; set; }
 
     [Parameter]
     public EventCallback<InputFileChangeEventArgs> UploadImage { get; set; } = EventCallback<InputFileChangeEventArgs>.Empty;
