@@ -1,6 +1,7 @@
 ﻿img {
     width: 100%;
     height: 15rem;
+    min-height: 15rem;
     object-fit: cover;
     border-radius: 2rem;
 
@@ -8,30 +9,45 @@
     transition-duration: 0.1s;
 }
 
-.upload-button {
+#click-label {
     opacity: 0;
     transition: all;
     transition-duration: 0.1s;
     
     position: absolute;
-    bottom: 2rem;
-    right: 2rem;
+    height: 3rem;
+    width: 100%;
+    padding: 0 2rem;
+    top: 50%;
+    margin-top: -1.5rem;
+    margin-bottom: 0;
+    left: 0;
+    text-align: center;
+    
+    user-select: none;
 }
 
 #error-text {
     position: absolute;
-    bottom: 2rem;
-    right: 8rem;
+    height: 3rem;
+    width: 100%;
+    padding: 0.5rem 2rem;
+    bottom: 3rem;
+    margin-bottom: -2.5rem;
+    left: 0;
+    text-align: center;
     
     background: rgba(0,0,0,0.7);
-    border-radius: 0.5rem;
-    padding: 0.5rem 1rem;
-    margin: 0;
+    border-radius: 0  0 2rem 2rem;
     z-index: 1;
 }
 
 div.relative-container {
     position: relative;
+    width: 100%;
+    height: 100%;
+    
+    cursor: pointer;
 }
 
 div.relative-container:hover .image {
@@ -39,7 +55,7 @@ div.relative-container:hover .image {
     z-index: 0;
 }
 
-div.relative-container:hover .upload-button{
+div.relative-container:hover #click-label{
     opacity: 1;
     z-index: 2;
 }
