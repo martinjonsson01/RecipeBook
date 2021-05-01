@@ -8,9 +8,7 @@
     <FetchList @ref="_fetchList"
                TItem="Recipe"
                Context="recipes"
-               Url="@("/api/v1/recipes/")"
-               CreateNewItemText="Skapa recept"
-               CreateNewItem="CreateNewRecipe">
+               Url="@("/api/v1/recipes/")">
         <ItemsTemplate>
             @foreach (Recipe recipe in recipes)
             {
@@ -21,6 +19,12 @@
                 </NavLink>
             }
         </ItemsTemplate>
+        <CreateNewButtonTemplate Context="recipes">
+            <button type="button" class="btn btn-outline-secondary mb-3"
+                    @onclick="_ => recipes.Add(CreateNewRecipe(recipes.Count + 1))">
+                Skapa recept
+            </button>
+        </CreateNewButtonTemplate>
         <LoadingTemplate>
             <h3>Laddar...</h3>
         </LoadingTemplate>
@@ -46,9 +50,9 @@
         StateHasChanged();
     }
 
-    private Recipe CreateNewRecipe(int _)
+    private Recipe CreateNewRecipe(int number)
     {
-        return new() { Name = "Skriv receptnamn här" };
+        return new() { Name = $"Skriv receptnamn här ({number})" };
     }
 
     private FetchList<Recipe>? _fetchList;

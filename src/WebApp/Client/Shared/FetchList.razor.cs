@@ -76,6 +76,7 @@ namespace RecipeBook.Presentation.WebApp.Client.Shared
                 default:
                     throw new ArgumentOutOfRangeException(nameof(e));
             }
+            StateHasChanged();
         }
 
 

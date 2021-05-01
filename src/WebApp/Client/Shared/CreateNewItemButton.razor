@@ -1,0 +1,21 @@
+﻿@using System.Collections.ObjectModel
+
+@typeparam TItem
+
+<button type="button" class="btn btn-outline-secondary mb-3"
+        @onclick="_ => Items.Add(CreateNewItem(Items.Count + 1))">
+    @CreateNewItemText
+</button>
+
+@code {
+
+    [Parameter]
+    public ObservableCollection<TItem> Items { get; set; } = null!;
+    
+    [Parameter]
+    public Func<int, TItem> CreateNewItem { get; set; } = null!;
+
+    [Parameter]
+    public string CreateNewItemText { get; set; } = "Lägg till";
+
+}

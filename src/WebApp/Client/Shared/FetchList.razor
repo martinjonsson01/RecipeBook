@@ -15,10 +15,7 @@
 {
     @ItemsTemplate(_items)
     <div class="d-flex justify-content-center">
-        <button type="button" class="btn btn-outline-secondary mb-3"
-                @onclick="_ => _items.Add(CreateNewItem(_items.Count + 1))">
-            @CreateNewItemText
-        </button>
+        @CreateNewButtonTemplate(_items)
     </div>
 }
 else if (_responseStatus is null)
@@ -32,10 +29,7 @@ else if (_responseStatus == HttpStatusCode.NotFound)
 else if (_responseStatus == HttpStatusCode.NoContent)
 {
     <div class="d-flex justify-content-center">
-        <button type="button" class="btn btn-outline-secondary mb-3"
-                @onclick="_ => _items.Add(CreateNewItem(_items.Count + 1))">
-            @CreateNewItemText
-        </button>
+        @CreateNewButtonTemplate(_items)
     </div>
 }
 
@@ -55,13 +49,10 @@ else if (_responseStatus == HttpStatusCode.NoContent)
     public EventCallback<(string, LoadStatus)> SetSaving { get; set; }
 
     [Parameter]
-    public Func<int, TItem> CreateNewItem { get; set; } = null!;
+    public RenderFragment<ObservableCollection<TItem>?> ItemsTemplate { get; set; } = null!;
 
     [Parameter]
-    public string CreateNewItemText { get; set; } = "Lägg till";
-
-    [Parameter]
-    public RenderFragment<ObservableCollection<TItem>> ItemsTemplate { get; set; } = null!;
+    public RenderFragment<ObservableCollection<TItem>?> CreateNewButtonTemplate { get; set; } = null!;
 
     [Parameter]
     public RenderFragment LoadingTemplate { get; set; } = __builder =>

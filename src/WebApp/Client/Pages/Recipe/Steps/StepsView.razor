@@ -5,9 +5,7 @@
     <FetchList TItem="Step"
                Context="steps"
                Url="@($"/api/v1/recipes/{RecipeName}/steps")"
-               SetSaving="@SetSaving"
-               CreateNewItemText="Lägg till steg"
-               CreateNewItem="CreateNewStep">
+               SetSaving="@SetSaving">
         <Header>
             <h2>Steg</h2>
         </Header>
@@ -35,6 +33,11 @@
                 }
             </ol>
         </ItemsTemplate>
+        <CreateNewButtonTemplate Context="steps">
+            <CreateNewItemButton Items="steps"
+                                 CreateNewItem="CreateNewStep"
+                                 CreateNewItemText="Lägg till steg"/>
+        </CreateNewButtonTemplate>
     </FetchList> 
 </div>
 
