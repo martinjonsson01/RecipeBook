@@ -13,7 +13,9 @@
 @Header
 @if (_items is not null)
 {
-    @ItemsTemplate(_items)
+    <CascadingValue Value="_focusItem">
+        @ItemsTemplate(_items)
+    </CascadingValue>
     <div class="d-flex justify-content-center">
         @CreateNewButtonTemplate(_items)
     </div>

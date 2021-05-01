@@ -24,6 +24,8 @@ namespace RecipeBook.Presentation.WebApp.Client.Shared
 
         private HttpStatusCode? _responseStatus;
 
+        private TItem? _focusItem;
+        
         protected override async Task OnInitializedAsync()
         {
             await ReloadItems();
@@ -102,7 +104,7 @@ namespace RecipeBook.Presentation.WebApp.Client.Shared
             await HttpHelper.SendHttpMessageWithSetSaving(
                 $"{typeof(TItem).Name}-UploadNew",
                 () => _http.PutAsync(Url, content),
-                async response => await UpdateItemId(item, response, serializerOptions),
+                async response => await OnUploadItemSuccess(response, item, serializerOptions),
                 tuple => SetSaving.InvokeAsync(tuple));
         }
 
@@ -114,7 +116,13 @@ namespace RecipeBook.Presentation.WebApp.Client.Shared
                 null,
                 tuple => SetSaving.InvokeAsync(tuple));
         }
-        
+
+        private async Task OnUploadItemSuccess(HttpResponseMessage response, TItem item, JsonSerializerSettings serializerOptions)
+        {
+             await UpdateItemId(item, response, serializerOptions);
+             _focusItem = item;
+        }
+
         private async Task UpdateItemId(
             TItem                  item,
             HttpResponseMessage    response,

@@ -1,4 +1,8 @@
 ﻿@using RecipeBook.Core.Domain.Recipes
+@using RecipeBook.Core.Application.Web
+
+@inject NavigationManager _navigationManager
+
 <li class="item container flex-row p-0">
     <div class="row m-0">
         <div class="col-auto p-0">
@@ -25,5 +29,15 @@
 
     [Parameter]
     public Recipe Recipe { get; set; } = null!;
+
+    [CascadingParameter]
+    public Recipe? FocusItem { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (!firstRender) return;
+        if (Recipe.Equals(FocusItem) && !_navigationManager.Uri.EndsWith(Recipe.ToUrlSafeName()))
+            _navigationManager.NavigateTo(Recipe.ToUrlSafeName());
+    }
 
 }

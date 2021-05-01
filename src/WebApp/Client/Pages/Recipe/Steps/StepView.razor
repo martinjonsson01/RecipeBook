@@ -33,6 +33,9 @@
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> AllOtherAttributes { get; set; } = null!;
 
+    [CascadingParameter]
+    public Step? FocusItem { get; set; }
+    
     private ElementReference Input;
 
     private string Instruction
@@ -46,14 +49,13 @@
         }
     }
 
-    protected override void OnAfterRender(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
             _syncedView.Initialize(Step);
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
+        if (Step.Equals(FocusItem))
+            await Input.FocusAsync();
+        
         await _js.InvokeVoidAsync("interopFunctions.textareaAutoHeight", Input);
     }
 
