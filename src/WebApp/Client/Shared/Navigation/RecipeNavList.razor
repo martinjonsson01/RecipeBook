@@ -5,57 +5,51 @@
 @inject NavigationManager _navigationManager
 
 <nav class="nav flex-column">
-    @if (_recipes is not null)
-    {
-        foreach (Recipe recipe in _recipes)
-        {
-            <NavLink class="no-underline"
-                     href="@recipe.ToUrlSafeName()"
-                     Match="NavLinkMatch.All">
-                <RecipeItem Recipe="@recipe"/>
-            </NavLink>
-        }
-    }
-    else if (_responseStatus is null)
-    {
-        <h3>Laddar...</h3>
-    }
-    else if (_responseStatus == HttpStatusCode.NoContent)
-    {
-        <h3>Finns inga recept</h3>
-    }
+    <FetchList @ref="_fetchList"
+               TItem="Recipe"
+               Context="recipes"
+               Url="@("/api/v1/recipes/")"
+               CreateNewItemText="Skapa recept"
+               CreateNewItem="CreateNewRecipe">
+        <ItemsTemplate>
+            @foreach (Recipe recipe in recipes)
+            {
+                <NavLink class="no-underline"
+                         href="@recipe.ToUrlSafeName()"
+                         Match="NavLinkMatch.All">
+                    <RecipeItem Recipe="@recipe"/>
+                </NavLink>
+            }
+        </ItemsTemplate>
+        <LoadingTemplate>
+            <h3>Laddar...</h3>
+        </LoadingTemplate>
+        <NotFoundTemplate>
+            <h3>Finns inga recept</h3>
+        </NotFoundTemplate>
+    </FetchList>
 </nav>
 
 @code
 {
 #nullable enable
 
-    private IEnumerable<Recipe>? _recipes;
-
-    private HttpStatusCode? _responseStatus;
-
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         _navigationManager.LocationChanged += OnLocationChanged;
-
-        await FetchRecipes();
     }
 
     private async void OnLocationChanged(object? sender, LocationChangedEventArgs e)
     {
-        await FetchRecipes();
+        if (_fetchList is null) return;
+        await _fetchList.ReloadItems();
+        StateHasChanged();
     }
 
-    private async Task FetchRecipes()
+    private Recipe CreateNewRecipe(int _)
     {
-        HttpResponseMessage response = await _http.GetAsync("/api/v1/recipes");
-        if (response.StatusCode == HttpStatusCode.OK)
-        {
-            _recipes = await response.Content.ReadFromJsonAsync<IEnumerable<Recipe>>();
-            StateHasChanged();
-            return;
-        }
-        _responseStatus = response.StatusCode;
+        return new() { Name = "Skriv receptnamn här" };
     }
 
+    private FetchList<Recipe>? _fetchList;
 }

@@ -26,6 +26,11 @@ namespace RecipeBook.Presentation.WebApp.Client.Shared
 
         protected override async Task OnInitializedAsync()
         {
+            await ReloadItems();
+        }
+
+        public async Task ReloadItems()
+        {
             _items = null;
             _responseStatus = null;
 
