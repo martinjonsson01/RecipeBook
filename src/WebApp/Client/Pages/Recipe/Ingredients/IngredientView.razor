@@ -43,7 +43,6 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await _js.InvokeVoidAsync("interopFunctions.textareaAutoHeight", _input);
-        await _js.InvokeVoidAsync("interopFunctions.copyElementHeight", $"ingredient-{Ingredient.Id}", $"unit-{Ingredient.Id}");
     }
 
     private SyncedView<Ingredient> _syncedView = null!;

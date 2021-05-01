@@ -14,33 +14,24 @@
             <h2 class="p-4">Ingredienser</h2>
         </Header>
         <ItemsTemplate>
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-3 p-0">
-                        <ol class="no-style pe-1">
-                            @foreach (Ingredient ingredient in ingredients)
-                            {
-                                <li id="@($"unit-{ingredient.Id}")" class="mb-3" style="height: 5px">
-                                    <UnitView @bind-Unit="@ingredient.Amount"/>
-                                </li>
-                            }
-                        </ol>
-                    </div>
-                    <div class="col-sm-9 p-0">
-                        <ol class="no-style text-start ps-1">
-                            @foreach (Ingredient ingredient in ingredients)
-                            {
-                                <li id="@($"ingredient-{ingredient.Id}")" class="mb-3">
-                                    <IngredientView Url="@($"/api/v1/recipes/{RecipeName}/ingredients")"
-                                                    Ingredient="@ingredient"
-                                                    SetSaving="@SetSaving"
-                                                    DeleteItem="() => DeleteIngredient(ingredients, ingredient)"/>
-                                </li>
-                            }
-                        </ol>
-                    </div>
-                </div>
-            </div>
+            <ol class="no-style p-3">
+                @foreach (Ingredient ingredient in ingredients)
+                {
+                    <li class="container-fluid p-0">
+                        <div class="row">
+                            <div class="col-3 mb-3 p-0" style="height: 5px">
+                                <UnitView @bind-Unit="@ingredient.Amount"/>
+                            </div>
+                            <div class="col-9 mb-3 p-0">
+                                <IngredientView Url="@($"/api/v1/recipes/{RecipeName}/ingredients")"
+                                                Ingredient="@ingredient"
+                                                SetSaving="@SetSaving"
+                                                DeleteItem="() => DeleteIngredient(ingredients, ingredient)"/>
+                            </div>
+                        </div>
+                    </li>
+                }
+            </ol>
         </ItemsTemplate>
     </FetchList>
 </div>
@@ -54,9 +45,9 @@
     [Parameter]
     public EventCallback<(string, LoadStatus)> SetSaving { get; set; } = EventCallback<(string, LoadStatus)>.Empty;
 
-    private Ingredient CreateNewIngredient(int _)
+    private Ingredient CreateNewIngredient(int number)
     {
-        return new() { Name = "Skriv ingrediens här", Amount = new Mass(0) };
+        return new() { Id = -number, Name = "Skriv ingrediens här", Amount = new Mass(0) };
     }
 
     private void DeleteIngredient(ICollection<Ingredient> ingredients, Ingredient ingredient)
