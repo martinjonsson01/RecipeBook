@@ -34,7 +34,8 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
                  LEFT JOIN units on ingredients.id = units.id
                  LEFT JOIN masses on units.id = masses.id
                  LEFT JOIN volumes on units.id = volumes.id
-                     WHERE recipeid = :recipeId;
+                     WHERE recipeid = :recipeId
+                  ORDER BY ingredients.id; 
             ";
 
         protected override string GetSql => @"

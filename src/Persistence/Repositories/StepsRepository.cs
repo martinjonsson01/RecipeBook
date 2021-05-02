@@ -25,7 +25,8 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
                     SELECT * 
                       FROM steps
                  LEFT JOIN timesteps on steps.id = timesteps.id
-                     WHERE recipeid = :recipeId; 
+                     WHERE recipeid = :recipeId
+                  ORDER BY steps.id; 
             ";
 
         protected override string GetSql => @"

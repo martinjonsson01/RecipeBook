@@ -13,7 +13,8 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
 
         protected override string GetAllSql => @"
                     SELECT * 
-                      FROM recipes; 
+                      FROM recipes
+                  ORDER BY id; 
             ";
 
         protected override string GetSql => @"

@@ -49,7 +49,8 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
         protected virtual string GetAllSql => $@"
                     SELECT * 
                       FROM {_table}
-                     WHERE recipeid = :recipeId; 
+                     WHERE recipeid = :recipeId
+                  ORDER BY id; 
             ";
 
         protected virtual string GetSql => $@"
