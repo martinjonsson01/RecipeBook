@@ -6,6 +6,7 @@
        class="remove-input-style mb-0 w-100 text-end unit" 
        value="@_unitString"
        @oninput="OnInput" 
+       onfocusout="this.value = '@Unit.ToString()'"
        onfocus="this.select()" />
 
 @code {
