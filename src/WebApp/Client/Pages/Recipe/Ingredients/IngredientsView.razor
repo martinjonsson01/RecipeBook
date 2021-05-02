@@ -18,7 +18,8 @@
                     <li class="container-fluid p-0">
                         <div class="row">
                             <div class="col-3 mb-3 p-0" style="height: 5px">
-                                <UnitView @bind-Unit="@ingredient.Amount"/>
+                                <UnitView @bind-Unit="@ingredient.Amount"
+                                          Ingredient="@ingredient"/>
                             </div>
                             <div class="col-9 mb-3 p-0">
                                 <IngredientView Url="@($"/api/v1/recipes/{RecipeName}/ingredients")"

@@ -1,6 +1,7 @@
 ﻿@using RecipeBook.Core.Domain.Units
+@using RecipeBook.Core.Domain.Recipes
 
-<input type="text" class="remove-input-style mb-0 w-100 text-end unit" value="@_unitString" @oninput="OnInput" />
+<input @ref="_input" type="text" class="remove-input-style mb-0 w-100 text-end unit" value="@_unitString" @oninput="OnInput" />
 
 @code {
     #nullable enable
@@ -13,9 +14,23 @@
 
     private string _unitString = null!;
 
+    [Parameter]
+    public Ingredient Ingredient { get; set; } = null!;
+
+    [CascadingParameter]
+    public Ingredient? FocusItem { get; set; }
+
+    private ElementReference _input;
+
     protected override void OnInitialized()
     {
         _unitString = Unit.ToString();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && Ingredient.Equals(FocusItem))
+            await _input.FocusAsync();
     }
 
     private async Task OnInput(ChangeEventArgs obj)

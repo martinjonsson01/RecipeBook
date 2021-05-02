@@ -21,9 +21,6 @@
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> AllOtherAttributes { get; set; } = null!;
 
-    [CascadingParameter]
-    public Ingredient? FocusItem { get; set; }
-
     private ElementReference _input;
 
     private string Name
@@ -41,8 +38,6 @@
     {
         if (firstRender)
             _syncedView.Initialize(Ingredient);
-        if (Ingredient.Equals(FocusItem))
-            await _input.FocusAsync();
         
         await _js.InvokeVoidAsync("interopFunctions.textareaAutoHeight", _input);
     }
