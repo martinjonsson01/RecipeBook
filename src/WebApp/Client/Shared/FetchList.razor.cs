@@ -17,14 +17,14 @@ using RecipeBook.Core.Domain;
 
 namespace RecipeBook.Presentation.WebApp.Client.Shared
 {
-    public partial class FetchList<TItem>
+    public partial class FetchList<TItem> : IHasFocusedItem<TItem>
         where TItem : BaseEntity
     {
         private ObservableCollection<TItem>? _items;
 
         private HttpStatusCode? _responseStatus;
 
-        private TItem? _focusItem;
+        public TItem? FocusedItem { get; set; }
         
         protected override async Task OnInitializedAsync()
         {
@@ -120,7 +120,7 @@ namespace RecipeBook.Presentation.WebApp.Client.Shared
         private async Task OnUploadItemSuccess(HttpResponseMessage response, TItem item, JsonSerializerSettings serializerOptions)
         {
              await UpdateItemId(item, response, serializerOptions);
-             _focusItem = item;
+             FocusedItem = item;
         }
 
         private async Task UpdateItemId(

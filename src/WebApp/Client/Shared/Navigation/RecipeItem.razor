@@ -31,13 +31,15 @@
     public Recipe Recipe { get; set; } = null!;
 
     [CascadingParameter]
-    public Recipe? FocusItem { get; set; }
+    public IHasFocusedItem<Recipe?> Focuser { get; set; } = null!;
 
     protected override void OnAfterRender(bool firstRender)
     {
-        if (!firstRender) return;
-        if (Recipe.Equals(FocusItem) && !_navigationManager.Uri.EndsWith(Recipe.ToUrlSafeName()))
+        if (Recipe.Equals(Focuser.FocusedItem))
+        {
             _navigationManager.NavigateTo(Recipe.ToUrlSafeName());
+            Focuser.FocusedItem = null;
+        }
     }
 
 }

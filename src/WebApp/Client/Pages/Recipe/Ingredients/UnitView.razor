@@ -1,7 +1,12 @@
 ﻿@using RecipeBook.Core.Domain.Units
 @using RecipeBook.Core.Domain.Recipes
 
-<input @ref="_input" type="text" class="remove-input-style mb-0 w-100 text-end unit" value="@_unitString" @oninput="OnInput" />
+<input @ref="_input" 
+       type="text" 
+       class="remove-input-style mb-0 w-100 text-end unit" 
+       value="@_unitString"
+       @oninput="OnInput" 
+       onfocus="this.select()" />
 
 @code {
     #nullable enable
@@ -18,7 +23,7 @@
     public Ingredient Ingredient { get; set; } = null!;
 
     [CascadingParameter]
-    public Ingredient? FocusItem { get; set; }
+    public IHasFocusedItem<Ingredient?> Focuser { get; set; } = null!;
 
     private ElementReference _input;
 
@@ -29,8 +34,11 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && Ingredient.Equals(FocusItem))
+        if (Ingredient.Equals(Focuser.FocusedItem))
+        {
             await _input.FocusAsync();
+            Focuser.FocusedItem = null;
+        }
     }
 
     private async Task OnInput(ChangeEventArgs obj)

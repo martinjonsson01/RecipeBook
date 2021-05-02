@@ -13,7 +13,7 @@
 @Header
 @if (_items is not null)
 {
-    <CascadingValue Value="_focusItem">
+    <CascadingValue Value="(IHasFocusedItem<TItem>) this">
         @ItemsTemplate(_items)
     </CascadingValue>
     <div class="d-flex justify-content-center">

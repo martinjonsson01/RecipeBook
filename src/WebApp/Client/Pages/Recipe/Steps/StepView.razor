@@ -9,7 +9,7 @@
     <div class="d-flex">
         <h5 class="me-4">@Step.Number.</h5>
         <div class="d-flex w-100 flex-column">
-            <textarea @ref="Input" class="remove-input-style w-100 step" type="text" @bind="Instruction" @bind:event="oninput"></textarea>
+            <textarea @ref="_input" class="remove-input-style w-100 step" type="text" @bind="Instruction" @bind:event="oninput"></textarea>
             @ChildContent
         </div>
     </div>
@@ -34,16 +34,16 @@
     public Dictionary<string, object> AllOtherAttributes { get; set; } = null!;
 
     [CascadingParameter]
-    public Step? FocusItem { get; set; }
-    
-    private ElementReference Input;
+    public IHasFocusedItem<Step?> Focuser { get; set; } = null!;
+
+    private ElementReference _input;
 
     private string Instruction
     {
         get => Step.Instruction;
         set
         {
-            _js.InvokeVoidAsync("interopFunctions.textareaAutoHeight", Input);
+            _js.InvokeVoidAsync("interopFunctions.textareaAutoHeight", _input);
             Step.Instruction = value;
             _syncedView.ResourceHasChanged();
         }
@@ -51,12 +51,16 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (firstRender) 
             _syncedView.Initialize(Step);
-        if (Step.Equals(FocusItem))
-            await Input.FocusAsync();
-        
-        await _js.InvokeVoidAsync("interopFunctions.textareaAutoHeight", Input);
+        if (Step.Equals(Focuser.FocusedItem))
+        {
+            await _input.FocusAsync();
+            await _js.InvokeVoidAsync("interopFunctions.selectText", _input);
+            Focuser.FocusedItem = null;
+        }
+
+        await _js.InvokeVoidAsync("interopFunctions.textareaAutoHeight", _input);
     }
 
     private SyncedView<Step> _syncedView = null!;
