@@ -1,0 +1,71 @@
+﻿@using System.Collections.ObjectModel
+
+@typeparam TItem
+
+<li @key="@Item.Id"
+    id="@Item.Id"
+    draggable="true"
+    @ondragstart="() => StartDrag(Items, Item)"
+    @ondragend="() => Drop(Items, Item)"
+    @ondragenter="() => Hover(Items, Item)"
+    ondragover="window.interopFunctions.dropEffectMovable(event)"
+    ondragleave="window.interopFunctions.highlightDragLeave(event, this, @Item.Id)"
+    class="@(HoveringIndex == Items.IndexOf(Item) ? "highlighted" : "")">
+    @ChildContent
+</li>
+
+@* ReSharper disable twice UnusedParameter.Local *@
+@* ReSharper disable twice InconsistentNaming *@
+
+@code {
+#nullable enable
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = __builder => { };
+
+    [Parameter]
+    public TItem Item { get; set; } = null!;
+
+    [Parameter]
+    public ObservableCollection<TItem> Items { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback<ObservableCollection<TItem>> OnDrop { get; set; }
+
+    [Parameter]
+    public int DraggingIndex { get; set; }
+
+    [Parameter]
+    public EventCallback<int> DraggingIndexChanged { get; set; }
+
+    [Parameter]
+    public int HoveringIndex { get; set; }
+
+    [Parameter]
+    public EventCallback<int> HoveringIndexChanged { get; set; }  
+
+    private async Task StartDrag(ObservableCollection<TItem> steps, TItem step)
+    {
+        DraggingIndex = steps.IndexOf(step);
+        await DraggingIndexChanged.InvokeAsync(DraggingIndex);
+    }
+
+    private async Task Hover(ObservableCollection<TItem> steps, TItem step)
+    {
+        HoveringIndex = steps.IndexOf(step);
+        await HoveringIndexChanged.InvokeAsync(HoveringIndex);
+    }
+
+    private async Task Drop(ObservableCollection<TItem> steps, TItem step)
+    {
+        Console.WriteLine($"moving {DraggingIndex} to {HoveringIndex}"); 
+        steps.Move(DraggingIndex, HoveringIndex);
+        DraggingIndex = -1;
+        await DraggingIndexChanged.InvokeAsync(DraggingIndex);
+        HoveringIndex = -1;
+        await HoveringIndexChanged.InvokeAsync(HoveringIndex);
+
+        await OnDrop.InvokeAsync(steps);
+    }
+
+}

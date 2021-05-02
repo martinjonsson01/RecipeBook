@@ -124,7 +124,7 @@
             status is LoadStatus.Success or LoadStatus.None);
     }
 
-    private void SetSaving((string, LoadStatus) state)
+    private new void SetSaving((string, LoadStatus) state)
     { 
         (string property, LoadStatus status) = state;
         if (!_propertyLoading.TryAdd(property, status))
