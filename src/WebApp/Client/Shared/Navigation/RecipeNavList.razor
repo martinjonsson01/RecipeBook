@@ -10,7 +10,7 @@
                Context="recipes"
                Url="@("/api/v1/recipes/")">
         <ItemsTemplate>
-            @foreach (Recipe recipe in recipes)
+            @foreach (Recipe recipe in recipes!)
             {
                 <NavLink class="no-underline"
                          href="@recipe.ToUrlSafeName()"
