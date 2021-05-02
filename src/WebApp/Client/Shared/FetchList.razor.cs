@@ -72,6 +72,7 @@ namespace RecipeBook.Presentation.WebApp.Client.Shared
                 case NotifyCollectionChangedAction.Replace:
                     break;
                 case NotifyCollectionChangedAction.Move:
+                    // No need to do anything here since items themselves synchronize values such as Number.
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     break;
