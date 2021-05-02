@@ -55,9 +55,21 @@
         return new() { Number = number, Instruction = "Skriv instruktion här" };
     }
 
-    private void DeleteStep(ICollection<Step> steps, Step step)
+    private void DeleteStep(ICollection<Step> steps, Step toRemove)
     {
-        steps.Remove(step);
+        UpdateStepNumbering(steps, toRemove);
+        steps.Remove(toRemove);
+    }
+
+    private void UpdateStepNumbering(ICollection<Step> steps, Step removed)
+    {
+        foreach (var step in steps)
+        {
+            if (step.Number > removed.Number)
+            {
+                step.Number--;
+            }
+        }
     }
 
 }
