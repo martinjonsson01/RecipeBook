@@ -25,14 +25,31 @@ namespace RecipeBook.Core.Domain.Units
 
         private static bool TryParseParts(ref Unit result, ref string? errorMessage, IReadOnlyList<string> parts)
         {
+            if (!double.TryParse(parts[0], NumberStyles.Float, CultureInfo.CurrentCulture, out double number))
+                if (!TryParseFraction(parts[0], ref number))
+                    return Failure("Måste börja med ett tal", out errorMessage);
+
+            if (parts.Count == 1)
+                return TryParseAmount(ref result, number);
+
             if (parts.Count != 2)
                 return Failure("Måste vara i formatet '{tal} {enhet}'. T.ex. '10 g'", out errorMessage);
 
-            if (!double.TryParse(parts[0], NumberStyles.Float, CultureInfo.CurrentCulture, out double number))
-                return Failure("Måste börja med ett tal", out errorMessage);
-
             string unitText = parts[1].ToLowerInvariant();
             return TryParseUnitText(ref result, ref errorMessage, unitText, number);
+        }
+
+        private static bool TryParseFraction(string text, ref double result)
+        {
+            string[] parts = text.Split("/");
+            if (parts.Length != 2) return false;
+            if (!int.TryParse(parts[0], NumberStyles.Integer, CultureInfo.CurrentCulture, out int numerator))
+                return false;
+            if (!int.TryParse(parts[1], NumberStyles.Integer, CultureInfo.CurrentCulture, out int denominator))
+                return false;
+            if (denominator == 0) return false;
+            result = (double) numerator / denominator;
+            return true;
         }
 
         private static bool TryParseUnitText(ref Unit result, ref string? errorMessage, string unitText, double number)
@@ -44,6 +61,10 @@ namespace RecipeBook.Core.Domain.Units
             if (unitText.Contains(Volume.Liter))
             {
                 return TryParseLiters(ref result, ref errorMessage, unitText, number);
+            }
+            if (unitText.Contains(Amount.Piece))
+            {
+                return TryParseAmount(ref result, number);
             }
             return TryParseMisc(ref result, ref errorMessage, unitText, number);
         }
@@ -68,6 +89,11 @@ namespace RecipeBook.Core.Domain.Units
                 Volume.Milliliter => Success(Volume.FromMilliliters(number), out result),
                 _                 => Failure("Kan inte känna igen literprefix", out errorMessage)
             };
+        }
+
+        private static bool TryParseAmount(ref Unit result, double number)
+        {
+            return Success(new Amount((int) number), out result);
         }
 
         private static bool TryParseMisc(ref Unit result, ref string? errorMessage, string unitText, double number)
