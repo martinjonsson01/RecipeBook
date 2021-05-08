@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 
 using Newtonsoft.Json;
 
+using RecipeBook.Core.Application.Web;
 using RecipeBook.Infrastructure.Persistence; // ONLY for dependency injection!
 
 namespace RecipeBook.Presentation.WebApp.Server
@@ -36,6 +37,9 @@ namespace RecipeBook.Presentation.WebApp.Server
             });
             
             services.AddPersistence();
+
+            services.AddHttpClient();
+            services.AddTransient<IRecipeScraper, RecipeScraper>();
 
             services.AddVersionedApiExplorer(options =>
             {

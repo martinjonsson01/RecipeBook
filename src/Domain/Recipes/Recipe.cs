@@ -10,8 +10,8 @@ namespace RecipeBook.Core.Domain.Recipes
         public int?                Rating        { get; set; }          = null;
         public string?             ImagePath     { get; set; }          = null;
         public IList<UsedOccasion> UsedOccasions { get; private init; } = new List<UsedOccasion>();
-        public IList<Step>         Steps         { get; private init; } = new List<Step>();
-        public IList<Ingredient>   Ingredients   { get; private init; } = new List<Ingredient>();
+        public IList<Step>         Steps         { get; init; }         = new List<Step>();
+        public IList<Ingredient>   Ingredients   { get; init; }         = new List<Ingredient>();
 
         public string ToUrlSafeName()
         {
