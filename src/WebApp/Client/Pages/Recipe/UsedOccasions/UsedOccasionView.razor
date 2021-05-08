@@ -1,0 +1,63 @@
+﻿@using RecipeBook.Core.Domain.Recipes
+
+@inject IJSRuntime _js;
+
+<SyncedView @ref="_syncedView"
+            TResource="UsedOccasion"
+            DeleteItem="@DeleteItem"
+            @attributes="AllOtherAttributes">
+    <div class="d-flex">
+        <h5 class="me-4 text-lg-end">@UsedOccasion.Date.ToLongDateString()</h5>
+        <div class="d-flex w-100 flex-column">
+            <textarea @ref="_input" class="remove-input-style w-100 step" type="text" @bind="Comment" @bind:event="oninput"></textarea>
+        </div>
+    </div>
+</SyncedView>
+
+@* ReSharper disable twice UnusedParameter.Local *@
+@* ReSharper disable twice InconsistentNaming *@
+
+@code {
+#nullable enable
+
+    [Parameter]
+    public UsedOccasion UsedOccasion { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback DeleteItem { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> AllOtherAttributes { get; set; } = null!;
+
+    [CascadingParameter]
+    public IHasFocusedItem<UsedOccasion?> Focuser { get; set; } = null!;
+
+    private ElementReference _input;
+
+    private string? Comment
+    {
+        get => UsedOccasion.Comment;
+        set
+        {
+            _js.InvokeVoidAsync("interopFunctions.textareaAutoHeight", _input);
+            UsedOccasion.Comment = value;
+            _syncedView.ResourceHasChanged();
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            _syncedView.Initialize(UsedOccasion);
+        if (UsedOccasion.Equals(Focuser.FocusedItem))
+        {
+            await _input.FocusAsync();
+            await _js.InvokeVoidAsync("interopFunctions.selectText", _input);
+            Focuser.FocusedItem = null;
+        }
+
+        await _js.InvokeVoidAsync("interopFunctions.textareaAutoHeight", _input);
+    }
+
+    private SyncedView<UsedOccasion> _syncedView = null!;
+}
