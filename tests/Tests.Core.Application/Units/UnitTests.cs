@@ -16,7 +16,7 @@ namespace Tests.Core.Application.Units
         {
             CultureInfo.CurrentCulture = new CultureInfo("sv-SE");
         }
-        
+
         [Theory]
         [InlineData("asdasdg")]
         [InlineData("34234 asdfasd")]
@@ -31,7 +31,7 @@ namespace Tests.Core.Application.Units
         {
             // Act
             bool result = Unit.TryParseString(s, out Unit _, out string? errorMessage);
-            
+
             // Assert
             result.Should().BeFalse();
             errorMessage.Should().NotBeEmpty();
@@ -41,6 +41,8 @@ namespace Tests.Core.Application.Units
         [InlineData("21,345 kg")]
         [InlineData("21,345 g")]
         [InlineData("  21,345 g    ")]
+        [InlineData("1/4 kg")]
+        [InlineData("1 1/4 kg")]
         public void TryParseString_ShouldReturnTrueAndMass_WithCorrectMassStrings(string s)
         {
             // Act
@@ -61,6 +63,8 @@ namespace Tests.Core.Application.Units
         [InlineData("21,345 krm")]
         [InlineData("21,345 tsk")]
         [InlineData("21,345 msk")]
+        [InlineData("1/2 msk")]
+        [InlineData("1 1/2 msk")]
         public void TryParseString_ShouldReturnTrueAndVolume_WithCorrectVolumeStrings(string s)
         {
             // Act
@@ -73,14 +77,36 @@ namespace Tests.Core.Application.Units
         }
 
         [Theory]
-        [InlineData("21,345 kg", 21.345d)]
-        [InlineData("21,345 g", 0.021345d)]
-        public void TryParseString_ShouldReturnValueInKilograms_WithCorrectMassStrings(string s, double expectedKilograms)
+        [InlineData("1")]
+        [InlineData("10")]
+        [InlineData("1,1")]
+        [InlineData("1/6")]
+        //[InlineData("2 1/3")]
+        public void TryParseString_ShouldReturnTrueAndAmount_WithCorrectAmountStrings(string s)
         {
             // Act
-            Unit.TryParseString(s, out Unit unit, out string? _);
+            bool result = Unit.TryParseString(s, out Unit unit, out string? errorMessage);
 
             // Assert
+            result.Should().BeTrue();
+            unit.Should().BeAssignableTo<Amount>();
+            errorMessage.Should().BeNull();
+        }
+
+        [Theory]
+        [InlineData("21,345 kg", 21.345d)]
+        [InlineData("21,345 g",  0.021345d)]
+        [InlineData("1/2 g",     0.0005d)]
+        [InlineData("1 1/2 g",   0.0015d)]
+        public void TryParseString_ShouldReturnValueInKilograms_WithCorrectMassStrings(
+            string s,
+            double expectedKilograms)
+        {
+            // Act
+            bool success = Unit.TryParseString(s, out Unit unit, out string? _);
+
+            // Assert
+            success.Should().BeTrue();
             unit.Value.Should().BeApproximately(expectedKilograms, Precision);
         }
 
@@ -92,12 +118,15 @@ namespace Tests.Core.Application.Units
         [InlineData("21,345 krm", 0.021345d)]
         [InlineData("21,345 tsk", 0.1067250d)]
         [InlineData("21,345 msk", 0.3201750d)]
+        [InlineData("1/2 msk",    0.0075d)]
+        [InlineData("1 1/2 msk",  0.0225d)]
         public void TryParseString_ShouldReturnValueInLiters_WithCorrectVolumeStrings(string s, double expectedLiters)
         {
             // Act
-            Unit.TryParseString(s, out Unit unit, out string? _);
+            bool success = Unit.TryParseString(s, out Unit unit, out string? _);
 
             // Assert
+            success.Should().BeTrue();
             unit.Value.Should().BeApproximately(expectedLiters, Precision);
         }
 
@@ -107,7 +136,7 @@ namespace Tests.Core.Application.Units
             // Arrange
             const double unitValue = 1234234.122d;
             var          volume    = new Volume(unitValue);
-            var          mass    = new Mass(unitValue);
+            var          mass      = new Mass(unitValue);
 
             // Assert
             volume.Equals(mass).Should().BeFalse();

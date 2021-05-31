@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace RecipeBook.Core.Domain.Units
 {
@@ -25,18 +26,34 @@ namespace RecipeBook.Core.Domain.Units
 
         private static bool TryParseParts(ref Unit result, ref string? errorMessage, IReadOnlyList<string> parts)
         {
-            if (!double.TryParse(parts[0], NumberStyles.Float, CultureInfo.CurrentCulture, out double number))
-                if (!TryParseFraction(parts[0], ref number))
-                    return Failure("Måste börja med ett tal", out errorMessage);
+            double number = double.MinValue;
+            if (parts.Count == 3)
+                if (!TryParseFraction(parts[0], parts[1], ref number))
+                    return Failure("Måste börja med ett tal. T.ex. '1 1/2 msk'", out errorMessage);
+
+            if (Math.Abs(number - double.MinValue) < 0.000001f)
+                if (!double.TryParse(parts[0], NumberStyles.Float, CultureInfo.CurrentCulture, out number))
+                    if (!TryParseFraction(parts.Count == 3 ? parts[1] : parts[0], ref number))
+                        return Failure("Måste börja med ett tal. T.ex. '1/2 msk'", out errorMessage);
 
             if (parts.Count == 1)
-                return TryParseAmount(ref result, number);
+                return TryParseAmount(out result, number);
 
-            if (parts.Count != 2)
+            if (parts.Count != 2 && parts.Count != 3)
                 return Failure("Måste vara i formatet '{tal} {enhet}'. T.ex. '10 g'", out errorMessage);
 
-            string unitText = parts[1].ToLowerInvariant();
+            string unitText = parts[^1].ToLowerInvariant();
             return TryParseUnitText(ref result, ref errorMessage, unitText, number);
+        }
+
+        private static bool TryParseFraction(string wholeText, string fractionText, ref double result)
+        {
+            if (!int.TryParse(wholeText, NumberStyles.Integer, CultureInfo.CurrentCulture, out int wholes))
+                return false;
+            if (!TryParseFraction(fractionText, ref result))
+                return false;
+            result += wholes;
+            return true;
         }
 
         private static bool TryParseFraction(string text, ref double result)
@@ -64,7 +81,7 @@ namespace RecipeBook.Core.Domain.Units
             }
             if (unitText.Contains(Amount.Piece))
             {
-                return TryParseAmount(ref result, number);
+                return TryParseAmount(out result, number);
             }
             return TryParseMisc(ref result, ref errorMessage, unitText, number);
         }
@@ -91,7 +108,7 @@ namespace RecipeBook.Core.Domain.Units
             };
         }
 
-        private static bool TryParseAmount(ref Unit result, double number)
+        private static bool TryParseAmount(out Unit result, double number)
         {
             return Success(new Amount((int) number), out result);
         }
