@@ -121,7 +121,7 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
             return await db.QuerySingleAsync<bool>(ExistsSql, new { key, recipeId });
         }
 
-        public virtual async Task<TResource?> CreateOrUpdateAsync(string recipeName, TResource entity)
+        public virtual async Task<TResource?> CreateOrUpdateAsync(string recipeName, TResource toStore)
         {
             await using var db = new NpgsqlConnection(ConnectionString);
 
@@ -129,11 +129,11 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
 
             try
             {
-                string idQuery = EntityKeyIsNull(entity) ? "default" : $":{_keyPropertyName}";
+                string idQuery = EntityKeyIsNull(toStore) ? "default" : $":{_keyPropertyName}";
 
                 AddTypeHandlers();
 
-                return await CreateOrUpdateSendQueryAsync(entity, db, idQuery, recipeId);
+                return await CreateOrUpdateSendQueryAsync(toStore, db, idQuery, recipeId);
             }
             catch (NpgsqlException e)
             {

@@ -33,10 +33,10 @@ namespace RecipeBook.Core.Application.Repositories
         /// or updates the resource if it already exists.
         /// </summary>
         /// <param name="recipeName">The name of the recipe that the resource belongs to</param>
-        /// <param name="entity">The resource to create or update</param>
+        /// <param name="toStore">The resource to create or update</param>
         /// <returns>The created or updated resource, with correct key identifier.
         /// Might be null if some conflict occured</returns>
-        public Task<TResource?> CreateOrUpdateAsync(string recipeName, TResource entity);
+        public Task<TResource?> CreateOrUpdateAsync(string recipeName, TResource toStore);
 
         /// <summary>
         /// Removes a resource from under a recipe name.

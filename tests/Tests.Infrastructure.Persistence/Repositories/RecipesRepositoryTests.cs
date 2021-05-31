@@ -3,8 +3,13 @@ using System.Threading.Tasks;
 
 using FluentAssertions;
 
+using Moq;
+
+using RecipeBook.Core.Application.Repositories;
 using RecipeBook.Core.Domain.Recipes;
 using RecipeBook.Infrastructure.Persistence.Repositories;
+
+using Tests.Shared;
 
 using Xunit;
 
@@ -18,7 +23,9 @@ namespace Tests.Infrastructure.Persistence.Repositories
     {
         public RecipesRepositoryTests(DatabaseFixture fixture) : base(fixture.Db)
         {
-            Repo = new RecipesRepository(MockLogger.Object, fixture.ConnectionString);
+            var mockStepRepo       = new Mock<IResourcesRepository<Step, int?>>();
+            var mockIngredientRepo = new Mock<IResourcesRepository<Ingredient, int?>>();
+            Repo = new RecipesRepository(MockLogger.Object, mockStepRepo.Object, mockIngredientRepo.Object, fixture.ConnectionString);
         }
 
         protected override string GetKey(dynamic resource) => resource.Name;
@@ -29,20 +36,17 @@ namespace Tests.Infrastructure.Persistence.Repositories
             Enumerable.Range(0, count).Select(_ => MockKey().Result).ToArray();
 
         protected override string InsertOrGetParentRecipeSql => "SELECT 1;"; // no need for empty recipes
+
         protected override string InsertResourceSql(int recipeId) => @"
             INSERT INTO recipes VALUES (DEFAULT, :Rating, :ImagePath, :Name) RETURNING *;
         ";
-        protected override string ResourceExistsSql => 
+
+        protected override string ResourceExistsSql =>
             "SELECT EXISTS(SELECT 1 FROM recipes WHERE name = :key)";
 
-        protected override async Task<Recipe> MockResource(string? key = default)
+        protected override Task<Recipe> MockResource(string? key = default)
         {
-            return new()
-            {
-                Name = key ?? await MockKey(),
-                Rating = Faker.Random.Int(1, 10),
-                ImagePath = Faker.Internet.Avatar()
-            };
+            return Task.FromResult(Fakers.Recipe.Generate());
         }
 
         [Fact]

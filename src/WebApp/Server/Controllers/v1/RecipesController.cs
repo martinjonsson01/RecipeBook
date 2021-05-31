@@ -98,12 +98,12 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         /// <response code="201">If a new recipe was created</response>
         /// <response code="400">If recipe name is already taken</response>
         /// <response code="404">If recipe could not be scraped from URL</response>
-        [HttpPut("{url}")]
+        [HttpPut("from-url")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ApiExplorerSettings(IgnoreApi = false)] 
-        public async Task<ActionResult<Recipe>> CreateFromUrl(string? unused, string url, ApiVersion version)
+        public async Task<ActionResult<Recipe>> CreateFromUrl(string? unused, [FromBody]string url, ApiVersion version)
         {
             url = Uri.UnescapeDataString(url);
             if (!Uri.IsWellFormedUriString(url, UriKind.Absolute))

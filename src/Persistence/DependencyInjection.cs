@@ -12,10 +12,10 @@ namespace RecipeBook.Infrastructure.Persistence
     {
         public static void AddPersistence(this IServiceCollection services)
         {
-            services.AddTransient<IResourcesRepository<Recipe, string>, RecipesRepository>();
             services.AddTransient<IResourcesRepository<UsedOccasion, int?>, UsedOccasionsRepository>();
             services.AddTransient<IResourcesRepository<Step, int?>, StepsRepository>();
             services.AddTransient<IResourcesRepository<Ingredient, int?>, IngredientsRepository>();
+            services.AddTransient<IResourcesRepository<Recipe, string>, RecipesRepository>();
             
             services.AddSingleton<IFileStorer, ImageFileStorer>();
         }

@@ -1,5 +1,10 @@
 ﻿@using System.Collections.ObjectModel
+@using System.Text
+@using Newtonsoft.Json
 @using RecipeBook.Core.Domain.Recipes
+
+@inject HttpClient _http
+
 
 <div class="btn-group mb-5">
     <button type="button" class="btn btn-outline-secondary" @onclick="_ => Items.Add(CreateNewRecipe(Items.Count + 1))">Skapa recept</button>
@@ -7,26 +12,34 @@
         <span class="visually-hidden">Öppna/stäng meny</span>
     </button>
     <ul class="dropdown-menu">
-        <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#linkModal">Från länk</button></li>
+        <li>
+            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#linkModal">Från länk</button>
+        </li>
     </ul>
 </div>
 
 <!-- Modal -->
 <div class="modal fade" id="linkModal" tabindex="-1" aria-labelledby="linkModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="linkModalLabel">Skriv in länk till ett recept här</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-          <input type="text" />
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary disabled" data-bs-dismiss="modal">Hämta recept</button>
-      </div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="linkModalLabel">Skriv in länk till ett recept här</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input class="display-5" type="text" @bind="Url" @bind:event="oninput"/>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-primary"
+                        data-bs-dismiss="modal"
+                        disabled="@(!Uri.IsWellFormedUriString(Url, UriKind.Absolute))" 
+                        @onclick="FetchRecipeFromUrl">
+                    Hämta recept
+                </button> 
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 @code {
@@ -34,14 +47,29 @@
     [Parameter]
     public ObservableCollection<Recipe> Items { get; set; } = null!;
 
+    private string? Url { get; set; } 
+
     private Recipe CreateNewRecipe(int number)
     {
         return new() { Name = $"Skriv receptnamn här ({number})" };
     }
 
-    private void OpenLinkModal()
+    private async Task FetchRecipeFromUrl()
     {
-        
+        if (!Uri.IsWellFormedUriString(Url, UriKind.Absolute)) return;
+        var content = new StringContent($"\"{Uri.EscapeUriString(Url)}\"", Encoding.UTF8, "application/json-patch+json");
+        HttpResponseMessage response = await _http.PutAsync("api/v1/recipes/from-url", content);
+        if (response.IsSuccessStatusCode)
+        {
+            var serializerOptions = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto
+            };
+
+            string json = await response.Content.ReadAsStringAsync();
+            var recipe = JsonConvert.DeserializeObject<Recipe>(json, serializerOptions);
+            if (recipe != null) Items.Add(recipe);
+        }
     }
 
 }
