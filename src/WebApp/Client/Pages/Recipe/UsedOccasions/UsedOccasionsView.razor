@@ -3,16 +3,16 @@
 <div class="ms-5 mt-5">
     <FetchList TItem="UsedOccasion"
                Context="usedOccasions"
-               Url="@($"/api/v1/recipes/{RecipeName}/usedoccasions")"
+               Url="@($"/api/v1/recipes/{Recipe.ToUrlSafeName(RecipeName)}/usedoccasions")"
                SetSaving="@SetSaving">
         <Header>
             <h2>Användningstillfällen</h2>
         </Header>
         <ItemsTemplate>
-            <ol class="no-style ps-2">
+            <ol class="no-style ps-2"> 
                 @foreach (UsedOccasion usedOccasion in usedOccasions!)
                 {
-                    <UsedOccasionView Url="@($"/api/v1/recipes/{RecipeName}/usedoccasions")"
+                    <UsedOccasionView Url="@($"/api/v1/recipes/{Recipe.ToUrlSafeName(RecipeName)}/usedoccasions")"
                                       UsedOccasion="@usedOccasion"
                                       SetSaving="@SetSaving"
                                       DeleteItem="() => DeleteUsedOccasion(usedOccasions, usedOccasion)"/>

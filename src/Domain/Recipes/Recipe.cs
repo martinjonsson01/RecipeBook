@@ -15,7 +15,12 @@ namespace RecipeBook.Core.Domain.Recipes
 
         public string ToUrlSafeName()
         {
-            return Uri.EscapeUriString(Name).Replace("%20", "-");
+            return ToUrlSafeName(Name);
+        }
+
+        public static string ToUrlSafeName(string name)
+        {
+            return Uri.EscapeDataString(name).Replace("%20", "-");
         }
 
         public static string FromUrlSafeNameToOrdinaryName(string urlSafeName)

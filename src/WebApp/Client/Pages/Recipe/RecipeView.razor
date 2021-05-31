@@ -184,7 +184,7 @@
     {
         await HttpHelper.SendHttpMessageWithSetSaving(
             "Recipe-DeleteItem",
-            () => _http.DeleteAsync($"{Url}/{Recipe.Name}"),
+            () => _http.DeleteAsync($"{Url}/{Recipe.ToUrlSafeName()}"),
             _ => _navigationManager.NavigateTo("/"),
             SetSaving); 
     }

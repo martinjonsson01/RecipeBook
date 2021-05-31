@@ -1,4 +1,4 @@
-﻿@page "/{recipeNameUrlSafe}"
+﻿@page "/{recipeName}"
 
 @using RecipeBook.Core.Domain.Recipes
 @using System.Net
@@ -13,7 +13,7 @@
     }
     else if (_responseStatus is null)
     {
-        <RecipePlaceholder RecipeNameUrlSafe="@RecipeNameUrlSafe"/>
+        <RecipePlaceholder RecipeNameUrlSafe="@RecipeName"/>
     }
     else if (_responseStatus == HttpStatusCode.NotFound)
     {
@@ -25,7 +25,7 @@
 #nullable enable
 
     [Parameter]
-    public string RecipeNameUrlSafe { get; set; } = "Does-not-exist";
+    public string RecipeName { get; set; } = "Does not exist";
 
     private Recipe? _recipe;
 
@@ -34,19 +34,20 @@
     protected override async Task OnParametersSetAsync()
     {
         // No need to re-fetch if the local model has the updated name.
-        if (RecipeNameUrlSafe.Equals(_recipe?.ToUrlSafeName())) return;
+        string urlSafeName = Recipe.ToUrlSafeName(RecipeName);
+        if (urlSafeName.Equals(_recipe?.ToUrlSafeName())) return;
         
         _recipe = null;
         _responseStatus = null;
 
-        HttpResponseMessage response = await Http.GetAsync($"/api/v1/recipes/{RecipeNameUrlSafe}");
+        HttpResponseMessage response = await Http.GetAsync($"/api/v1/recipes/{urlSafeName}");
         if (response.StatusCode == HttpStatusCode.OK)
         {
             var serializerOptions = new JsonSerializerSettings
             {
                 TypeNameHandling = TypeNameHandling.Auto
             };
-
+            
             string json = await response.Content.ReadAsStringAsync();
             _recipe = JsonConvert.DeserializeObject<Recipe>(json, serializerOptions);
             

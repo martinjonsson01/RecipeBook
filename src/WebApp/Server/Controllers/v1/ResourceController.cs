@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 
 using RecipeBook.Core.Application.Repositories;
+using RecipeBook.Core.Domain.Recipes;
 
 namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
 {
@@ -37,7 +38,8 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         [ApiExplorerSettings(IgnoreApi = true)]
         public virtual async Task<ActionResult<IEnumerable<TResource>>> GetAll(string recipeName)
         {
-            IEnumerable<TResource> resources = await _repo.GetAllAsync(recipeName);
+            IEnumerable<TResource> resources =
+                await _repo.GetAllAsync(Recipe.FromUrlSafeNameToOrdinaryName(recipeName));
             if (!resources.Any()) return NoContent();
             return Ok(resources);
         }
@@ -54,7 +56,7 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         [ApiExplorerSettings(IgnoreApi = true)]
         public virtual async Task<ActionResult<TResource>> Get(string recipeName, TResourceKey id, ApiVersion version)
         {
-            TResource? entity = await _repo.GetAsync(recipeName, id);
+            TResource? entity = await _repo.GetAsync(Recipe.FromUrlSafeNameToOrdinaryName(recipeName), id);
             if (entity is null) return NotFound();
             return Ok(entity);
         }
@@ -75,18 +77,19 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
             TResource  entity,
             ApiVersion version)
         {
-            TResourceKey key = GetKey(entity);
-            if (await _repo.ExistsAsync(recipeName, key))
+            string       decodedRecipeName = Recipe.FromUrlSafeNameToOrdinaryName(recipeName);
+            TResourceKey key               = GetKey(entity);
+            if (await _repo.ExistsAsync(decodedRecipeName, key))
             {
-                TResource? updatedEntity = await _repo.CreateOrUpdateAsync(recipeName, entity);
+                TResource? updatedEntity = await _repo.CreateOrUpdateAsync(decodedRecipeName, entity);
                 if (updatedEntity is null) return BadRequest();
                 return Ok(updatedEntity);
             }
-            TResource? createdEntity = await _repo.CreateOrUpdateAsync(recipeName, entity);
+            TResource? createdEntity = await _repo.CreateOrUpdateAsync(decodedRecipeName, entity);
             if (createdEntity is null) return BadRequest();
             return CreatedAtRoute(
                 routeName: $"{nameof(Get)}{typeof(TResource).Name}",
-                routeValues: new { id = GetKey(createdEntity), recipeName },
+                routeValues: new { id = GetKey(createdEntity), recipeName=decodedRecipeName },
                 value: createdEntity);
         }
 
@@ -101,10 +104,11 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         [ApiExplorerSettings(IgnoreApi = true)]
         public virtual async Task<ActionResult> Delete(string recipeName, TResourceKey id)
         {
-            if (!await _repo.ExistsAsync(recipeName, id))
+            string decodedRecipeName = Recipe.FromUrlSafeNameToOrdinaryName(recipeName);
+            if (!await _repo.ExistsAsync(decodedRecipeName, id))
                 return NotFound();
 
-            await _repo.DeleteAsync(recipeName, id);
+            await _repo.DeleteAsync(decodedRecipeName, id);
             return Ok();
         }
 

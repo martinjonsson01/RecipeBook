@@ -6,7 +6,7 @@
 <div class="ingredients bg-white shadow">
     <FetchList TItem="Ingredient"
                Context="ingredients"
-               Url="@($"/api/v1/recipes/{RecipeName}/ingredients")"
+               Url="@($"/api/v1/recipes/{Recipe.ToUrlSafeName(RecipeName)}/ingredients")"
                SetSaving="@SetSaving">
         <Header>
             <h2 class="p-4">Ingredienser</h2>
@@ -22,7 +22,7 @@
                                           Ingredient="@ingredient"/>
                             </div>
                             <div class="col-9 mb-3 p-0">
-                                <IngredientView Url="@($"/api/v1/recipes/{RecipeName}/ingredients")"
+                                <IngredientView Url="@($"/api/v1/recipes/{Recipe.ToUrlSafeName(RecipeName)}/ingredients")"
                                                 Ingredient="@ingredient"
                                                 SetSaving="@SetSaving"
                                                 DeleteItem="() => DeleteIngredient(ingredients, ingredient)"/>

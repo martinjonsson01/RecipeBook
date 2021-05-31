@@ -1,8 +1,4 @@
-﻿using System;
-
-using Bogus;
-
-using FluentAssertions;
+﻿using FluentAssertions;
 
 using RecipeBook.Core.Domain.Recipes;
 
@@ -14,35 +10,40 @@ namespace Tests.Core.Application.Recipes
 {
     public class RecipeTests
     {
-        [Fact]
-        public void ToUrlSafeName_IsUrlSafe()
+        public static TheoryData<string, string> RecipeNames =>
+            new()
+            {
+                { "test namn.!" , "test-namn.%21"},
+                { "https://google.se", "https%3A%2F%2Fgoogle.se"},
+                {"Grundrecept till färsbiffar/ köttbullar", "Grundrecept-till-f%C3%A4rsbiffar%2F%E2%80%89k%C3%B6ttbullar"}
+            };
+        
+        [Theory]
+        [MemberData(nameof(RecipeNames))]
+        public void ToUrlSafeName_IsUrlSafe(string name, string safeName)
         {
             // Arrange
             var recipe = new Recipe
             {
-                Name = new Faker("sv").Lorem.Sentence()
+                Name = name
             };
 
             // Act
             string actual     = recipe.ToUrlSafeName();
-            string actualSafe = Uri.EscapeUriString(actual);
 
             // Assert
-            actual.Should().BeEquivalentTo(actualSafe);
+            actual.Should().BeEquivalentTo(safeName);
         }
 
-        [Fact]
-        public void FromUrlSafeNameToOrdinaryName_RecreatesOriginalName()
+        [Theory]
+        [MemberData(nameof(RecipeNames))]
+        public void FromUrlSafeNameToOrdinaryName_RecreatesOriginalName(string originalName, string safeName)
         {
-            // Arrange
-            string name    = new Faker("sv").Lorem.Sentence();
-            string urlSafe = Uri.EscapeUriString(name);
-
             // Act
-            string actual     = Recipe.FromUrlSafeNameToOrdinaryName(urlSafe);
+            string actual     = Recipe.FromUrlSafeNameToOrdinaryName(safeName);
 
             // Assert
-            actual.Should().BeEquivalentTo(name);
+            actual.Should().BeEquivalentTo(originalName);
         }
 
         [Fact]

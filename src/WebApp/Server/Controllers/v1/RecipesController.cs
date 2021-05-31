@@ -131,7 +131,7 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         [ApiExplorerSettings(IgnoreApi = false)]
         public override Task<ActionResult> Delete(string? unused, string id)
         {
-            return base.Delete(unused ?? string.Empty, id);
+            return base.Delete(unused ?? string.Empty, Recipe.FromUrlSafeNameToOrdinaryName(id));
         }
     }
 }
