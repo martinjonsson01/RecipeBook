@@ -35,7 +35,8 @@ namespace RecipeBook.Core.Domain.Recipes
             {
                 Id = Id,
                 Name = Name,
-                Amount = Amount
+                Amount = Amount,
+                Order = Order
             };
         }
 
@@ -43,7 +44,7 @@ namespace RecipeBook.Core.Domain.Recipes
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Name == other.Name && Amount.Equals(other.Amount);
+            return Name == other.Name && Amount.Equals(other.Amount) && Order == other.Order;
         }
 
         public override bool Equals(object? obj)
@@ -58,7 +59,10 @@ namespace RecipeBook.Core.Domain.Recipes
         {
             unchecked
             {
-                return (Name.GetHashCode() * 397) ^ Amount.GetHashCode();
+                int hashCode = Name.GetHashCode();
+                hashCode = (hashCode * 397) ^ Amount.GetHashCode();
+                hashCode = (hashCode * 397) ^ Order;
+                return hashCode;
             }
         }
     }

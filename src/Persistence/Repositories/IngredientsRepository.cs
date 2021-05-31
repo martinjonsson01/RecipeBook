@@ -75,7 +75,8 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
                VALUES ({idQuery}, :Name, {recipeId}, :Order)
                ON CONFLICT (id)
                  DO UPDATE
-                       SET name = :Name
+                       SET name = :Name,
+                           ""order"" = :Order
                      WHERE ingredients.id = {(idQuery == "default" ? "-1" : idQuery)}
                RETURNING id AS ingredient_id, name AS ingredient_name, ""order"" AS ingredient_order
             ),

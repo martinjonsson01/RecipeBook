@@ -15,20 +15,29 @@
             <ol class="no-style p-3">
                 @foreach (Ingredient ingredient in ingredients!)
                 {
-                    <li class="container-fluid p-0">
-                        <div class="row">
-                            <div class="col-3 mb-3 p-0" style="height: 5px">
-                                <UnitView @bind-Unit="@ingredient.Amount"
-                                          Ingredient="@ingredient"/>
+
+                    
+                <DraggableItem TItem="Ingredient"
+                               Item="ingredient"
+                               Items="ingredients!"
+                               OnDrop="items => UpdateStepNumbering(items)"
+                               @bind-DraggingIndex="_draggingIndex"
+                               @bind-HoveringIndex="_hoveringIndex">
+                        <li class="container-fluid p-0">
+                            <div class="row">
+                                <div class="col-3 mb-3 p-0" style="height: 5px">
+                                    <UnitView @bind-Unit="@ingredient.Amount"
+                                              Ingredient="@ingredient"/>
+                                </div>
+                                <div class="col-9 mb-3 p-0">
+                                    <IngredientView Url="@($"/api/v1/recipes/{Recipe.ToUrlSafeName(RecipeName)}/ingredients")"
+                                                    Ingredient="@ingredient"
+                                                    SetSaving="@SetSaving"
+                                                    DeleteItem="() => DeleteIngredient(ingredients, ingredient)"/>
+                                </div>
                             </div>
-                            <div class="col-9 mb-3 p-0">
-                                <IngredientView Url="@($"/api/v1/recipes/{Recipe.ToUrlSafeName(RecipeName)}/ingredients")"
-                                                Ingredient="@ingredient"
-                                                SetSaving="@SetSaving"
-                                                DeleteItem="() => DeleteIngredient(ingredients, ingredient)"/>
-                            </div>
-                        </div>
-                    </li>
+                        </li>
+                    </DraggableItem>
                 }
             </ol>
         </ItemsTemplate>
@@ -55,9 +64,22 @@
         return new() { Name = "Skriv ingrediens här", Amount = new Mass(0) };
     }
 
-    private void DeleteIngredient(ICollection<Ingredient> ingredients, Ingredient ingredient)
+    private void DeleteIngredient(ICollection<Ingredient> ingredients, Ingredient toRemove)
+    { 
+        UpdateStepNumbering(ingredients, toRemove);
+        ingredients.Remove(toRemove);
+    }
+    
+    private void UpdateStepNumbering(ICollection<Ingredient> ingredients, Ingredient? toIgnore = null)
     {
-        ingredients.Remove(ingredient);
+        var order = 1;
+        foreach (var ingredient in ingredients)
+        {
+            if (ingredient.Equals(toIgnore)) continue;
+            ingredient.Order = order++;
+        }
     }
 
+    private int _draggingIndex = -1;
+    private int _hoveringIndex = -1;
 }
