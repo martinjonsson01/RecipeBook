@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,11 +30,13 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
                     SELECT ingredients.id as IngredientId, ingredients.name as IngredientName,
                            masses.id as MassId,
                            volumes.id as VolumeId,
+                           amounts.id as AmountId,
                            units.value as Value
                       FROM ingredients
                  LEFT JOIN units on ingredients.id = units.id
                  LEFT JOIN masses on units.id = masses.id
                  LEFT JOIN volumes on units.id = volumes.id
+                 LEFT JOIN amounts on units.id = amounts.id
                      WHERE recipeid = :recipeId
                   ORDER BY ingredients.id; 
             ";
@@ -42,11 +45,13 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
                     SELECT ingredients.id as IngredientId, ingredients.name as IngredientName,
                            masses.id as MassId,
                            volumes.id as VolumeId,
+                           amounts.id as AmountId,
                            units.value as Value
                       FROM ingredients
                  LEFT JOIN units on ingredients.id = units.id
                  LEFT JOIN masses on units.id = masses.id
                  LEFT JOIN volumes on units.id = volumes.id
+                 LEFT JOIN amounts on units.id = amounts.id
                      WHERE ingredients.id = :key
                        AND recipeid = :recipeId;
             ";
@@ -59,6 +64,10 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
             ),
             delete_mass AS (
               DELETE FROM masses
+                WHERE id = :Id
+            ),
+            delete_amount AS (
+              DELETE FROM amounts
                 WHERE id = :Id
             )," : "")}
             insert_ingredient AS (
@@ -79,19 +88,56 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
                      WHERE units.id = (SELECT ingredient_id FROM insert_ingredient)
                RETURNING id AS unit_id, value AS unit_value
             )
-            INSERT INTO {(ingredient.Amount is Mass ? "masses" : "volumes")} (id)
+            INSERT INTO {GetUnitTableName(ingredient)} (id)
             SELECT unit_id FROM insert_unit
             ON CONFLICT (id)
               DO UPDATE
                     SET id = (SELECT unit_id FROM insert_unit)
-                  WHERE {(ingredient.Amount is Mass ? "masses" : "volumes")}.id = (SELECT ingredient_id FROM insert_ingredient)
+                  WHERE {GetUnitTableName(ingredient)}.id = (SELECT ingredient_id FROM insert_ingredient)
             RETURNING
                 (SELECT ingredient_id AS IngredientId FROM insert_ingredient),
                 (SELECT ingredient_name as IngredientName FROM insert_ingredient),
-                (SELECT unit_id AS {(ingredient.Amount is Mass ? "MassId" : "VolumeId")} FROM insert_unit),
-                (SELECT NULL AS {(ingredient.Amount is Mass ? "VolumeId" : "MassId")} FROM insert_unit),
+                (SELECT unit_id AS {GetUnitIdName(ingredient)} FROM insert_unit),
+                (SELECT NULL AS {GetOtherUnitIdNames(ingredient)[0]} FROM insert_unit),
+                (SELECT NULL AS {GetOtherUnitIdNames(ingredient)[1]} FROM insert_unit),
                 (SELECT unit_value as Value FROM insert_unit);
             ";
+
+        private static string GetUnitTableName(Ingredient ingredient)
+        {
+            return ingredient.Amount switch
+            {
+                Mass   => "masses",
+                Volume => "volumes",
+                Amount => "amounts",
+                _      => throw new ArgumentException($"Unit type is not covered: {ingredient.Amount.GetType().Name}")
+            };
+        }
+
+        private static string GetUnitIdName(Ingredient ingredient)
+        {
+            return ingredient.Amount switch
+            {
+                Mass   => "MassId",
+                Volume => "VolumeId",
+                Amount => "AmountId",
+                _      => throw new ArgumentException($"Unit type is not covered: {ingredient.Amount.GetType().Name}")
+            };
+        }
+
+        private static string[] GetOtherUnitIdNames(Ingredient ingredient)
+        {
+            var idNames = new[] { "MassId", "VolumeId", "AmountId" };
+            switch (ingredient.Amount)
+            {
+                case Mass:
+                case Volume:
+                case Amount: 
+                    return idNames.Except(new[] { GetUnitIdName(ingredient) }).ToArray();
+                default: 
+                    throw new ArgumentException($"Unit type is not covered: {ingredient.Amount.GetType().Name}");
+            }
+        }
 
         public override async Task<IEnumerable<Ingredient>> GetAllAsync(string recipeName)
         {

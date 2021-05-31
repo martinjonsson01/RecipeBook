@@ -15,11 +15,17 @@ namespace RecipeBook.Core.Domain.Recipes
             {
                 Id = row.ingredientid,
                 Name = row.ingredientname,
-                Amount = row.massid is not null
-                    ? new Mass { Id = row.massid, Value = row.value }
-                    : new Volume { Id = row.volumeid, Value = row.value }
+                Amount = MapUnitFromRow(row)
             };
             return ingredient;
+        }
+
+        private static Unit MapUnitFromRow(dynamic row)
+        {
+            if (row.massid is not null)return new Mass { Id = row.massid, Value = row.value };
+            if (row.volumeid is not null) return new Volume { Id = row.volumeid, Value = row.value };
+            if (row.amountid is not null) return new Amount { Id = row.amountid, Value = row.value };
+            throw new ArgumentException("Row does not contain any unit type id!");
         }
 
         public Ingredient ShallowClone()

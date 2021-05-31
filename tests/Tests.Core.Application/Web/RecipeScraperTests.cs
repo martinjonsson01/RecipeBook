@@ -431,7 +431,6 @@ namespace Tests.Core.Application.Web
           recipe!.Ingredients.Count(ingredient => ingredient.Name.StartsWith(" ")).Should().Be(0);
           recipe!.Ingredients.Count(ingredient => ingredient.Name.EndsWith(" ")).Should().Be(0);
           recipe!.Ingredients.Count(ingredient => ingredient.Amount.Value == 0).Should().Be(0);
-          recipe!.Ingredients.Count(ingredient => ingredient.Name.Equals("stor gul lök") && ingredient.Amount is Volume).Should().Be(0);
           recipe!.Ingredients.Count.Should().Be(11);
         }
     }
