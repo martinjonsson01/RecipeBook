@@ -52,7 +52,7 @@ namespace RecipeBook.Core.Application.Web
                 var stepNumber = 1;
                 List<Step> steps = doc.DocumentNode
                                       .Descendants("div")
-                                      .Where(node => node.HasClass("cooking-steps-card"))
+                                      .Where(node => node.HasClass("cooking-steps-main__text"))
                                       .Select(node => new Step { Number = stepNumber++, Instruction =
                                           HttpUtility.HtmlDecode(node.InnerText.Trim())
                                       })

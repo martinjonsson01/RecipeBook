@@ -412,6 +412,7 @@ namespace Tests.Core.Application.Web
           recipe!.Steps.Count(step => step.Number == 1).Should().Be(1);
           recipe!.Steps.Count(step => step.Instruction.StartsWith(" ")).Should().Be(0);
           recipe!.Steps.Count(step => step.Instruction.EndsWith(" ")).Should().Be(0);
+          recipe!.Steps.Count(step => step.Instruction.Contains("Öppna timer")).Should().Be(0);
           recipe!.Steps.Should().BeInAscendingOrder(step => step.Number);
         }
 
