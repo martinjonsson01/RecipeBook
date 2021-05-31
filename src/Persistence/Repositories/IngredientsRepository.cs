@@ -27,7 +27,7 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
         }
 
         protected override string GetAllSql => @"
-                    SELECT ingredients.id as IngredientId, ingredients.name as IngredientName,
+                    SELECT ingredients.id as IngredientId, ingredients.name as IngredientName, ingredients.order as IngredientOrder,
                            masses.id as MassId,
                            volumes.id as VolumeId,
                            amounts.id as AmountId,
@@ -38,11 +38,11 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
                  LEFT JOIN volumes on units.id = volumes.id
                  LEFT JOIN amounts on units.id = amounts.id
                      WHERE recipeid = :recipeId
-                  ORDER BY ingredients.id; 
+                  ORDER BY ingredients.order; 
             ";
 
         protected override string GetSql => @"
-                    SELECT ingredients.id as IngredientId, ingredients.name as IngredientName,
+                    SELECT ingredients.id as IngredientId, ingredients.name as IngredientName, ingredients.order as IngredientOrder,
                            masses.id as MassId,
                            volumes.id as VolumeId,
                            amounts.id as AmountId,
@@ -71,13 +71,13 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
                 WHERE id = :Id
             )," : "")}
             insert_ingredient AS (
-               INSERT INTO ingredients (id, name, recipeid)
-               VALUES ({idQuery}, :Name, {recipeId})
+               INSERT INTO ingredients (id, name, recipeid, ""order"")
+               VALUES ({idQuery}, :Name, {recipeId}, :Order)
                ON CONFLICT (id)
                  DO UPDATE
                        SET name = :Name
                      WHERE ingredients.id = {(idQuery == "default" ? "-1" : idQuery)}
-               RETURNING id AS ingredient_id, name AS ingredient_name
+               RETURNING id AS ingredient_id, name AS ingredient_name, ""order"" AS ingredient_order
             ),
             insert_unit AS (
                INSERT INTO units (id, value)
@@ -97,6 +97,7 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
             RETURNING
                 (SELECT ingredient_id AS IngredientId FROM insert_ingredient),
                 (SELECT ingredient_name as IngredientName FROM insert_ingredient),
+                (SELECT ingredient_order as IngredientOrder FROM insert_ingredient),
                 (SELECT unit_id AS {GetUnitIdName(ingredient)} FROM insert_unit),
                 (SELECT NULL AS {GetOtherUnitIdNames(ingredient)[0]} FROM insert_unit),
                 (SELECT NULL AS {GetOtherUnitIdNames(ingredient)[1]} FROM insert_unit),
