@@ -103,15 +103,27 @@
         </member>
         <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipesController.CreateOrUpdate(System.String,RecipeBook.Core.Domain.Recipes.Recipe,Microsoft.AspNetCore.Mvc.ApiVersion)">
             <summary>
-            Creates a new or updates an existing image.
+            Creates a new or updates an existing recipe.
             </summary>
             <param name="unused">Has no effect on response</param>
-            <param name="image">The image to create or update</param>
+            <param name="recipe">The recipe to create or update</param>
             <param name="version">The API version</param>
-            <returns>A created or updated image</returns>
-            <response code="201">If a new image was created</response>
-            <response code="200">If an existing image was updated</response>
-            <response code="400">If image name is already taken</response>
+            <returns>A created or updated recipe</returns>
+            <response code="201">If a new recipe was created</response>
+            <response code="200">If an existing recipe was updated</response>
+            <response code="400">If recipe name is already taken</response>
+        </member>
+        <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipesController.CreateFromUrl(System.String,System.String,Microsoft.AspNetCore.Mvc.ApiVersion)">
+            <summary>
+            Creates a new recipe from the provided URL.
+            </summary>
+            <param name="unused">Has no effect on response</param>
+            <param name="url">The URL to scrape the recipe from</param>
+            <param name="version">The API version</param>
+            <returns>A created recipe</returns>
+            <response code="201">If a new recipe was created</response>
+            <response code="400">If recipe name is already taken</response>
+            <response code="404">If recipe could not be scraped from URL</response>
         </member>
         <member name="M:RecipeBook.Presentation.WebApp.Server.Controllers.v1.RecipesController.Delete(System.String,System.String)">
             <summary>

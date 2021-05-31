@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Http;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 using RecipeBook.Core.Application.Repositories;
+using RecipeBook.Core.Application.Web;
 using RecipeBook.Core.Domain.Recipes;
 
 namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
@@ -19,11 +21,15 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
     [Route("api/v{version:apiVersion}/[Controller]")]
     public class RecipesController : ResourceController<RecipesController, Recipe, string>
     {
+        private readonly IRecipeScraper _recipeScraper;
+
         public RecipesController(
             ILogger<RecipesController>       logger,
-            IResourcesRepository<Recipe, string> repo)
+            IResourcesRepository<Recipe, string> repo,
+            IRecipeScraper recipeScraper)
             : base(logger, repo)
         {
+            _recipeScraper = recipeScraper;
         }
 
         protected override string GetKey(Recipe entity) => entity.Name;
@@ -63,23 +69,51 @@ namespace RecipeBook.Presentation.WebApp.Server.Controllers.v1
         }
 
         /// <summary>
-        /// Creates a new or updates an existing image.
+        /// Creates a new or updates an existing recipe.
         /// </summary>
         /// <param name="unused">Has no effect on response</param>
-        /// <param name="image">The image to create or update</param>
+        /// <param name="recipe">The recipe to create or update</param>
         /// <param name="version">The API version</param>
-        /// <returns>A created or updated image</returns>
-        /// <response code="201">If a new image was created</response>
-        /// <response code="200">If an existing image was updated</response>
-        /// <response code="400">If image name is already taken</response>
+        /// <returns>A created or updated recipe</returns>
+        /// <response code="201">If a new recipe was created</response>
+        /// <response code="200">If an existing recipe was updated</response>
+        /// <response code="400">If recipe name is already taken</response>
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ApiExplorerSettings(IgnoreApi = false)]
-        public override Task<ActionResult<Recipe>> CreateOrUpdate(string? unused, Recipe image, ApiVersion version)
+        public override Task<ActionResult<Recipe>> CreateOrUpdate(string? unused, Recipe recipe, ApiVersion version)
         {
-            return base.CreateOrUpdate(unused ?? string.Empty, image, version);
+            return base.CreateOrUpdate(unused ?? string.Empty, recipe, version);
+        }
+
+        /// <summary>
+        /// Creates a new recipe from the provided URL.
+        /// </summary>
+        /// <param name="unused">Has no effect on response</param>
+        /// <param name="url">The URL to scrape the recipe from</param>
+        /// <param name="version">The API version</param>
+        /// <returns>A created recipe</returns>
+        /// <response code="201">If a new recipe was created</response>
+        /// <response code="400">If recipe name is already taken</response>
+        /// <response code="404">If recipe could not be scraped from URL</response>
+        [HttpPut("{url}")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ApiExplorerSettings(IgnoreApi = false)] 
+        public async Task<ActionResult<Recipe>> CreateFromUrl(string? unused, string url, ApiVersion version)
+        {
+            url = Uri.UnescapeDataString(url);
+            if (!Uri.IsWellFormedUriString(url, UriKind.Absolute))
+                return BadRequest("Malformed URL-string");
+            
+            Recipe? recipe = await _recipeScraper.Scrape(url);
+            if (recipe is null)
+                return NotFound("Could not scrape recipe");
+
+            return await CreateOrUpdate(unused, recipe, version);
         }
 
         /// <summary>

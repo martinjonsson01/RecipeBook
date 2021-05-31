@@ -5,6 +5,9 @@ using FluentAssertions;
 
 using Microsoft.AspNetCore.Mvc;
 
+using Moq;
+
+using RecipeBook.Core.Application.Web;
 using RecipeBook.Core.Domain.Recipes;
 using RecipeBook.Presentation.WebApp.Server.Controllers.v1;
 
@@ -20,7 +23,8 @@ namespace Tests.WebApp.Server.Controllers
     {
         public RecipesControllerTests()
         {
-            Controller = new RecipesController(MockLogger.Object, MockRepo.Object) { Url = MockUrlHelper.Object };
+            var mockScraper = new Mock<IRecipeScraper>();
+            Controller = new RecipesController(MockLogger.Object, MockRepo.Object, mockScraper.Object) { Url = MockUrlHelper.Object };
         }
 
         protected override string GetKey(Recipe resource) => resource.Name;
