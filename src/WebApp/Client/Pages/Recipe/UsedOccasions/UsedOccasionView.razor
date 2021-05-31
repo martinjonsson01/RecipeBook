@@ -7,7 +7,7 @@
             DeleteItem="@DeleteItem"
             @attributes="AllOtherAttributes">
     <div class="d-flex">
-        <h5 class="me-4 text-lg-end">@UsedOccasion.Date.ToLongDateString()</h5>
+        <h5 class="me-4 text-lg-end" style="width: 7rem">@UsedOccasion.Date.ToLongDateString()</h5>
         <div class="d-flex w-100 flex-column">
             <textarea @ref="_input" class="remove-input-style w-100 step" type="text" @bind="Comment" @bind:event="oninput"></textarea>
         </div>
