@@ -13,5 +13,12 @@ namespace RecipeBook.Infrastructure.Persistence.Repositories
             : base(logger, connectionString: connectionString)
         {
         }
+
+        protected override string GetAllSql => @"
+                    SELECT * 
+                      FROM usedoccasions
+                     WHERE recipeid = :recipeId
+                  ORDER BY date DESC; 
+            ";
     }
 }
